@@ -1,0 +1,75 @@
+{
+  "name": "caisse-enregistreuse-api",
+  "version": "1.0.0",
+  "description": "Expose les APIs de caisse.enregistreuse.fr comme outils MCP.",
+  "entry_points": {
+    "stdio": "build/stdio.js"
+  },
+  "tools": [
+    {
+      "name": "auth_get_token",
+      "description": "Obtenir APIKEY et SHOPID via login/password",
+      "input_schema": {
+        "type": "object",
+        "required": [ "login", "password" ],
+        "properties": {
+          "login": { "type": "string" },
+          "password": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "sales_create",
+      "description": "Créer une vente",
+      "input_schema": {
+        "type": "object",
+        "required": [ "shopId", "apiKey", "payment", "deliveryMethod", "items" ],
+        "properties": {
+          "shopId": { "type": "string" },
+          "apiKey": { "type": "string" },
+          "payment": { "type": "number" },
+          "deliveryMethod": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 6
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [ "catalog", "free" ]
+                },
+                "productId": { "type": "string" },
+                "quantity": { "type": "number" },
+                "title": { "type": "string" },
+                "price": { "type": "number" }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "sales_export",
+      "description": "Exporter les ventes (Std/PDF/XLS/CSV/frafec/saft)",
+      "input_schema": {
+        "type": "object",
+        "required": [ "shopId", "apiKey" ],
+        "properties": {
+          "shopId": { "type": "string" },
+          "apiKey": { "type": "string" },
+          "d": { "type": [ "integer", "string" ] },
+          "m": { "type": [ "integer", "string" ] },
+          "y": { "type": [ "integer", "string" ] },
+          "formatExport": {
+            "type": "string",
+            "enum": [ "Std", "PDF", "XLS", "CSV", "frafec", "saft" ]
+          }
+        }
+      }
+    }
+  ]
+}
