@@ -1,3 +1,5 @@
+import { t } from './i18n/index.js';
+// __I18N_READY__
 ﻿// src/stdio.ts
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
@@ -154,8 +156,8 @@ async function main() {
     (server as any).registerTool(
         'ping',
         {
-            title: 'Ping',
-            description: 'Health check du serveur MCP',
+            title: t('tools.ping.title'),
+            description: t('tools.ping.description'),
             inputSchema: { msg: z.string().optional() }, // ✅ ZodRawShape
         },
         async ({ msg }: { msg?: string }) => ({

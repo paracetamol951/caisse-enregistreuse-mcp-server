@@ -8,7 +8,11 @@
     "build": "tsc -p tsconfig.json",
     "start": "node build/index.js",
     "start:stdio": "node build/stdio.js",
-    "start:http": "node build/index.js --http"
+    "start:http": "node build/index.js --http",
+    "generate:manifest": "node scripts/generate-manifest.mjs",
+    "test": "node tests/quick.test.mjs",
+    "start:fr": "MCP_LANG=fr node dist/index.js",
+    "start:en": "MCP_LANG=en node dist/index.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.2.0",
@@ -22,6 +26,7 @@
     "@types/express": "^5.0.3",
     "@types/node": "^24.8.0",
     "tsx": "^4.19.1",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "ts-node": "^10.9.2"
   }
 }

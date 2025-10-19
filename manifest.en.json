@@ -1,0 +1,82 @@
+{
+  "name": "Caisse Enregistreuse MCP Server",
+  "version": "1.2.0",
+  "description": "Expose caisse.enregistreuse.fr API as MCP tools",
+  "tools": [
+    {
+      "name": "ping",
+      "description": "MCP server health check"
+    },
+    {
+      "name": "auth_get_token",
+      "description": "Retrieve credentials via login/password",
+      "input_schema": {
+        "type": "object",
+        "required": [
+          "login",
+          "password"
+        ],
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "sales_create",
+      "description": "Creates a sale"
+    },
+    {
+      "name": "data_list_articles",
+      "description": "List items"
+    },
+    {
+      "name": "data_list_departments",
+      "description": "List departments"
+    },
+    {
+      "name": "data_list_department_groups",
+      "description": "List department groups"
+    },
+    {
+      "name": "data_list_clients",
+      "description": "List clients"
+    },
+    {
+      "name": "data_list_declinaisons",
+      "description": "List item variants"
+    },
+    {
+      "name": "data_list_deliveries",
+      "description": "List delivery methods"
+    },
+    {
+      "name": "data_list_payments",
+      "description": "List payment modes"
+    },
+    {
+      "name": "data_list_cashboxes",
+      "description": "List cashboxes"
+    },
+    {
+      "name": "data_list_delivery_zones",
+      "description": "List delivery zones"
+    },
+    {
+      "name": "data_list_relay_points",
+      "description": "List relay points"
+    },
+    {
+      "name": "data_list_discounts",
+      "description": "List discounts"
+    },
+    {
+      "name": "data_list_users",
+      "description": "List users"
+    }
+  ]
+}

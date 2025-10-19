@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { postForm } from '../support/http.js';
 import { getSessionAuth, setSessionAuth } from '../stdio.js';
+import { t } from '../i18n/index.js';
 // ✅ Le SDK attend un "shape", pas z.object(...)
 const AuthInput = {
     login: z.string(),
@@ -8,8 +9,8 @@ const AuthInput = {
 };
 export function registerAuthTools(server) {
     server.registerTool('auth_get_token', {
-        title: 'Obtenir APIKEY + SHOPID',
-        description: 'Récupère les identifiants via login/password',
+        title: t('tools.auth_get_token.title'),
+        description: t('tools.auth_get_token.description'),
         inputSchema: AuthInput, // ✅ shape
     }, async ({ login, password }, ctx) => {
         const data = await postForm('/workers/getAuthToken.php', { login, password });

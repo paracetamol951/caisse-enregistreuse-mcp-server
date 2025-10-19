@@ -1,0 +1,90 @@
+{
+  "name": "{{app.name}}",
+  "version": "1.2.0",
+  "description": "{{app.description}}",
+  "tools": [
+    {
+      "name": "ping",
+      "description": "{{tools.ping.description}}"
+    },
+    {
+      "name": "auth_get_token",
+      "description": "{{tools.auth_get_token.description}}",
+      "input_schema": {
+        "type": "object",
+        "required": [
+          "login",
+          "password"
+        ],
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "sales_create",
+      "description": "{{tools.sales_create.description}}"
+    },
+    {
+      "name": "data_list_articles",
+      "description": "{{tools.data_list_articles.description}}"
+    },
+    {
+      "name": "data_list_departments",
+      "description": "{{tools.data_list_departments.description}}"
+    },
+    {
+      "name": "data_list_department_groups",
+      "description": "{{tools.data_list_department_groups.description}}"
+    },
+    {
+      "name": "data_list_clients",
+      "description": "{{tools.data_list_clients.description}}"
+    },
+    {
+      "name": "data_list_declinaisons",
+      "description": "{{tools.data_list_declinaisons.description}}"
+    },
+    {
+      "name": "data_list_deliveries",
+      "description": "{{tools.data_list_deliveries.description}}"
+    },
+    {
+      "name": "data_list_payments",
+      "description": "{{tools.data_list_payments.description}}"
+    },
+    {
+      "name": "data_list_cashboxes",
+      "description": "{{tools.data_list_cashboxes.description}}"
+    },
+    {
+      "name": "data_list_delivery_zones",
+      "description": "{{tools.data_list_delivery_zones.description}}"
+    },
+    {
+      "name": "data_list_relay_points",
+      "description": "{{tools.data_list_relay_points.description}}"
+    },
+    {
+      "name": "data_list_discounts",
+      "description": "{{tools.data_list_discounts.description}}"
+    },
+    {
+      "name": "data_list_users",
+      "description": "{{tools.data_list_users.description}}"
+    },
+    {
+      "name": "data_list_tables",
+      "description": "{{tools.data_list_tables.description}}"
+    },
+    {
+      "name": "data_list_orders",
+      "description": "{{tools.data_list_orders.description}}"
+    }
+  ]
+}

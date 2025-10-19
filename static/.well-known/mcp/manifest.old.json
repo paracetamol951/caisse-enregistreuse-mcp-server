@@ -23,11 +23,18 @@
       "description": "Créer une vente",
       "input_schema": {
         "type": "object",
-        "required": [ "shopId", "apiKey", "payment", "deliveryMethod", "items" ],
+        "required": [ "shopId", "apiKey", "items" ],
         "properties": {
           "shopId": { "type": "string" },
           "apiKey": { "type": "string" },
           "payment": { "type": "number" },
+          "idUser": { "type": "number" },
+          "idtable": { "type": "number" },
+          "idcaisse": { "type": "number" },
+          "numcouverts": { "type": "number" },
+          "publicComment": { "type": "string" },
+          "privateComment": { "type": "string" },
+          "pagerNum": { "type": "number" },
           "deliveryMethod": {
             "type": "integer",
             "minimum": 0,
@@ -40,7 +47,7 @@
               "properties": {
                 "type": {
                   "type": "string",
-                  "enum": [ "catalog", "free" ]
+                  "enum": [ "catalog", "free", "dept" ]
                 },
                 "productId": { "type": "string" },
                 "quantity": { "type": "number" },
@@ -54,7 +61,7 @@
     },
     {
       "name": "sales_export",
-      "description": "Exporter les ventes (Std/PDF/XLS/CSV/frafec/saft)",
+      "description": "Exporter les rapports de ventes (Std/PDF/XLS/CSV/frafec/saft)",
       "input_schema": {
         "type": "object",
         "required": [ "shopId", "apiKey" ],

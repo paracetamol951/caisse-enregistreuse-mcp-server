@@ -1,7 +1,8 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z, ZodTypeAny } from 'zod';
 import { postForm } from '../support/http.js';
-import { Ctx, getSessionAuth, setSessionAuth } from '../stdio.js';
+import { Ctx, getSessionAuth, setSessionAuth } from '../stdio.js'; import { t } from '../i18n/index.js';
+
 
 // ✅ Le SDK attend un "shape", pas z.object(...)
 const AuthInput = {
@@ -18,8 +19,8 @@ export function registerAuthTools(server: McpServer | any) {
   server.registerTool(
     'auth_get_token',
     {
-      title: 'Obtenir APIKEY + SHOPID',
-      description: 'Récupère les identifiants via login/password',
+      title: t('tools.auth_get_token.title'),
+      description: t('tools.auth_get_token.description'),
       inputSchema: AuthInput, // ✅ shape
     },
     async ({ login, password }: { login: string; password: string }, ctx: Ctx) => {

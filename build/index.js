@@ -1,3 +1,4 @@
+// __I18N_READY__
 import 'dotenv/config';
 import express from 'express';
 import { randomUUID } from 'node:crypto';

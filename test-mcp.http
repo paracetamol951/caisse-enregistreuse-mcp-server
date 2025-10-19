@@ -50,7 +50,8 @@ Content-Type: application/json
       "deliveryMethod": 4,
       "items": [
         { "type": "catalog", "productId": 1001, "quantity": 2 },
-        { "type": "free", "departmentId": 1, "title": "Vente libre test", "price": 3.5 }
+        { "type": "dept", "departmentId": 1, "title": "Vente libre test", "price": 3.5 },
+        { "type": "free", "title": "Vente libre test 2", "price": 7.5 }
       ]
     }
   }

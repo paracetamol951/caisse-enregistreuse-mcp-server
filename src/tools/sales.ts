@@ -1,14 +1,15 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z, ZodTypeAny } from 'zod';
 import { postForm, postJsonRaw } from '../support/http.js';
+import { t } from '../i18n/index.js';
+
 
 // util
 type InferFromShape<S extends Record<string, ZodTypeAny>> = z.infer<z.ZodObject<S>>;
-const USE_V2 = String(process.env.USE_V2 || 'false').toLowerCase() === 'true';
 
 /** Item de vente : soit du catalogue, soit une ligne libre */
 const SalesItemShape = {
-  type: z.enum(['catalog', 'free']).default('catalog'),
+    type: z.enum(['catalog', 'dept', 'free']).default('catalog'),
 
   // catalog
   productId: z.string().optional(),
@@ -17,8 +18,8 @@ const SalesItemShape = {
   priceOverride: z.union([z.number(), z.string()]).optional(),
   declinaisons: z.array(z.string()).optional(),
 
-  // free (ligne manuelle)
-  departmentId: z.union([z.string(), z.number()]).optional(),
+    // free (ligne manuelle)
+    departmentId: z.union([z.string(), z.number()]).optional(),
   price: z.union([z.number(), z.string()]).optional(),
   title: z.string().optional(),
 } satisfies Record<string, ZodTypeAny>;
@@ -39,13 +40,19 @@ const SalesCreateShape = {
   shopId: z.string(),
   apiKey: z.string(),
 
-  payment: z.union([z.number(), z.string()]).transform((v) => Number(v)),
+    payment: z.union([z.number(), z.string()]).transform((v) => Number(v)).optional(),
   deliveryMethod: z.union([
     z.number().int().min(0).max(6),
     z.enum(['0','1','2','3','4','5','6'])
-  ]).transform((v) => Number(v)),
+  ]).transform((v) => Number(v)).optional(),
 
-  idUser: z.union([z.number().int(), z.string()]).optional(),
+    idtable: z.union([z.number().int(), z.string()]).optional(),
+    idcaisse: z.union([z.number().int(), z.string()]).optional(),
+    numcouverts: z.union([z.number().int(), z.string()]).optional(),
+    publicComment: z.string().optional(),
+    privateComment: z.string().optional(),
+    pagerNum: z.union([z.number().int(), z.string()]).optional(),
+    idUser: z.union([z.number().int(), z.string()]).optional(),
   idClient: z.union([z.number().int(), z.string()]).optional(),
   client: z.object(ClientShape).partial().optional(),
 
@@ -58,19 +65,26 @@ type SalesCreateArgs = InferFromShape<typeof SalesCreateShape>;
 function encodeItemsList(items: SalesCreateArgs['items']): string[] {
   const out: string[] = [];
   for (const it of items) {
-    if (it.type === 'catalog') {
-      const parts = [
-        it.productId ?? '',
-        it.quantity ?? 1,
-        it.titleOverride ?? '',
-        it.priceOverride ?? '',
-      ];
-      if (it.declinaisons?.length) parts.push(...it.declinaisons);
-      out.push(parts.join('_'));
-    } else {
-      // ligne libre : -<departmentId>_<price>_<title>
-      out.push(`-${it.departmentId ?? ''}_${it.price ?? ''}_${it.title ?? ''}`);
-    }
+      if (it.type === 'catalog') {
+          const parts = [
+              it.productId ?? '',
+              it.quantity ?? 1,
+              it.titleOverride ?? '',
+              it.priceOverride ?? '',
+          ];
+          if (it.declinaisons?.length) parts.push(...it.declinaisons);
+          out.push(parts.join('_'));
+      } else if (it.type === 'free') {
+          const parts = [
+              'Free',
+              it.priceOverride ?? '',
+              it.titleOverride ?? '',
+          ];
+          out.push(parts.join('_'));
+      } else {
+          // ligne libre : -<departmentId>_<price>_<title>
+          out.push(`-${it.departmentId ?? ''}_${it.price ?? ''}_${it.title ?? ''}`);
+      }
   }
   return out;
 }
@@ -80,35 +94,29 @@ export function registerSalesTools(server: McpServer | any) {
   server.registerTool(
     'sales_create',
     {
-      title: 'Créer une vente',
-      description: 'Crée une vente (v2 JSON si USE_V2=true, sinon legacy webapp.php)',
+      title: t('tools.sales_create.title'),
+      description: t('tools.sales_create.description'),
       inputSchema: SalesCreateShape, // ✅ ZodRawShape
     },
     async (input: SalesCreateArgs) => {
-      // ---------- Mode v2 JSON ----------
-      if (USE_V2) {
-        // On envoie tout l’objet tel quel ; le backend v2 est supposé accepter la structure JSON
-        const data = await postJsonRaw('/workers/webapp_v2.php', input, {
-          'X-Shop-Id': input.shopId,
-          'X-Api-Key': input.apiKey,
-        });
-
-        // Affichage texte (compat Claude) + structuredContent pour usage programmatique
-        return {
-          content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
-          structuredContent: data,
-        };
-      }
 
       // ---------- Mode legacy ----------
       const body: Record<string, unknown> = {
         idboutique: input.shopId,
-        key: input.apiKey,
-        payment: input.payment,
-        deliveryMethod: String(input.deliveryMethod),
+        key: input.apiKey
       };
 
-      if (input.idUser !== undefined) body.idUser = input.idUser;
+        if (input.payment !== undefined) body.payment = input.payment;
+        if (input.deliveryMethod !== undefined) body.deliveryMethod = String(input.deliveryMethod);
+        if (input.idUser !== undefined) body.idUser = input.idUser;
+        if (input.idtable !== undefined) body.idtable = input.idtable;
+        if (input.idcaisse !== undefined) body.idcaisse = input.idcaisse;
+        if (input.numcouverts !== undefined) body.numcouverts = input.numcouverts;
+        if (input.publicComment !== undefined) body.publicComment = input.publicComment;
+        if (input.privateComment !== undefined) body.privateComment = input.privateComment;
+        if (input.pagerNum !== undefined) body.pagerNum = input.pagerNum;
+
+
       if (input.idClient !== undefined) body.idClient = input.idClient;
       if (!input.idClient && input.client) {
         // Le legacy aime les clés client[...]

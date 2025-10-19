@@ -17,10 +17,10 @@ export const ClientSchema = z.object({
     lat: z.string().optional(),
     lng: z.string().optional()
 });
-export const DiscountSchema = z.object({
+/*export const DiscountSchema = z.object({
     mode: z.enum(['amount', 'percent']),
     value: z.number().nonnegative()
-});
+});*/
 export const ItemCatalogSchema = z.object({
     type: z.literal('catalog'),
     productId: z.number().int().positive(),
@@ -28,31 +28,42 @@ export const ItemCatalogSchema = z.object({
     titleOverride: z.string().optional(),
     priceOverride: z.number().nonnegative().optional(),
     declinaisons: z.array(z.number().int().positive()).max(5).optional(),
-    taxRateId: z.number().int().positive().nullable().optional(),
+    /*taxRateId: z.number().int().positive().nullable().optional(),
     discounts: z.array(DiscountSchema).optional(),
-    note: z.string().optional()
+    note: z.string().optional()*/
 });
-export const ItemFreeSchema = z.object({
-    type: z.literal('free'),
+export const ItemDeptSchema = z.object({
+    type: z.literal('dept'),
     departmentId: z.number().int().positive(),
     title: z.string(),
     price: z.number().nonnegative(),
     quantity: z.number().positive().default(1)
 });
-export const ItemSchema = z.discriminatedUnion('type', [ItemCatalogSchema, ItemFreeSchema]);
+export const ItemFreeSchema = z.object({
+    type: z.literal('free'),
+    title: z.string().optional(),
+    price: z.number().nonnegative()
+});
+export const ItemSchema = z.discriminatedUnion('type', [ItemCatalogSchema, ItemDeptSchema, ItemFreeSchema]);
 export const SalesCreateInput = z.object({
     shopId: z.string(),
     apiKey: z.string(),
     idUser: z.number().int().optional(),
-    payment: z.union([z.literal(-2), z.literal(-1), z.number()]),
+    payment: z.union([z.literal(-2), z.literal(-1), z.number()]).optional(),
     deliveryMethod: z.union([
         z.number().int().min(0).max(6),
         z.enum(['0', '1', '2', '3', '4', '5', '6'])
-    ]),
+    ]).optional(),
+    idtable: z.number().int().optional(),
+    idcaisse: z.number().int().optional(),
+    numcouverts: z.number().int().optional(),
+    publicComment: z.string().optional(),
+    privateComment: z.string().optional(),
+    pagerNum: z.number().int().optional(),
     idClient: z.number().int().optional(),
     client: ClientSchema.optional(),
     items: z.array(ItemSchema).min(1),
-    orderDiscounts: z.array(DiscountSchema).optional(),
-    metadata: z.record(z.any()).optional(),
+    //orderDiscounts: z.array(DiscountSchema).optional(),
+    //metadata: z.record(z.any()).optional(),
     idempotencyKey: z.string().optional()
 });

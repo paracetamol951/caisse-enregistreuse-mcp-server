@@ -1,0 +1,90 @@
+{
+  "name": "Serveur MCP Caisse Enregistreuse",
+  "version": "1.2.0",
+  "description": "Expose l’API caisse.enregistreuse.fr sous forme d’outils MCP, permettant un accès programmatique à l’authentification, à la création de ventes et à la consultation des données du commerce.",
+  "tools": [
+    {
+      "name": "ping",
+      "description": "Vérifie l’état du serveur MCP. Retourne { result: 'OK' } si le serveur est opérationnel."
+    },
+    {
+      "name": "auth_get_token",
+      "description": "Permet de récupérer les identifiants d’accès (APIKEY et SHOPID) à partir d’un couple login/mot de passe. Utilisé pour authentifier les appels aux autres outils du serveur.",
+      "input_schema": {
+        "type": "object",
+        "required": [
+          "login",
+          "password"
+        ],
+        "properties": {
+          "login": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "name": "sales_create",
+      "description": "Crée une nouvelle vente dans la boutique connectée. Prend en entrée le shopId, l’apiKey, le mode de paiement et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec deptId) ou « libre » (avec titre et prix). Retourne un objet JSON de confirmation de la vente tel que fourni par l’API distante."
+    },
+    {
+      "name": "data_list_articles",
+      "description": "Récupère la liste complète des articles (produits) enregistrés dans la boutique. Retourne un tableau d’articles contenant les champs id, titre, prix, rayon, TVA, etc. Le paramètre optionnel 'format' permet de choisir la sortie (json, csv ou html)."
+    },
+    {
+      "name": "data_list_departments",
+      "description": "Retourne la liste des rayons (catégories de produits) définis dans la boutique, avec leurs noms et taux de TVA associés. Compatible avec les formats json, csv ou html."
+    },
+    {
+      "name": "data_list_department_groups",
+      "description": "Récupère la liste des groupes de rayons, utilisés pour organiser les catégories de produits. Chaque groupe peut regrouper plusieurs rayons."
+    },
+    {
+      "name": "data_list_clients",
+      "description": "Retourne la liste des clients enregistrés dans la boutique, incluant leurs informations de contact, points de fidélité..."
+    },
+    {
+      "name": "data_list_declinaisons",
+      "description": "Liste toutes les déclinaisons d’articles (par exemple : taille, couleur, grammage). Retourne un tableau d’objets indiquant les valeurs et écarts de prix éventuels."
+    },
+    {
+      "name": "data_list_deliveries",
+      "description": "Récupère la liste des modes de livraison disponibles dans la boutique : retrait en magasin, livraison à domicile, transporteur, etc.."
+    },
+    {
+      "name": "data_list_payments",
+      "description": "Retourne la liste des moyens de paiement configurés dans la boutique (espèces, carte bancaire, paiement mobile, etc.)."
+    },
+    {
+      "name": "data_list_cashboxes",
+      "description": "Récupère la liste des caisses enregistrées (physiques ou virtuelles) associées à la boutique, avec leurs identifiants et leur état actuel."
+    },
+    {
+      "name": "data_list_delivery_zones",
+      "description": "Retourne toutes les zones de livraison configurées, incluant les noms de zone, codes postaux et éventuels frais de livraison associés."
+    },
+    {
+      "name": "data_list_relay_points",
+      "description": "Liste les points relais disponibles pour la livraison des commandes, avec leur nom, adresse, ville et code postal."
+    },
+    {
+      "name": "data_list_discounts",
+      "description": "Retourne l’ensemble des réductions ou suppléments disponibles dans la boutique, incluant leur nom, type (pourcentage ou fixe), valeur et conditions d’application."
+    },
+    {
+      "name": "data_list_users",
+      "description": "Récupère la liste des utilisateurs (vendeurs, gérants, etc.) rattachés à la boutique, avec leurs rôles et identifiants."
+    },
+    {
+      "name": "data_list_tables",
+      "description": "Retourne la liste des tables configurées dans l’application, utilisée notamment pour le mode restauration ou la gestion des tables en salle."
+    },
+    {
+      "name": "data_list_orders",
+      "description": "Listez soit les commandes non validées dont la date de création est comprise entre fromUtcTimestamp et toUtcTimestamp, soit les commandes validées dont la date de valeur est comprise entre fromUtcTimestamp et toUtcTimestamp. Vous pouvez également filtrer les modes de livraison (avec filterDeliveryMethod)."
+    }
+  ]
+}
