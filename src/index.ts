@@ -123,7 +123,7 @@ app.get('/mcp', handleSessionRequest);
 app.delete('/mcp', handleSessionRequest);
 
 // Lancement HTTP
-const port = Number(process.env.PORT || 3000);
+const port = Number(process.env.PORT || 8787);
 app
     .listen(port, () => {
         console.log(`MCP server running at http://localhost:${port}/mcp`);
