@@ -12,7 +12,18 @@ import { registerSalesTools } from './tools/sales.js';
 import { registerDataTools } from './tools/data.js';
 
 const app = express();
+app.set('trust proxy', true);
+app.use((req, _res, next) => { console.log(`[MCP] ${req.method} ${req.url}`); next(); });
 app.use(express.json());
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS') return res.sendStatus(204);
+    next();
+ });
+
+//app.use(express.json());
 
 const server = new McpServer({ name: 'caisse-enregistreuse-api', version: '1.0.0' });
 

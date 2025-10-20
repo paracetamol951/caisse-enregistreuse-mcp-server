@@ -9,23 +9,11 @@ import { z, ZodTypeAny } from 'zod';
 import { registerAuthTools } from './tools/auth.js';
 import { registerSalesTools } from './tools/sales.js';
 import { registerDataTools } from './tools/data.js';
+import { setSessionAuth, getSessionAuth, clearSessionAuth, type Ctx } from './context.js';
 
 // ==== Session globale (STDIO: une seule connexion) ====
 type AuthState = { ok: boolean; SHOPID?: string; APIKEY?: string; scopes?: string[] };
-const SESSION: { auth?: AuthState } = {};
 
-export function setSessionAuth(a: AuthState) { SESSION.auth = a; }
-export function getSessionAuth(): AuthState | undefined { return SESSION.auth; }
-export function clearSessionAuth() { delete SESSION.auth; }
-
-export type Ctx = {
-    auth?: {
-        ok: boolean;
-        SHOPID?: string;        // identifiant du commerce
-        APIKEY?: string;        // identifiant du commerce
-        scopes?: string[];      // ex: ['sales:read','sales:write'] ou ['*']
-    };
-};
 /** Vérifie qu'un objet est un ZodRawShape (Record<string, ZodTypeAny>) */
 function isZodRawShape(x: unknown): x is Record<string, ZodTypeAny> {
     if (!x || typeof x !== 'object' || Array.isArray(x)) return false;

@@ -228,6 +228,25 @@ Le manifest est servi à `/.well-known/mcp/manifest.json`. Exemple minimal :
   ```
 
 ---
+## Clients compatibles
+
+- ChatGPT (OpenAI) : via configuration MCP externe
+- Claude (Anthropic) : via “Tools manifest URL”
+- n8n / Flowise / LangChain : import via URL publique
+
+---
+
+## 🧩 MCP Manifest Endpoint
+
+L’API MCP expose un manifeste JSON décrivant l’ensemble des outils disponibles
+pour les clients compatibles (ChatGPT, Claude, n8n, etc.).
+
+### URL publique du manifeste
+
+https://www.free-cash-register.net/.well-known/mcp/manifest.json
+
+> 🗂️ Cette URL est celle à fournir au client MCP lors de la configuration du serveur.
+
 
 ## 📦 Déploiement
 

@@ -1,4 +1,4 @@
-import express, { type Application, type Request, type Response } from 'express';
+import express, { type Application, type Request, type Response, NextFunction } from 'express';
 import fs from 'fs';
 import path from 'path';
 import { t, getLang } from '../i18n/index.js';
@@ -28,16 +28,24 @@ function loadDict(lang: string) {
   const p = path.join(base, 'locales', lang, 'common.json');
   return JSON.parse(fs.readFileSync(p, 'utf-8'));
 }
-
+function corsLite(req: Request, res: Response, next: NextFunction) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS') return res.sendStatus(204);
+    next();
+}
 export default function httpServer(_server: unknown): Application {
   const app = express();
+  app.use(corsLite);
 
   app.get('/health', (_req: Request, res: Response) => {
     res.json({ status: 'ok', lang: getLang() });
   });
 
   app.get(['/.well-known/mcp/manifest.json','/mcp/manifest'], (req: Request, res: Response) => {
-    // resolve locale preference
+      // resolve locale preference
+      res.setHeader('Cache-Control', 'public, max-age=60');
     let lang = process.env.MCP_LANG || '';
     if (!lang && req.headers['accept-language']) {
       const m = String(req.headers['accept-language']).match(/^[a-z]{2}/i);

@@ -1,8 +1,8 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z, ZodTypeAny } from 'zod';
 import { postForm } from '../support/http.js';
-import { Ctx, getSessionAuth, setSessionAuth } from '../stdio.js'; import { t } from '../i18n/index.js';
-
+import { t } from '../i18n/index.js';
+import { Ctx, getSessionAuth, setSessionAuth } from '../context.js';
 
 // ✅ Le SDK attend un "shape", pas z.object(...)
 const AuthInput = {
@@ -26,7 +26,7 @@ export function registerAuthTools(server: McpServer | any) {
     async ({ login, password }: { login: string; password: string }, ctx: Ctx) => {
         const data = await postForm('/workers/getAuthToken.php', { login, password });
 
-        if (typeof data !== 'string' && 'APIKEY' in data && 'SHOPID' in data) {
+        if (typeof data === 'object' && data && 'APIKEY' in data && 'SHOPID' in data) {
             /*ctx.auth = {
                 ok: true,
                 SHOPID: data.SHOPID as string,
@@ -56,7 +56,7 @@ export function registerAuthTools(server: McpServer | any) {
         
 
 
-        process.stderr.write(`[caisse][info] set contxt: ${strData}\n`);
+        //process.stderr.write(`[caisse][info] set contxt: ${strData}\n`);
         return {
             content: [
                 {

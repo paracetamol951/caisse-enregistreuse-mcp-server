@@ -1,6 +1,6 @@
 {
   "name": "caisse-enregistreuse-mcp-server",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "MCP server exposing caisse.enregistreuse.fr API as tools",
   "type": "module",
   "scripts": {
@@ -11,8 +11,8 @@
     "start:http": "node build/index.js --http",
     "generate:manifest": "node scripts/generate-manifest.mjs",
     "test": "node tests/quick.test.mjs",
-    "start:fr": "MCP_LANG=fr node dist/index.js",
-    "start:en": "MCP_LANG=en node dist/index.js"
+    "start:fr": "MCP_LANG=fr node build/index.js",
+    "start:en": "MCP_LANG=en node build/index.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.2.0",
