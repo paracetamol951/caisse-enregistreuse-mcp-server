@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "caisse": {
+      "command": "node",
+      "args": [
+        "D:\\Projets\\caisseEnregistreuse\\caisse-enregistreuse-mcp-server\\build\\stdio.js"
+      ],
+      "cwd": "D:\\Projets\\caisseEnregistreuse\\caisse-enregistreuse-mcp-server",
+      "env": {
+        "API_BASE": "https://caisse.enregistreuse.fr",
+        "USE_V2": "false"
+      }
+    }
+  }
+}

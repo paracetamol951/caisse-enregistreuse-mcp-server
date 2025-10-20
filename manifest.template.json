@@ -2,6 +2,14 @@
   "name": "{{app.name}}",
   "version": "1.2.0",
   "description": "{{app.description}}",
+  "endpoints": {
+    "http": { "url": "https://mcp.enregistreuse.fr" }
+  },
+  "capabilities": {
+    "tools": true,
+    "resources": false,
+    "prompts": false
+  },
   "tools": [
     {
       "name": "ping",

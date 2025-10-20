@@ -2,6 +2,16 @@
   "name": "Serveur MCP Caisse Enregistreuse",
   "version": "1.2.0",
   "description": "Expose l’API caisse.enregistreuse.fr sous forme d’outils MCP, permettant un accès programmatique à l’authentification, à la création de ventes et à la consultation des données du commerce.",
+  "endpoints": {
+    "http": {
+      "url": "https://mcp.enregistreuse.fr"
+    }
+  },
+  "capabilities": {
+    "tools": true,
+    "resources": false,
+    "prompts": false
+  },
   "tools": [
     {
       "name": "ping",
@@ -84,7 +94,7 @@
     },
     {
       "name": "data_list_orders",
-      "description": "Listez soit les commandes non validées dont la date de création est comprise entre fromUtcTimestamp et toUtcTimestamp, soit les commandes validées dont la date de valeur est comprise entre fromUtcTimestamp et toUtcTimestamp. Vous pouvez également filtrer les modes de livraison (avec filterDeliveryMethod)."
+      "description": "Listez soit les commandes non validées (les devis) dont la date de création est comprise entre from_date_ISO8601 et to_date_ISO8601, soit les commandes validées (dénommées commandes ou factures) dont la date de valeur est comprise entre from_date_ISO8601 et to_date_ISO8601. Vous pouvez également filtrer les modes de livraison (avec filterDeliveryMethod)."
     }
   ]
 }
