@@ -2,7 +2,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z, ZodTypeAny } from 'zod';
 import { postForm, postJsonRaw } from '../support/http.js';
 import { t } from '../i18n/index.js';
-
+import { resolveAuth, type Ctx } from '../context.js';
 
 // util
 type InferFromShape<S extends Record<string, ZodTypeAny>> = z.infer<z.ZodObject<S>>;
@@ -37,8 +37,6 @@ const ClientShape = {
 
 /** ⚠️ ZodRawShape (pas z.object) — conforme à ton SDK MCP */
 const SalesCreateShape = {
-  shopId: z.string(),
-  apiKey: z.string(),
 
     payment: z.union([z.number(), z.string()]).transform((v) => Number(v)).optional(),
   deliveryMethod: z.union([
@@ -98,12 +96,12 @@ export function registerSalesTools(server: McpServer | any) {
       description: t('tools.sales_create.description'),
       inputSchema: SalesCreateShape, // ✅ ZodRawShape
     },
-    async (input: SalesCreateArgs) => {
-
+      async (input: SalesCreateArgs, ctx: Ctx) => {
+        const { shopId, apiKey } = resolveAuth(undefined, ctx);
       // ---------- Mode legacy ----------
       const body: Record<string, unknown> = {
-        idboutique: input.shopId,
-        key: input.apiKey
+          idboutique: shopId,
+          key: apiKey
       };
 
         if (input.payment !== undefined) body.payment = input.payment;

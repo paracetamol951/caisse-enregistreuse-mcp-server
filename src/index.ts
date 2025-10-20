@@ -6,9 +6,22 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { registerAuthTools } from './tools/auth.js';
 import { registerSalesTools } from './tools/sales.js';
 import { registerDataTools } from './tools/data.js';
+import { setSessionAuth } from './context.js';
 
 const app = express();
 app.use(express.json());
+
+app.use((req, _res, next) => {
+    const auth = req.get('authorization') || '';
+    const m = /^Bearer\s+(.+)$/i.exec(auth);
+    const apiKey = m?.[1] ?? req.get('x-api-key') ?? req.get('x-apikey') ?? '';
+    const shopId = req.get('x-shop-id') ?? req.get('x-shopid') ?? '';
+    if (apiKey && shopId) {
+        setSessionAuth({ ok: true, SHOPID: shopId, APIKEY: apiKey, scopes: ['*'] });
+        process.stderr.write('[mcp][auth] Session mise à jour depuis headers HTTP.\n');
+    }
+    next();
+});
 
 // CORS basique + exposition de l'en-tête de session pour les clients web (Inspector, etc.)
 app.use((req, res, next) => {

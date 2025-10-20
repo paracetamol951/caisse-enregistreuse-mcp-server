@@ -9,6 +9,22 @@
       "supports_streaming": true
     }
   ],
+  "auth": {
+    "type": "api_key",
+    "fields": {
+      "api_key": {
+        "name": "API key",
+        "in": "header",
+        "key": "Authorization",
+        "prefix": "Bearer "
+      },
+      "shop_id": {
+        "name": "Shop ID",
+        "in": "header",
+        "key": "X-Shop-Id"
+      }
+    }
+  },
   "capabilities": {
     "tools": true,
     "resources": false,

@@ -2,26 +2,21 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z, ZodTypeAny } from 'zod';
 import { get } from '../support/http.js';
 import { t } from '../i18n/index.js';
+import { type Ctx, resolveAuth } from '../context.js';
 
 /** Util pour typer un handler depuis un "shape" */
 type InferFromShape<S extends Record<string, ZodTypeAny>> = z.infer<z.ZodObject<S>>;
 
 /** Entrées communes à toutes les listes */
 const CommonShape = {
-    shopId: z.string(),
-    apiKey: z.string(),
     format: z.enum(['json', 'csv', 'html']).default('json'),
 } satisfies Record<string, ZodTypeAny>;
 
 const getOrderShape = {
-    shopId: z.string(),
-    apiKey: z.string(),
     order_id: z.number().int(),
 } satisfies Record<string, ZodTypeAny>;
 
 const getOrdersShape = {
-    shopId: z.string(),
-    apiKey: z.string(),
     validatedOrders: z.boolean(),
     from_date_ISO8601: z.string().datetime(),
     to_date_ISO8601: z.string().datetime(),
@@ -64,7 +59,8 @@ function registerSimple(
             description: `Liste des ${entityLabel}`,
             inputSchema: CommonShape, // ZodRawShape
         },
-        async ({ shopId, apiKey, format }: CommonArgs) => {
+        async ({ format }: CommonArgs, ctx: Ctx) => {
+            const { shopId, apiKey } = resolveAuth(undefined, ctx);
             const data = await get(path, { idboutique: shopId, key: apiKey, format });
 
             const isText = typeof data === 'string' || format !== 'json';
@@ -102,7 +98,8 @@ export function registerDataTools(server: McpServer | any) {
             description: t('tools.data_list_orders.description'),
             inputSchema: getOrdersShape, // ZodRawShape
         },
-        async ({ shopId, apiKey, validatedOrders, from_date_ISO8601, to_date_ISO8601, filterDeliveryMethod }: getOrdersArgs) => {
+        async ({ validatedOrders, from_date_ISO8601, to_date_ISO8601, filterDeliveryMethod }: getOrdersArgs, ctx: Ctx) => {
+            const { shopId, apiKey } = resolveAuth(undefined, ctx);
             const data = await get('/workers/getOrders.php', { idboutique: shopId, key: apiKey, validatedOrders, from_date_ISO8601, to_date_ISO8601, filterDeliveryMethod });
 
             return structData(data);
@@ -117,7 +114,8 @@ export function registerDataTools(server: McpServer | any) {
             description: t('tools.order_detail.description'),
             inputSchema: getOrderShape, // ZodRawShape
         },
-        async ({ shopId, apiKey, order_id }: getOrderArgs) => {
+        async ({ order_id }: getOrderArgs, ctx: Ctx) => {
+            const { shopId, apiKey } = resolveAuth(undefined, ctx);
             const data = await get('/workers/getOrder.php', { idboutique: shopId, key: apiKey, order_id });
 
             return structData(data);

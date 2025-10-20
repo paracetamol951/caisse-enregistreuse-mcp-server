@@ -9,7 +9,7 @@ import { z, ZodTypeAny } from 'zod';
 import { registerAuthTools } from './tools/auth.js';
 import { registerSalesTools } from './tools/sales.js';
 import { registerDataTools } from './tools/data.js';
-import { setSessionAuth, getSessionAuth, clearSessionAuth, type Ctx } from './context.js';
+import { setSessionAuth, getSessionAuth } from './context.js';
 
 // ==== Session globale (STDIO: une seule connexion) ====
 type AuthState = { ok: boolean; SHOPID?: string; APIKEY?: string; scopes?: string[] };
@@ -35,6 +35,12 @@ function ensureZodRawShape(
 }
 
 async function main() {
+    const envShop = process.env.SHOPID ?? process.env.MCP_SHOPID;
+    const envKey = process.env.APIKEY ?? process.env.MCP_APIKEY;
+    if (!getSessionAuth() && envShop && envKey) {
+        setSessionAuth({ ok: true, SHOPID: envShop, APIKEY: envKey, scopes: ['*'] });
+        process.stderr.write('[caisse][auth] Session initialisée depuis variables d’environnement.\n');
+    }
     // --- Logs de contexte ---
     try {
         // @ts-ignore
