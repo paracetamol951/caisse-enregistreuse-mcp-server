@@ -20,8 +20,8 @@ export async function asJsonOrText(res: Response): Promise<String|Object> {
 }
 
 export async function get(path: string, params: Record<string, unknown>) {
-    process.stderr.write(`[caisse][patch] GET ${path} ${params} \n`);
-  const url = `${BASE}${path}?${qs(params)}`;
+    const url = `${BASE}${path}?${qs(params)}`;
+    process.stderr.write(`[caisse][patch] GET ${url} ${path} ${params} \n`);
   const res = await fetch(url);
   return asJsonOrText(res as unknown as Response);
 }
