@@ -2,11 +2,13 @@
   "name": "Caisse Enregistreuse MCP Server",
   "version": "1.2.0",
   "description": "Exposes caisse.enregistreuse.fr API as MCP tools, enabling programmatic access to authentication, sales creation, and data listing features for shops.",
-  "endpoints": {
-    "http": {
-      "url": "https://mcp.enregistreuse.fr"
+  "endpoints": [
+    {
+      "type": "http",
+      "url": "https://mcp.enregistreuse.fr/mcp",
+      "supports_streaming": true
     }
-  },
+  ],
   "capabilities": {
     "tools": true,
     "resources": false,

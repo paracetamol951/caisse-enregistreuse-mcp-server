@@ -2,11 +2,13 @@
   "name": "Serveur MCP Caisse Enregistreuse",
   "version": "1.2.0",
   "description": "Expose l’API caisse.enregistreuse.fr sous forme d’outils MCP, permettant un accès programmatique à l’authentification, à la création de ventes et à la consultation des données du commerce.",
-  "endpoints": {
-    "http": {
-      "url": "https://mcp.enregistreuse.fr"
+  "endpoints": [
+    {
+      "type": "http",
+      "url": "https://mcp.enregistreuse.fr/mcp",
+      "supports_streaming": true
     }
-  },
+  ],
   "capabilities": {
     "tools": true,
     "resources": false,
