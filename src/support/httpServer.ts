@@ -2,6 +2,10 @@ import express, { type Application, type Request, type Response, NextFunction } 
 import fs from 'fs';
 import path from 'path';
 import { t, getLang } from '../i18n/index.js';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 function deepGet(obj: any, key: string) {
   return key.split('.').reduce((o,k)=> (o && typeof o==='object') ? o[k] : undefined, obj);
