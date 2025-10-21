@@ -63,6 +63,7 @@ function registerSimple(
             const { shopId, apiKey } = resolveAuth(undefined, ctx);
             const data = await get(path, { idboutique: shopId, key: apiKey, format });
 
+            process.stderr.write(`[caisse][RES]  ${data} \n`);
             return structData(data);
             //return { content, structuredContent: isText ? undefined : data };
         }
