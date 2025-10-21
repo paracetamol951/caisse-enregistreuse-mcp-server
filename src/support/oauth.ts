@@ -2,7 +2,7 @@
 import 'dotenv/config';
 import express, { Request, Response } from 'express';
 import crypto from 'node:crypto';
-import { generateKeyPair, exportJWK, importPKCS8, SignJWT, jwtVerify, createLocalJWKSet } from 'jose';
+import { generateKeyPair, exportJWK, importPKCS8, SignJWT, jwtVerify, createLocalJWKSet, importSPKI } from 'jose';
 import { URL } from 'node:url';
 import { postForm } from './http.js';
 
@@ -13,17 +13,19 @@ const AUTH_WS = process.env.MCP_AUTH_WS_BASE || 'https://caisse.enregistreuse.fr
 
 // Clés pour RS256 (publiques via JWKS)
 
-let privateKey: crypto.KeyObject | null = null;
+let privateKey: crypto.KeyObject | CryptoKey | null = null;
 let jwks: any = null;
 
 async function ensureKeyPair() {
     if (privateKey) return;
-    if (process.env.MCP_OAUTH_PRIVATE_KEY_PEM) {
-        privateKey = crypto.createPrivateKey(process.env.MCP_OAUTH_PRIVATE_KEY_PEM);
-        const alg = 'RS256';
-        const pub = crypto.createPublicKey(privateKey);
-        const pubJwk = await exportJWK(pub);
-        jwks = { keys: [{ ...pubJwk, kid: 'mcp-kid-1', alg, use: 'sig' }] };
+
+
+    // Public: soit depuis MCP_OAUTH_PUBLIC_KEY_PEM...
+    if (process.env.MCP_OAUTH_PUBLIC_KEY_PEM && process.env.MCP_OAUTH_PRIVATE_KEY_PEM) {
+        privateKey = await importPKCS8(process.env.MCP_OAUTH_PRIVATE_KEY_PEM, 'RS256');
+        const publicKey = await importSPKI(process.env.MCP_OAUTH_PUBLIC_KEY_PEM, 'RS256');
+        const pubJwk = await exportJWK(publicKey);
+        jwks = { keys: [{ ...pubJwk, kid: 'mcp-kid-1', alg: 'RS256', use: 'sig' }] };
     } else {
         // Génère une paire à chaud si rien en env (OK pour dev ; en prod, mettre MCP_OAUTH_PRIVATE_KEY_PEM)
         //const { privateKey: pk, publicKey } = await generateKeyPair('RS256');
