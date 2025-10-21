@@ -61,10 +61,16 @@ export async function asJsonOrText(res: Response): Promise<unknown> {
     const ct = res.headers.get('content-type') || '';
 
     if (ct.includes('application/json')) {
-        try { return JSON.parse(txt); } catch { /* fallthrough */ }
+        try { return JSON.parse(txt); } catch {
+            /* fallthrough */
+            process.stderr.write(`[caisse][patch] could not parse JSON ${txt} \n`);
+        }
     }
     // essaie quand même JSON si le serveur oublie le content-type
-    try { return JSON.parse(txt); } catch { /*texte brut*/ }
+    try { return JSON.parse(txt); } catch { /*texte brut*/
+        process.stderr.write(`[caisse][patch] could not parse JSON ${txt} \n`);
+    }
+    process.stderr.write(`[caisse][patch] return TXT ${txt} \n`);
     return txt;
 }
 

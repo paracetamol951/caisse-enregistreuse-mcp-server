@@ -63,10 +63,6 @@ function registerSimple(
             const { shopId, apiKey } = resolveAuth(undefined, ctx);
             const data = await get(path, { idboutique: shopId, key: apiKey, format });
 
-            const isText = typeof data === 'string' || format !== 'json';
-            const content = isText
-                ? [{ type: 'text', text: String(data) }]
-                : [{ type: 'json', json: data }];
             return structData(data);
             //return { content, structuredContent: isText ? undefined : data };
         }
