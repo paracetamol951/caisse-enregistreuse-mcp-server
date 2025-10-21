@@ -19,11 +19,15 @@ let jwks: any = null;
 async function ensureKeyPair() {
     if (privateKey) return;
 
+    const normalizePem = (s: string) =>
+        s.replace(/\r\n/g, '\n').replace(/\\n/g, '\n').replace(/\r/g, '\n').trim();
+
+    
 
     // Public: soit depuis MCP_OAUTH_PUBLIC_KEY_PEM...
     if (process.env.MCP_OAUTH_PUBLIC_KEY_PEM && process.env.MCP_OAUTH_PRIVATE_KEY_PEM) {
-        privateKey = await importPKCS8(process.env.MCP_OAUTH_PRIVATE_KEY_PEM, 'RS256');
-        const publicKey = await importSPKI(process.env.MCP_OAUTH_PUBLIC_KEY_PEM, 'RS256');
+        privateKey = await importPKCS8(normalizePem(process.env.MCP_OAUTH_PRIVATE_KEY_PEM), 'RS256');
+        const publicKey = await importSPKI(normalizePem(process.env.MCP_OAUTH_PUBLIC_KEY_PEM), 'RS256');
         const pubJwk = await exportJWK(publicKey);
         jwks = { keys: [{ ...pubJwk, kid: 'mcp-kid-1', alg: 'RS256', use: 'sig' }] };
     } else {
