@@ -7,8 +7,24 @@ import { registerAuthTools } from './tools/auth.js';
 import { registerSalesTools } from './tools/sales.js';
 import { registerDataTools } from './tools/data.js';
 import { setSessionAuth } from './context.js';
+import oauthRouter, { bearerValidator } from './support/oauth.js';
 
 const app = express();
+app.use(await oauthRouter()); // <-- monte /.well-known, /oauth/*
+
+// Middleware qui protège l’endpoint MCP par Bearer et initialise le "context" par requête
+app.post('/mcp', async (req, res, next) => {
+    try {
+        const auth = req.get('authorization');
+        const { apiKey, shopId } = await bearerValidator(auth);
+        // Rendez ces infos dispos aux tools via le "session context" existant
+        setSessionAuth({ ok: true, APIKEY: apiKey, SHOPID: shopId, scopes: ['mcp:invoke', 'shop:read'] });
+        next();
+    } catch (e: any) {
+        return res.status(401).json({ error: 'unauthorized', detail: e?.message || 'invalid token' });
+    }
+});
+
 app.use(express.json());
 
 app.use((req, _res, next) => {
