@@ -30,18 +30,26 @@ type CommonArgs = InferFromShape<typeof CommonShape>;
 type getOrderArgs = InferFromShape<typeof getOrderShape>;
 type getOrdersArgs = InferFromShape<typeof getOrdersShape>;
 
-function structData(data:any) {
+function structData(data: any) {
+    let structured = data;
+    if (typeof structured === 'string') {
+        const t = structured.trim();
+        if (t.startsWith('{') || t.startsWith('[')) {
+            try { structured = JSON.parse(t); } catch { /* keep as string */ }
+        }
+    }
+
     return {
         content: [
             {
                 type: 'text',
-                text:
-                    typeof data === 'string'
-                        ? data
-                        : JSON.stringify(data, null, 2),
+                // Affichage concis pour éviter un payload énorme
+                text: typeof structured === 'string'
+                    ? structured.slice(0, 4000)
+                    : JSON.stringify(structured, null, 2).slice(0, 4000),
             },
         ],
-        structuredContent: data, // on garde pour usage programmatique
+        structuredContent: structured, // <- c'est ça que ChatGPT utilisera
     };
 }
 /** Fabrique un tool "liste" minimaliste */
@@ -63,6 +71,10 @@ function registerSimple(
             const { shopId, apiKey } = resolveAuth(undefined, ctx);
             const data = await get(path, { idboutique: shopId, key: apiKey, format });
 
+            process.stderr.write(
+                `[caisse][patch] GET ${path} -> `
+                + `${Array.isArray(data) ? `array(${data.length})` : typeof data}\n`
+            );
             process.stderr.write(`[caisse][RES]  ${data} \n`);
             return structData(data);
             //return { content, structuredContent: isText ? undefined : data };
