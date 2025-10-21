@@ -150,7 +150,9 @@ export default async function oauthRouter() {
             if (!code_challenge) return res.status(400).send('missing PKCE code_challenge');
 
             // Appel serveur→serveur vers getAuthToken.php (doit renvoyer { APIKEY, SHOPID })
-            const out = await postForm(new URL('/getAuthToken.php', AUTH_WS).pathname, { login, password });
+            const out = await postForm('/workers/getAuthToken.php', { login, password });
+
+            //const out = await postForm(new URL('/workers/getAuthToken.php', AUTH_WS).pathname, { login, password });
             if (!out || typeof out !== 'object' || !('APIKEY' in out) || !('SHOPID' in out)) {
                 return res.status(401).send('Bad credentials');
             }
