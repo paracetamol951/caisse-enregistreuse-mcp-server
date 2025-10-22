@@ -82,15 +82,18 @@ function registerSimple(
         },
         async ({ format }: CommonArgs, ctx: Ctx) => {
             try {
-            const { shopId, apiKey } = resolveAuth(undefined, ctx);
-            const data = await get(path, { idboutique: shopId, key: apiKey, format });
+                const { shopId, apiKey } = resolveAuth(undefined, ctx);
+                const data = await get(path, { idboutique: shopId, key: apiKey, format });
 
-            process.stderr.write(
-                `[caisse][patch] GET ${path} -> `
-                + `${Array.isArray(data) ? `array(${data.length})` : typeof data}\n`
-            );
-            process.stderr.write(`[caisse][RES]  ${data} \n`);
-            return structData(data);
+                process.stderr.write(
+                    `[caisse][tool:${toolName}] ok type=${Array.isArray(data) ? 'array' : typeof data}`
+                    + (Array.isArray(data) ? ` len=${data.length}` : '')
+                    + '\n'
+                );
+                const funcResult = structData(data);
+                process.stderr.write(`[caisse][RES]  ${JSON.stringify(data)} \n`);
+                process.stderr.write(`[caisse][RES] funcResult ${JSON.stringify(funcResult)} \n`);
+                return funcResult;
                 //return { content, structuredContent: isText ? undefined : data };
             } catch (e) {
                 process.stderr.write(`[caisse][tool:${toolName}][error] ${(e as Error).message}\n`);
