@@ -138,7 +138,7 @@ async function main() {
 
     // --- Enregistrement des outils métier ---
     try {
-        registerAuthTools(server);
+        //registerAuthTools(server);
         registerSalesTools(server);
         registerDataTools(server);
         process.stderr.write(`[caisse][info] Tools enregistrés (après registerX): ${JSON.stringify(registeredToolNames)}\n`);

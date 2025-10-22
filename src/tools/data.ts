@@ -52,13 +52,14 @@ function safeStringify(value: any, space = 2, maxLen = 4000) {
 function structData(data: any) {
     // on ne touche PAS à structuredContent (c’est ce que ChatGPT utilise)
     const light = Array.isArray(data)
-        ? data.slice(0, 200)//.map(({ id, nom, email, tel, ...r }) => ({ id, nom, email, tel }))
+        ? data.slice(0, 5000)//.map(({ id, nom, email, tel, ...r }) => ({ id, nom, email, tel }))
         : data;
 
+    const maxLength = 40000;
     const preview =
         typeof light === 'string'
-            ? (light.length > 4000 ? light.slice(0, 4000) + '…(truncated)' : light)
-            : safeStringify(light, 2, 4000);   // <-- aperçu court et “safe”
+            ? (light.length > maxLength ? light.slice(0, maxLength) + '…(truncated)' : light)
+            : safeStringify(light, 2, maxLength);   // <-- aperçu court et “safe”
     const wrapped =
         Array.isArray(data)
             ? { data: data }
@@ -97,7 +98,7 @@ function registerSimple(
                     + '\n'
                 );
                 //Array.isArray(data) ? data.slice(0, 50) : data
-                const funcResult = structData(Array.isArray(data) ? data.slice(0, 50) : data);
+                const funcResult = structData( data);
                 process.stderr.write(`[caisse][RES]  ${JSON.stringify(data)} \n`);
                 process.stderr.write(`[caisse][RES] funcResult ${JSON.stringify(funcResult)} \n`);
                 return funcResult;
