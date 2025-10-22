@@ -36,25 +36,6 @@
       "description": "{{tools.ping.description}}"
     },
     {
-      "name": "auth_get_token",
-      "description": "{{tools.auth_get_token.description}}",
-      "input_schema": {
-        "type": "object",
-        "required": [
-          "login",
-          "password"
-        ],
-        "properties": {
-          "login": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    {
       "name": "sales_create",
       "description": "{{tools.sales_create.description}}"
     },

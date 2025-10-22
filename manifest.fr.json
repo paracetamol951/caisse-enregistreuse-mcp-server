@@ -36,25 +36,6 @@
       "description": "Vérifie l’état du serveur MCP. Retourne { result: 'OK' } si le serveur est opérationnel."
     },
     {
-      "name": "auth_get_token",
-      "description": "Permet de récupérer les identifiants d’accès (APIKEY et SHOPID) à partir d’un couple login/mot de passe. Utilisé pour authentifier les appels aux autres outils du serveur.",
-      "input_schema": {
-        "type": "object",
-        "required": [
-          "login",
-          "password"
-        ],
-        "properties": {
-          "login": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    {
       "name": "sales_create",
       "description": "Crée une nouvelle vente dans la boutique connectée. Prend en entrée le mode de paiement et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec deptId) ou « libre » (avec titre et prix). Retourne un objet JSON de confirmation de la vente tel que fourni par l’API distante."
     },

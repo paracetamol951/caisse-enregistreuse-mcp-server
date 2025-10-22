@@ -57,7 +57,7 @@ const mcpServer = new McpServer({
     version: '1.0.0',
 });
 
-registerAuthTools(mcpServer);
+//registerAuthTools(mcpServer);
 registerSalesTools(mcpServer);
 registerDataTools(mcpServer);
 
