@@ -52,17 +52,22 @@ function safeStringify(value: any, space = 2, maxLen = 4000) {
 function structData(data: any) {
     // on ne touche PAS à structuredContent (c’est ce que ChatGPT utilise)
     const light = Array.isArray(data)
-        ? data.slice(0, 100)//.map(({ id, nom, email, tel, ...r }) => ({ id, nom, email, tel }))
+        ? data.slice(0, 200)//.map(({ id, nom, email, tel, ...r }) => ({ id, nom, email, tel }))
         : data;
 
     const preview =
         typeof light === 'string'
             ? (light.length > 4000 ? light.slice(0, 4000) + '…(truncated)' : light)
             : safeStringify(light, 2, 4000);   // <-- aperçu court et “safe”
-
+    const wrapped =
+        Array.isArray(data)
+            ? { data: data }
+            : data && typeof data === 'object'
+                ? data
+                : { data: data };
     return {
         content: [{ type: 'text', text: preview }],
-        structuredContent: { data: data },
+        structuredContent: wrapped,
     };
 }
 /** Fabrique un tool "liste" minimaliste */
