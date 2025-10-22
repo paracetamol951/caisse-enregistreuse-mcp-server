@@ -62,7 +62,7 @@ function structData(data: any) {
 
     return {
         content: [{ type: 'text', text: preview }],
-        structuredContent: data,
+        structuredContent: { data: data },
     };
 }
 /** Fabrique un tool "liste" minimaliste */
