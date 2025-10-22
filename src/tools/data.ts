@@ -29,27 +29,40 @@ const getOrdersShape = {
 type CommonArgs = InferFromShape<typeof CommonShape>;
 type getOrderArgs = InferFromShape<typeof getOrderShape>;
 type getOrdersArgs = InferFromShape<typeof getOrdersShape>;
-
-function structData(data: any) {
-    let structured = data;
-    if (typeof structured === 'string') {
-        const t = structured.trim();
-        if (t.startsWith('{') || t.startsWith('[')) {
-            try { structured = JSON.parse(t); } catch { /* keep as string */ }
-        }
+function safeStringify(value: any, space = 2, maxLen = 4000) {
+    try {
+        const cache = new WeakSet();
+        const s = JSON.stringify(
+            value,
+            (k, v) => {
+                if (typeof v === 'bigint') return v.toString(); // éviter l’erreur BigInt
+                if (typeof v === 'object' && v !== null) {
+                    if (cache.has(v)) return '[Circular]';
+                    cache.add(v);
+                }
+                return v;
+            },
+            space
+        );
+        return s.length > maxLen ? s.slice(0, maxLen) + '…(truncated)' : s;
+    } catch (e) {
+        return `[unstringifiable: ${(e as Error).message}]`;
     }
+}
+function structData(data: any) {
+    // on ne touche PAS à structuredContent (c’est ce que ChatGPT utilise)
+    const light = Array.isArray(data)
+        ? data.slice(0, 100)//.map(({ id, nom, email, tel, ...r }) => ({ id, nom, email, tel }))
+        : data;
+
+    const preview =
+        typeof light === 'string'
+            ? (light.length > 4000 ? light.slice(0, 4000) + '…(truncated)' : light)
+            : safeStringify(light, 2, 4000);   // <-- aperçu court et “safe”
 
     return {
-        content: [
-            {
-                type: 'text',
-                // Affichage concis pour éviter un payload énorme
-                text: typeof structured === 'string'
-                    ? structured.slice(0, 4000)
-                    : JSON.stringify(structured, null, 2).slice(0, 4000),
-            },
-        ],
-        structuredContent: structured, // <- c'est ça que ChatGPT utilisera
+        content: [{ type: 'text', text: preview }],
+        structuredContent: data,
     };
 }
 /** Fabrique un tool "liste" minimaliste */
@@ -68,6 +81,7 @@ function registerSimple(
             inputSchema: CommonShape, // ZodRawShape
         },
         async ({ format }: CommonArgs, ctx: Ctx) => {
+            try {
             const { shopId, apiKey } = resolveAuth(undefined, ctx);
             const data = await get(path, { idboutique: shopId, key: apiKey, format });
 
@@ -77,7 +91,15 @@ function registerSimple(
             );
             process.stderr.write(`[caisse][RES]  ${data} \n`);
             return structData(data);
-            //return { content, structuredContent: isText ? undefined : data };
+                //return { content, structuredContent: isText ? undefined : data };
+            } catch (e) {
+                process.stderr.write(`[caisse][tool:${toolName}][error] ${(e as Error).message}\n`);
+                // renvoyer un message "propre" plutôt que laisser l’exception devenir un 424
+                return {
+                    content: [{ type: 'text', text: `Erreur pendant la préparation de la réponse: ${(e as Error).message}` }],
+                    is_error: true,
+                };
+            }
         }
     );
 }
