@@ -16,6 +16,59 @@ const AUTH_WS = process.env.MCP_AUTH_WS_BASE || 'https://caisse.enregistreuse.fr
 let privateKey: crypto.KeyObject | CryptoKey | null = null;
 let jwks: any = null;
 
+
+
+
+// --- LOGGING UTILS ---
+const LOG_PREFIX = '[oauth]';
+const isProd = process.env.NODE_ENV === 'production';
+
+function mask(val?: string | number | null, show = 4) {
+    if (!val && val !== 0) return '';
+    const s = String(val);
+    if (s.length <= show * 2) return s.replace(/./g, '•');
+    return s.slice(0, show) + '…' + s.slice(-show);
+}
+function j(x: any) {
+    try { return JSON.stringify(x); } catch { return String(x); }
+}
+function logInfo(msg: string) { process.stderr.write(`${LOG_PREFIX} ${msg}\n`); }
+function logWarn(msg: string) { process.stderr.write(`${LOG_PREFIX}[warn] ${msg}\n`); }
+function logErr(msg: string, e?: unknown) {
+    const detail = e instanceof Error ? ` (${e.name}: ${e.message})\n${e.stack || ''}` : e ? ` ${j(e)}` : '';
+    process.stderr.write(`${LOG_PREFIX}[error] ${msg}${detail}\n`);
+}
+
+
+async function ensureKeyPair() {
+    if (privateKey) return;
+
+    const normalizePem = (s: string) =>
+        s.replace(/\r\n/g, '\n').replace(/\\n/g, '\n').replace(/\r/g, '\n').trim();
+
+    try {
+        if (process.env.MCP_OAUTH_PUBLIC_KEY_PEM && process.env.MCP_OAUTH_PRIVATE_KEY_PEM) {
+            privateKey = await importPKCS8(normalizePem(process.env.MCP_OAUTH_PRIVATE_KEY_PEM), 'RS256');
+            const publicKey = await importSPKI(normalizePem(process.env.MCP_OAUTH_PUBLIC_KEY_PEM), 'RS256');
+            const pubJwk = await exportJWK(publicKey);
+            jwks = { keys: [{ ...pubJwk, kid: 'mcp-kid-1', alg: 'RS256', use: 'sig' }] };
+            logInfo('ensureKeyPair: loaded RSA keys from ENV');
+        } else {
+            const { privateKey: pk, publicKey } = crypto.generateKeyPairSync('rsa', { modulusLength: 2048 });
+            privateKey = pk;
+            const pubJwk = await exportJWK(publicKey);
+            jwks = { keys: [{ ...pubJwk, kid: 'mcp-kid-1', alg: 'RS256', use: 'sig' }] };
+            logWarn('ensureKeyPair: generated ephemeral RSA keys (dev only)');
+        }
+    } catch (e) {
+        logErr('ensureKeyPair failed', e);
+        throw e;
+    }
+}
+
+
+
+/*
 async function ensureKeyPair() {
     if (privateKey) return;
 
@@ -39,7 +92,7 @@ async function ensureKeyPair() {
         const pubJwk = await exportJWK(publicKey);
         jwks = { keys: [{ ...pubJwk, kid: 'mcp-kid-1', alg: 'RS256', use: 'sig' }] };
     }
-}
+}*/
 
 function base64url(input: Buffer | string) {
     return Buffer.from(input).toString('base64url');
@@ -67,10 +120,13 @@ const clients = new Map<string, { redirect_uris: string[]; public: true }>();
 const DEV_CLIENT_ID = process.env.MCP_OAUTH_CLIENT_ID || 'mcp-client';
 const DEV_REDIRECT = process.env.MCP_OAUTH_REDIRECT_URI || 'http://localhost:1234/callback';
 clients.set(DEV_CLIENT_ID, { redirect_uris: [DEV_REDIRECT], public: true });
+logInfo(`boot: allowed client ${DEV_CLIENT_ID} redirect=${DEV_REDIRECT}`);
 
 // ---------- Router ----------
 export default async function oauthRouter() {
     await ensureKeyPair();
+    logInfo(`router: issuer=${ISSUER} aud=${AUD} auth_ws=${AUTH_WS}`);
+
     const router = express.Router();
 
     router.use(express.urlencoded({ extended: false }));
@@ -182,23 +238,44 @@ export default async function oauthRouter() {
 
     // g) Échange code → token (PKCE S256)
     router.post('/oauth/token', async (req, res) => {
+        const started = Date.now();
         try {
             const { grant_type, code, code_verifier, client_id, redirect_uri } = req.body || {};
-            if (grant_type !== 'authorization_code') return res.status(400).json({ error: 'unsupported_grant_type' });
-            if (!code || !code_verifier) return res.status(400).json({ error: 'invalid_request' });
+            logInfo(`token: grant=${grant_type} client=${client_id} redirect=${redirect_uri} code=${mask(code)} verifierLen=${(code_verifier || '').length}`);
+
+            if (grant_type !== 'authorization_code') {
+                logWarn(`token: unsupported grant_type=${grant_type}`);
+                return res.status(400).json({ error: 'unsupported_grant_type' });
+            }
+            if (!code || !code_verifier) {
+                logWarn('token: missing code or code_verifier');
+                return res.status(400).json({ error: 'invalid_request' });
+            }
 
             const rec = codes.get(code);
-            if (!rec) return res.status(400).json({ error: 'invalid_grant' });
+            if (!rec) {
+                logWarn(`token: invalid_grant (code not found) code=${mask(code)}`);
+                return res.status(400).json({ error: 'invalid_grant' });
+            }
+            // Consommation one-time
             codes.delete(code);
-            if (rec.exp < Math.floor(Date.now() / 1000)) return res.status(400).json({ error: 'expired_code' });
+
+            const nowSec = Math.floor(Date.now() / 1000);
+            if (rec.exp < nowSec) {
+                logWarn(`token: expired_code code=${mask(code)} now=${nowSec} exp=${rec.exp}`);
+                return res.status(400).json({ error: 'expired_code' });
+            }
             if (client_id !== rec.client_id || redirect_uri !== rec.redirect_uri) {
+                logWarn(`token: invalid_client mismatch client_id=${client_id} vs ${rec.client_id}, redirect=${redirect_uri} vs ${rec.redirect_uri}`);
                 return res.status(400).json({ error: 'invalid_client' });
             }
-            // Vérif PKCE
-            const expected = base64url(sha256(code_verifier));
-            if (expected !== rec.code_challenge) return res.status(400).json({ error: 'invalid_grant' });
 
-            // Forge un access token (JWT RS256) avec claims utiles
+            const expected = base64url(sha256(code_verifier));
+            if (expected !== rec.code_challenge) {
+                logWarn(`token: PKCE mismatch code=${mask(code)}`);
+                return res.status(400).json({ error: 'invalid_grant' });
+            }
+
             const now = Math.floor(Date.now() / 1000);
             const jwt = await new SignJWT({
                 sub: rec.login,
@@ -213,6 +290,7 @@ export default async function oauthRouter() {
                 .setExpirationTime(now + 3600)
                 .sign(privateKey!);
 
+            logInfo(`token: success for sub=${rec.login} shop=${rec.shopId} in ${Date.now() - started}ms`);
             return res.json({
                 access_token: jwt,
                 token_type: 'Bearer',
@@ -220,9 +298,11 @@ export default async function oauthRouter() {
                 scope: rec.scope,
             });
         } catch (e) {
+            logErr('token: exception', e);
             return res.status(500).json({ error: 'token_error' });
         }
     });
+
 
     return router;
 }

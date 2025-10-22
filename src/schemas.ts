@@ -52,8 +52,8 @@ export const ItemFreeSchema = z.object({
 export const ItemSchema = z.discriminatedUnion('type', [ItemCatalogSchema, ItemDeptSchema,ItemFreeSchema]);
 
 export const SalesCreateInput = z.object({
-    shopId: z.string(),
-    apiKey: z.string(),
+    /*shopId: z.string(),
+    apiKey: z.string(),*/
     idUser: z.number().int().optional(),
     payment: z.union([z.literal(-2), z.literal(-1), z.number()]).optional(),
     deliveryMethod: z.union([
