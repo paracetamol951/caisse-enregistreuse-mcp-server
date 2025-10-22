@@ -41,7 +41,7 @@ Expose l’API de **caisse.enregistreuse.fr** / **free-cash-register.net** sous 
 ## 🚀 Fonctionnalités
 
 - **Outil d’authentification** : `auth_get_token` pour obtenir `APIKEY` et `SHOPID` via login/mot de passe, et initialiser la session d’outils.
-- **Ventes** : `sales_create` (legacy et V2 via `USE_V2`) avec prise en charge des lignes catalogue et libres.
+- **Ventes** : `sales_create` avec prise en charge des lignes catalogue et libres.
 - **Données** (listes) : articles, rayons, groupes de rayons, clients, déclinaisons, livraisons, modes de paiement, caisses, zones de livraison, points relais, réductions, utilisateurs…
 - **Serveur HTTP** : endpoint **POST `/mcp`** pour JSON‑RPC MCP Streamable + **GET `/health`** et **GET `/.well-known/mcp/manifest.json`**.
 - **Sécurité** :

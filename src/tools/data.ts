@@ -83,7 +83,8 @@ function registerSimple(
         {
             title,
             description: `Liste des ${entityLabel}`,
-            inputSchema: CommonShape, // ZodRawShape
+            inputSchema: CommonShape, // ZodRawShape,
+            annotations: { readOnlyHint: true }
         },
         async ({ format }: CommonArgs, ctx: Ctx) => {
             try {
@@ -137,7 +138,8 @@ export function registerDataTools(server: McpServer | any) {
         {
             title: t('tools.data_list_orders.title'),
             description: t('tools.data_list_orders.description'),
-            inputSchema: getOrdersShape, // ZodRawShape
+            inputSchema: getOrdersShape, // ZodRawShape,
+            annotations: { readOnlyHint: true }
         },
         async ({ validatedOrders, from_date_ISO8601, to_date_ISO8601, filterDeliveryMethod }: getOrdersArgs, ctx: Ctx) => {
             const { shopId, apiKey } = resolveAuth(undefined, ctx);
@@ -153,7 +155,8 @@ export function registerDataTools(server: McpServer | any) {
         {
             title: t('tools.order_detail.title'),
             description: t('tools.order_detail.description'),
-            inputSchema: getOrderShape, // ZodRawShape
+            inputSchema: getOrderShape, // ZodRawShape,
+            annotations: { readOnlyHint: true }
         },
         async ({ order_id }: getOrderArgs, ctx: Ctx) => {
             const { shopId, apiKey } = resolveAuth(undefined, ctx);

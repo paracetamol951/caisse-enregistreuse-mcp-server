@@ -46,7 +46,7 @@ async function main() {
         // @ts-ignore
         const __dir = typeof __dirname !== 'undefined' ? __dirname : '(no __dirname)';
         process.stderr.write(`[caisse][path] __dirname=${__dir}\n`);
-        process.stderr.write(`[caisse][env] API_BASE=${process.env.API_BASE ?? ''} USE_V2=${process.env.USE_V2 ?? ''}\n`);
+        process.stderr.write(`[caisse][env] API_BASE=${process.env.API_BASE ?? ''} \n`);
     } catch { }
 
     // --- Création du serveur MCP ---

@@ -17,12 +17,12 @@
       "description": "Vérifie l’état du serveur MCP. Retourne { result: 'OK' } si le serveur est opérationnel."
     },
     "auth_get_token": {
-      "title": "Obtenir APIKEY + SHOPID",
-      "description": "Permet de récupérer les identifiants d’accès (APIKEY et SHOPID) à partir d’un couple login/mot de passe. Utilisé pour authentifier les appels aux autres outils du serveur."
+      "title": "Déconseillé. Obtenir APIKEY + SHOPID [deprecated]",
+      "description": "Les variables d'environnement SHOPID et APIKEY doivent être utilisées en stdio ou oAuth en http. Permet de récupérer les identifiants d’accès (APIKEY et SHOPID) à partir d’un couple login/mot de passe. Utilisé pour authentifier les appels aux autres outils du serveur."
     },
     "sales_create": {
       "title": "Créer une vente",
-      "description": "Crée une nouvelle vente dans la boutique connectée. Prend en entrée le shopId, l’apiKey, le mode de paiement et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec deptId) ou « libre » (avec titre et prix). Retourne un objet JSON de confirmation de la vente tel que fourni par l’API distante."
+      "description": "Crée une nouvelle vente dans la boutique connectée. Prend en entrée le shopId, l’apiKey, le mode de paiement et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec deptId) ou « libre » (avec titre et prix). Vérifier si le client n''existe déjà en utilisant data_list_clients et si le client existe préciser idClient. Retourne un objet JSON de confirmation de la vente tel que fourni par l’API distante."
     },
     "data_list_tables": {
       "title": "Lister les tables",

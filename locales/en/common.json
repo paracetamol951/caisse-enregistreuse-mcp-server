@@ -5,12 +5,12 @@
   },
   "tools": {
     "auth_get_token": {
-      "title": "Get API Key and Shop ID",
-      "description": "Authenticate a user by login and password to obtain the APIKEY and SHOPID required for all other requests. Returns { result: 'OK', APIKEY, SHOPID } on success, or { result: 'ERROR', message } on failure."
+      "title": "Not advised ! [Deprecated] Get API Key and Shop ID",
+      "description": "The SHOPID and APIKEY environment variables must be used in stdio or oAuth in http. Authenticate a user by login and password to obtain the APIKEY and SHOPID required for all other requests. Returns { result: 'OK', APIKEY, SHOPID } on success, or { result: 'ERROR', message } on failure."
     },
     "sales_create": {
       "title": "Create a sale",
-      "description": "Create a new sale in the connected shop. Supports both catalog items and free items. Input includes shopId, apiKey, paymentMode, and items[]. Each item can be of type 'catalog' (with productId) or 'free' (with title and price). Returns a sale confirmation JSON from the API."
+      "description": "Create a new sale in the connected shop. Supports both catalog items and free items. Input includes shopId, apiKey, paymentMode, and items[]. Each item can be of type 'catalog' (with productId) or 'free' (with title and price). Check if the client already exists using data_list_clients and if the client exists specify idClient. Returns a sale confirmation JSON from the API."
     },
     "data_list_articles": {
       "title": "List items",
