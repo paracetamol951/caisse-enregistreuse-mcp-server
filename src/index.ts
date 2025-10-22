@@ -9,8 +9,6 @@ import { registerDataTools } from './tools/data.js';
 import { setSessionAuth } from './context.js';
 import oauthRouter, { bearerValidator } from './support/oauth.js';
 
-import { connectRedis } from './support/redis.js';
-await connectRedis();
 const app = express();
 
 app.use(await oauthRouter()); // <-- monte /.well-known, /oauth/*
