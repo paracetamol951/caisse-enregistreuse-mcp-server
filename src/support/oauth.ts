@@ -5,6 +5,9 @@ import crypto from 'node:crypto';
 import { generateKeyPair, exportJWK, importPKCS8, SignJWT, jwtVerify, createLocalJWKSet, importSPKI } from 'jose';
 import { URL } from 'node:url';
 import { postForm } from './http.js';
+import { saveCode, loadCode, deleteCode, type PendingCode } from './oauth-store.js';
+import { saveClient, getClient, clientExists, type OAuthClient } from './oauth-clients-store.js';
+
 
 // ---------- CONFIG ----------
 const ISSUER = process.env.MCP_OAUTH_ISSUER || 'https://mcp.enregistreuse.fr';
@@ -103,7 +106,7 @@ function sha256(input: string) {
 }
 
 // ---------- Mémoire (démos) ----------
-type PendingCode = {
+/*type PendingCode = {
     client_id: string;
     redirect_uri: string;
     code_challenge: string;    // PKCE (S256)
@@ -113,13 +116,18 @@ type PendingCode = {
     scope: string;
     exp: number;
 };
-const codes = new Map<string, PendingCode>(); // code -> record
-const clients = new Map<string, { redirect_uris: string[]; public: true }>();
+const codes = new Map<string, PendingCode>(); // code -> record*/
+//const clients = new Map<string, { redirect_uris: string[]; public: true }>();
 
 // En dev on autorise un client "mcp-client" avec une redirect fournie en env
 const DEV_CLIENT_ID = process.env.MCP_OAUTH_CLIENT_ID || 'mcp-client';
 const DEV_REDIRECT = process.env.MCP_OAUTH_REDIRECT_URI || 'http://localhost:1234/callback';
-clients.set(DEV_CLIENT_ID, { redirect_uris: [DEV_REDIRECT], public: true });
+const bootClient: OAuthClient = { redirect_uris: [DEV_REDIRECT], public: true };
+if (!(await clientExists(DEV_CLIENT_ID))) {
+    await saveClient(DEV_CLIENT_ID, bootClient);
+}
+
+//clients.set(DEV_CLIENT_ID, { redirect_uris: [DEV_REDIRECT], public: true });
 logInfo(`boot: allowed client ${DEV_CLIENT_ID} redirect=${DEV_REDIRECT}`);
 
 // ---------- Router ----------
@@ -165,20 +173,31 @@ export default async function oauthRouter() {
     router.get('/oauth/jwks.json', (_req, res) => { res.json(jwks); });
 
     // d) Enregistrement dynamique (optionnel – ici no-op minimal)
-    router.post('/oauth/register', (req, res) => {
+    router.post('/oauth/register', async (req, res) => {
         const { redirect_uris = [], client_id } = req.body || {};
         const id = client_id || `pub-${crypto.randomUUID()}`;
-        clients.set(id, { redirect_uris, public: true });
+        //clients.set(id, { redirect_uris, public: true });
+        const rec: OAuthClient = { redirect_uris, public: true };
+        await saveClient(id, rec);
+
         res.json({ client_id: id, token_endpoint_auth_method: 'none', redirect_uris });
     });
 
     // e) Formulaire de login (GET -> HTML)
-    router.get('/oauth/authorize', (req, res) => {
+    router.get('/oauth/authorize', async (req, res) => {
         const { client_id, redirect_uri, state = '', code_challenge = '', scope = 'mcp:invoke' } = req.query as any;
-        const c = clients.get(client_id || '');
-        if (!c || !c.redirect_uris.includes(redirect_uri)) {
+
+        const c = await getClient(client_id || '');
+        logInfo(`authorize[GET]: client=${client_id} redirect=${redirect_uri} ...`);
+        if (!c) {
+            logWarn(`authorize[GET]: unknown client ${client_id}`);
             return res.status(400).send('invalid_client or redirect_uri');
         }
+        if (!c.redirect_uris.includes(redirect_uri)) {
+            logWarn(`authorize[GET]: redirect mismatch for client=${client_id} got=${redirect_uri} allowed=${c.redirect_uris.join(',')}`);
+            return res.status(400).send('invalid_client or redirect_uri');
+        }
+
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
         res.end(`
       <form method="post" action="/oauth/authorize" style="font-family:sans-serif;max-width:420px;margin:3rem auto">
@@ -199,8 +218,9 @@ export default async function oauthRouter() {
     router.post('/oauth/authorize', async (req, res) => {
         try {
             const { login, password, client_id, redirect_uri, state = '', code_challenge = '', scope = 'mcp:invoke' } = req.body;
-            const c = clients.get(client_id || '');
+            const c = await getClient(client_id || '');
             if (!c || !c.redirect_uris.includes(redirect_uri)) {
+                logWarn(`authorize[POST]: invalid client or redirect (client=${client_id}, redirect=${redirect_uri})`);
                 return res.status(400).send('invalid_client or redirect_uri');
             }
             if (!code_challenge) return res.status(400).send('missing PKCE code_challenge');
@@ -214,18 +234,13 @@ export default async function oauthRouter() {
             }
             const { APIKEY, SHOPID } = out as any;
 
-            // Crée un code d’autorisation
             const code = crypto.randomBytes(24).toString('base64url');
-            codes.set(code, {
-                client_id,
-                redirect_uri,
-                code_challenge,
-                login,
-                apiKey: APIKEY,
-                shopId: SHOPID,
-                scope,
-                exp: Math.floor(Date.now() / 1000) + 300, // 5 min
-            });
+            const exp = Math.floor(Date.now() / 1000) + 300;
+            await saveCode(code, {
+                client_id, redirect_uri, code_challenge, login,
+                apiKey: APIKEY, shopId: SHOPID, scope, exp,
+            }, 300);
+
 
             const u = new URL(redirect_uri);
             u.searchParams.set('code', code);
@@ -252,19 +267,17 @@ export default async function oauthRouter() {
                 return res.status(400).json({ error: 'invalid_request' });
             }
 
-            const rec = codes.get(code);
+            const rec = await loadCode(code);
             if (!rec) {
-                logWarn(`token: invalid_grant (code not found) code=${mask(code)}`);
+                // log: invalid_grant (code not found)
                 return res.status(400).json({ error: 'invalid_grant' });
             }
-            // Consommation one-time
-            codes.delete(code);
-
-            const nowSec = Math.floor(Date.now() / 1000);
-            if (rec.exp < nowSec) {
-                logWarn(`token: expired_code code=${mask(code)} now=${nowSec} exp=${rec.exp}`);
+            await deleteCode(code); // one-time use
+            if (rec.exp < Math.floor(Date.now() / 1000)) {
+                // log: expired_code
                 return res.status(400).json({ error: 'expired_code' });
             }
+
             if (client_id !== rec.client_id || redirect_uri !== rec.redirect_uri) {
                 logWarn(`token: invalid_client mismatch client_id=${client_id} vs ${rec.client_id}, redirect=${redirect_uri} vs ${rec.redirect_uri}`);
                 return res.status(400).json({ error: 'invalid_client' });
