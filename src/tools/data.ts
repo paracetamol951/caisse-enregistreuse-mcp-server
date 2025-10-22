@@ -90,12 +90,14 @@ function registerSimple(
                     + (Array.isArray(data) ? ` len=${data.length}` : '')
                     + '\n'
                 );
-                const funcResult = structData(data);
+                //Array.isArray(data) ? data.slice(0, 50) : data
+                const funcResult = structData(Array.isArray(data) ? data.slice(0, 50) : data);
                 process.stderr.write(`[caisse][RES]  ${JSON.stringify(data)} \n`);
                 process.stderr.write(`[caisse][RES] funcResult ${JSON.stringify(funcResult)} \n`);
                 return funcResult;
                 //return { content, structuredContent: isText ? undefined : data };
             } catch (e) {
+                process.stderr.write(`[caisse][tool:${toolName}][error]\n`);
                 process.stderr.write(`[caisse][tool:${toolName}][error] ${(e as Error).message}\n`);
                 // renvoyer un message "propre" plutôt que laisser l’exception devenir un 424
                 return {
