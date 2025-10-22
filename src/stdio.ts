@@ -52,7 +52,7 @@ async function main() {
     // --- Création du serveur MCP ---
     const server = new McpServer({
         name: 'caisse-enregistreuse-api',
-        version: '1.0.0',
+        version: '1.2.0',
     });
     // --- Guard inline: protège tous les tools sauf whitelist ---
     type Ctx = { auth?: { ok: boolean; user?: string; shopId?: string; scopes?: string[] } };

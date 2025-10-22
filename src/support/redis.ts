@@ -5,7 +5,7 @@ const url = process.env.REDIS_URL || 'redis://127.0.0.1:6379';
 
 export const redis = new Redis(url, {
     // ⚠️ augmente (ou neutralise) la limite par requête pendant le boot
-    maxRetriesPerRequest: null, // ou un nombre plus grand, ex. 20
+    maxRetriesPerRequest: 3, // ou un nombre plus grand, ex. 20
     enableReadyCheck: true,
     // meilleure stratégie de reconnexion
     retryStrategy(times) {
