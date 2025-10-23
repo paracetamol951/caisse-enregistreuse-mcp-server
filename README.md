@@ -1,34 +1,4 @@
 
-# 🌍 Internationalisation (i18n)
-
-Ce projet supporte désormais **français** et **anglais**.
-
-## Utilisation rapide
-- Exécuter en français :
-
-```bash
-MCP_LANG=fr npm start
-```
-
-- Exécuter en anglais :
-
-```bash
-MCP_LANG=en npm start
-```
-
-## Manifeste localisé
-Générez un manifeste par langue :
-
-```bash
-# anglais
-MCP_LANG=en npm run generate:manifest
-# français
-MCP_LANG=fr npm run generate:manifest
-```
-
-Les fichiers sont écrits sous `manifest.en.json` et `manifest.fr.json`.
-
----
 
 # Caisse Enregistreuse MCP Server
 
@@ -40,7 +10,6 @@ Expose l’API de **caisse.enregistreuse.fr** / **free-cash-register.net** sous 
 
 ## 🚀 Fonctionnalités
 
-- **Outil d’authentification** : `auth_get_token` pour obtenir `APIKEY` et `SHOPID` via login/mot de passe, et initialiser la session d’outils.
 - **Ventes** : `sales_create` avec prise en charge des lignes catalogue et libres.
 - **Données** (listes) : articles, rayons, groupes de rayons, clients, déclinaisons, livraisons, modes de paiement, caisses, zones de livraison, points relais, réductions, utilisateurs…
 - **Serveur HTTP** : endpoint **POST `/mcp`** pour JSON‑RPC MCP Streamable + **GET `/health`** et **GET `/.well-known/mcp/manifest.json`**.
@@ -68,23 +37,32 @@ Expose l’API de **caisse.enregistreuse.fr** / **free-cash-register.net** sous 
 
 ## ⚙️ Installation
 
+Installation avec npx
+```bash
+npx caisse-enregistreuse-mcp-server --shopid=12345 --apikey=abcdef123456
+```
+
+Installation avec npm
 ```bash
 # 1) Dépendances
-pnpm install   # ou npm/yarn
+npm install
 
 # 2) Variables d'environnement (voir ci‑dessous)
 
-# 3) Développement (HTTP)
-pnpm dev       # ou: node --loader ts-node/esm src/index.ts
+# 3) Compilation
+npm run build
 
 # 4) Production
-pnpm build && pnpm start
+npm run stdio
 ```
+
 
 ### Variables d’environnement
 
 | Variable        | Par défaut                              | Description |
 |----------------|------------------------------------------|-------------|
+| `APIKEY`         | `----`                                   | Nécessaire : votre clé API |
+| `SHOPID`         | `----`                                   | Nécessaire : votre ID boutique |
 | `PORT`         | `8787`                                   | Port HTTP du serveur |
 | `API_BASE`     | `https://caisse.enregistreuse.fr`        | Base URL de l’API distante |
 | `MCP_TOKENS`   | *(vide)*                                 | Liste de tokens HTTP autorisés, séparés par virgules (optionnel) |
@@ -102,24 +80,15 @@ MCP_TOKENS=token_prod_1,token_prod_2
 ## ▶️ Lancement
 
 ### Mode HTTP (Streamable MCP)
-- **POST** `http://localhost:8787/mcp` avec un message JSON‑RPC MCP.
-- **GET** `http://localhost:8787/health` → `{ "status": "ok" }`
-- **GET** `http://localhost:8787/.well-known/mcp/manifest.json` → manifeste MCP
 
-Exemple **curl** (appel tool `auth_get_token`) :
-```bash
-curl -s http://localhost:8787/mcp   -H "Content-Type: application/json"   -d '{
-    "jsonrpc":"2.0",
-    "id":1,
-    "method":"tools/call",
-    "params":{
-      "name":"auth_get_token",
-      "arguments":{"login":"EMAIL","password":"MOTDEPASSE"}
-    }
-  }'
-```
+Le mode http nécessite un serveur redis.
+Le serveur MCP http/Websocket est disponible à l'adresse https://mcp.enregistreuse.fr
+- **POST** `https://mcp.enregistreuse.fr/mcp` avec un message JSON‑RPC MCP.
+- **GET** `https://mcp.enregistreuse.fr/health` → `{ "status": "ok" }`
+- **GET** `https://mcp.enregistreuse.fr/.well-known/mcp/manifest.json` → manifeste MCP
 
-### Mode STDIO (si utilisé)
+
+### Mode STDIO (utilisé pour Claude)
 Le binaire/runner lance `src/stdio.ts` et parle MCP via stdin/stdout. La garde d’auth vérifie `ctx.auth` stocké en session (défini par `auth_get_token`).
 
 ---
@@ -184,34 +153,13 @@ Encodage legacy des lignes :
 - `data_list_users`
 - `data_list_tables`
 
-Toutes acceptent : `{{ shopId, apiKey, format=('json'|'csv'|'html') }}`.
+Toutes acceptent : `{{ format=('json'|'csv'|'html') }}`.
 
 ---
 
 ## 🧾 Manifest MCP
 
-Le manifest est servi à `/.well-known/mcp/manifest.json`. Exemple minimal :
-```json
-{
-  "name": "caisse-enregistreuse-api",
-  "version": "1.0.0",
-  "description": "MCP server exposing caisse.enregistreuse.fr API as tools",
-  "tools": [
-    {
-      "name": "auth_get_token",
-      "description": "Obtenir APIKEY et SHOPID",
-      "input_schema": {
-        "type": "object",
-        "required": ["login", "password"],
-        "properties": {
-          "login": { "type": "string" },
-          "password": { "type": "string" }
-        }
-      }
-    }
-  ]
-}
-```
+Le manifest est servi à `/.well-known/mcp/manifest.json`. 
 
 ---
 
@@ -243,7 +191,7 @@ pour les clients compatibles (ChatGPT, Claude, n8n, etc.).
 
 ### URL publique du manifeste
 
-https://www.free-cash-register.net/.well-known/mcp/manifest.json
+https://mcp.enregistreuse.fr/.well-known/mcp/manifest.json
 
 > 🗂️ Cette URL est celle à fournir au client MCP lors de la configuration du serveur.
 
@@ -258,4 +206,4 @@ https://www.free-cash-register.net/.well-known/mcp/manifest.json
 
 ## 📋 Licence
 
-© 2025. Tous droits réservés. Ajustez selon votre projet.
+© 2025. GNU GENERAL PUBLIC LICENSE

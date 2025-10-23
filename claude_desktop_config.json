@@ -3,12 +3,12 @@
     "caisse": {
       "command": "node",
       "args": [
-        "D:\\Projets\\caisseEnregistreuse\\caisse-enregistreuse-mcp-server\\build\\stdio.js"
+        "C:\\Projets\\ChangezMoi\\caisse-enregistreuse-mcp-server\\build\\stdio.js"
       ],
-      "cwd": "D:\\Projets\\caisseEnregistreuse\\caisse-enregistreuse-mcp-server",
+      "cwd": "C:\\Projets\\ChangezMoi\\caisse-enregistreuse-mcp-server",
       "env": {
-        "API_BASE": "https://caisse.enregistreuse.fr",
-        "USE_V2": "false"
+        "SHOPID": "16",
+        "APIKEY": "XXXXXXXX"
       }
     }
   }
