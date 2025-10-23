@@ -12,12 +12,25 @@
     "generate:manifest": "node scripts/generate-manifest.mjs",
     "test": "node tests/quick.test.mjs",
     "start:fr": "MCP_LANG=fr node build/index.js",
-    "start:en": "MCP_LANG=en node build/index.js"
+    "start:en": "MCP_LANG=en node build/index.js",
+    "prepublishOnly": "npm run build"
   },
+  "bin": { "caisse-mcp": "./build/cli.js" },
+  "files": [
+    "build",
+    "static",
+    "locales",
+    "manifest.en.json",
+    "manifest.fr.json",
+    "manifest.template.json",
+    "scripts/generate-manifest.mjs",
+    "README.md"
+  ],
+  "engines": { "node": ">=18.17" },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.2.0",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2", 
+    "express": "^4.19.2",
     "ioredis": "^5.3.2",
     "jose": "^6.1.0",
     "undici": "^6.19.8",

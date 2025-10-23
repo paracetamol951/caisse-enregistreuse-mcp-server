@@ -37,7 +37,7 @@
     },
     {
       "name": "sales_create",
-      "description": "Crée une nouvelle vente dans la boutique connectée. Prend en entrée le mode de paiement et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec deptId) ou « libre » (avec titre et prix). Vérifier si le client n''existe déjà en utilisant data_list_clients et si le client existe préciser idClient. Retourne un objet JSON de confirmation de la vente tel que fourni par l’API distante."
+      "description": "Crée une nouvelle vente pour l'établissement connecté. Prend en entrée le mode de paiement et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec deptId) ou « libre » (avec titre et prix). Vérifier si le client n''existe déjà en utilisant data_list_clients et si le client existe préciser idClient. Si fourni, paymentMode doit correspondre à un ID de paiement de l'outil data_list_payments. Retourne un objet JSON de confirmation de la vente tel que fourni par l’API distante."
     },
     {
       "name": "data_list_articles",
