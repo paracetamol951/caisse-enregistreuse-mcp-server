@@ -77,7 +77,7 @@ async function main() {
 
                 // Protéger les autres
                 if (!ctx.auth?.ok) {
-                    const err: any = new Error('Login required (call auth_get_token first)');
+                    const err: any = new Error('Login required');
                     err.code = -32001;
                     throw err;
                 }
@@ -104,8 +104,8 @@ async function main() {
 
     // Activer le guard avec une whitelist minimale
     enforceAuthOnTools(server, [
-        //'health.ping',      // public
-        'auth_get_token',   // public si tu veux que la 1ère étape reste ouverte
+        'health.ping',      // public
+        //'auth_get_token',   // public si tu veux que la 1ère étape reste ouverte
         // si tu veux AU CONTRAIRE fermer auth_get_token, enlève-le de la whitelist
     ]);
 

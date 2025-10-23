@@ -125,7 +125,7 @@ export function registerDataTools(server: McpServer | any) {
     registerSimple(server, 'data_list_clients', '/workers/getClients.php', t('tools.data_list_clients.description'), t('tools.data_list_clients.title'));
     registerSimple(server, 'data_list_declinaisons', '/workers/getDeclinaisons.php', t('tools.data_list_declinaisons.description'), t('tools.data_list_declinaisons.title'));
     registerSimple(server, 'data_list_deliveries', '/workers/getLivreurs.php', t('tools.data_list_deliveries.description'), t('tools.data_list_deliveries.title'));
-    registerSimple(server, 'data_list_payments', '/workers/getPaymentModes.php', t('tools.data_list_payments.description'), t('tools.data_list_payments.title'));
+    registerSimple(server, 'data_list_payments_modes', '/workers/getPaymentModes.php', t('tools.data_list_payments.description'), t('tools.data_list_payments.title'));
     registerSimple(server, 'data_list_cashboxes', '/workers/getCashbox.php', t('tools.data_list_cashboxes.description'), t('tools.data_list_cashboxes.title'));
     registerSimple(server, 'data_list_delivery_zones', '/workers/getDeliveryZones.php', t('tools.data_list_delivery_zones.description'), t('tools.data_list_delivery_zones.title'));
     registerSimple(server, 'data_list_relay_points', '/workers/getRelayDeposit.php', t('tools.data_list_relay_points.description'), t('tools.data_list_relay_points.title'));

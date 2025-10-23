@@ -14,7 +14,7 @@ Expose l’API de **caisse.enregistreuse.fr** / **free-cash-register.net** sous 
 - **Données** (listes) : articles, rayons, groupes de rayons, clients, déclinaisons, livraisons, modes de paiement, caisses, zones de livraison, points relais, réductions, utilisateurs…
 - **Serveur HTTP** : endpoint **POST `/mcp`** pour JSON‑RPC MCP Streamable + **GET `/health`** et **GET `/.well-known/mcp/manifest.json`**.
 - **Sécurité** :
-  - Garde côté **STDIO** : tous les tools sont protégés par session, sauf ceux explicitement en liste blanche (par défaut `auth_get_token`).
+  - Garde côté **STDIO** : tous les tools sont protégés par session, sauf ceux explicitement en liste blanche (par défaut `health.ping`).
   - (Optionnel) Vérification de **token porteur** via env `MCP_TOKENS` si vous utilisez la couche `security.ts`.
 
 ---
@@ -23,7 +23,6 @@ Expose l’API de **caisse.enregistreuse.fr** / **free-cash-register.net** sous 
 
 - `index.ts` — serveur HTTP Express + transport Streamable MCP.
 - `stdio.ts` — serveur MCP en STDIO, garde d’auth globale, normalisation Zod pour les tools.
-- `tools/auth.ts` — `auth_get_token` (POST `/workers/getAuthToken.php`).
 - `tools/sales.ts` — `sales_create` (+ encodage `itemsList[]` pour legacy).
 - `tools/data.ts` — helpers pour déclarer les tools *list_* des entités.
 - `support/http.ts` — utilitaires `get`, `postForm`, parsing JSON/TXT, `API_BASE`.
@@ -93,22 +92,7 @@ Le binaire/runner lance `src/stdio.ts` et parle MCP via stdin/stdout. La garde d
 
 ---
 
-## 🔐 Sécurité & Authentification
-
-- **Étape 1** : appeler `auth_get_token` avec `login`/`password`. La réponse inclut `APIKEY` et `SHOPID`. Le serveur stocke en session :
-  ```ts
-  setSessionAuth({ ok: true, SHOPID, APIKEY, scopes: ['*'] })
-  ```
-- **Étape 2** : appeler les autres tools (ventes, données). La garde ré‑injecte la session dans le `ctx` de chaque handler et bloque si `auth.ok !== true` (sauf tools en whitelist).
-- **Option HTTP** : si vous exposez publiquement `/mcp`, vous pouvez n’autoriser que des requêtes portant un **Bearer token** défini dans `MCP_TOKENS` (cf. `security.ts`).
-
----
-
 ## 🧪 Outils MCP disponibles (extraits)
-
-### `auth_get_token`
-- **Entrée** : `{{ login: string, password: string }}`
-- **Sortie** : JSON brut renvoyé par `/workers/getAuthToken.php` (contient `APIKEY`, `SHOPID`)
 
 ### `sales_create`
 Crée une vente. 
