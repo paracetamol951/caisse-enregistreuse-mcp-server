@@ -90,10 +90,10 @@ function encodeItemsList(items: SalesCreateArgs['items']): string[] {
 export function registerSalesTools(server: McpServer | any) {
   // -- SALES CREATE --
   server.registerTool(
-    'sales_create',
+    'sale_create',
     {
-      title: t('tools.sales_create.title'),
-      description: t('tools.sales_create.description'),
+      title: t('tools.sale_create.title'),
+      description: t('tools.sale_create.description'),
       inputSchema: SalesCreateShape, // ✅ ZodRawShape
     },
       async (input: SalesCreateArgs, ctx: Ctx) => {

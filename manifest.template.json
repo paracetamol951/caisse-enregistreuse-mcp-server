@@ -36,12 +36,12 @@
       "description": "{{tools.ping.description}}"
     },
     {
-      "name": "sales_create",
-      "description": "{{tools.sales_create.description}}"
+      "name": "sale_create",
+      "description": "{{tools.sale_create.description}}"
     },
     {
-      "name": "data_list_articles",
-      "description": "{{tools.data_list_articles.description}}"
+      "name": "data_list_products",
+      "description": "{{tools.data_list_products.description}}"
     },
     {
       "name": "data_list_departments",
@@ -56,12 +56,12 @@
       "description": "{{tools.data_list_clients.description}}"
     },
     {
-      "name": "data_list_declinaisons",
-      "description": "{{tools.data_list_declinaisons.description}}"
+      "name": "data_list_variations",
+      "description": "{{tools.data_list_variations.description}}"
     },
     {
-      "name": "data_list_deliveries",
-      "description": "{{tools.data_list_deliveries.description}}"
+      "name": "data_list_delivery_men",
+      "description": "{{tools.data_list_delivery_men.description}}"
     },
     {
       "name": "data_list_payments",

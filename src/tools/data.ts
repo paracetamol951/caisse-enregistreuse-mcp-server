@@ -118,13 +118,13 @@ function registerSimple(
 
 export function registerDataTools(server: McpServer | any) {
     //  Garde les mêmes endpoints que ton backend PHP
-    // Noms de tools avec UNDERSCORE (comme vus dans tes logs) t('tools.sales_create.title')
-    registerSimple(server, 'data_list_articles', '/workers/getPlus.php', t('tools.data_list_articles.description'), t('tools.data_list_articles.title'));
+    // Noms de tools avec UNDERSCORE (comme vus dans tes logs) t('tools.sale_create.title')
+    registerSimple(server, 'data_list_products', '/workers/getPlus.php', t('tools.data_list_products.description'), t('tools.data_list_products.title'));
     registerSimple(server, 'data_list_departments', '/workers/getDepartments.php', t('tools.data_list_departments.description'), t('tools.data_list_departments.title'));
     registerSimple(server, 'data_list_department_groups', '/workers/getDepartmentsGroups.php', t('tools.data_list_department_groups.description'), t('tools.data_list_department_groups.title'));
     registerSimple(server, 'data_list_clients', '/workers/getClients.php', t('tools.data_list_clients.description'), t('tools.data_list_clients.title'));
-    registerSimple(server, 'data_list_declinaisons', '/workers/getDeclinaisons.php', t('tools.data_list_declinaisons.description'), t('tools.data_list_declinaisons.title'));
-    registerSimple(server, 'data_list_deliveries', '/workers/getLivreurs.php', t('tools.data_list_deliveries.description'), t('tools.data_list_deliveries.title'));
+    registerSimple(server, 'data_list_variations', '/workers/getDeclinaisons.php', t('tools.data_list_variations.description'), t('tools.data_list_variations.title'));
+    registerSimple(server, 'data_list_delivery_men', '/workers/getLivreurs.php', t('tools.data_list_delivery_men.description'), t('tools.data_list_delivery_men.title'));
     registerSimple(server, 'data_list_payments_modes', '/workers/getPaymentModes.php', t('tools.data_list_payments.description'), t('tools.data_list_payments.title'));
     registerSimple(server, 'data_list_cashboxes', '/workers/getCashbox.php', t('tools.data_list_cashboxes.description'), t('tools.data_list_cashboxes.title'));
     registerSimple(server, 'data_list_delivery_zones', '/workers/getDeliveryZones.php', t('tools.data_list_delivery_zones.description'), t('tools.data_list_delivery_zones.title'));

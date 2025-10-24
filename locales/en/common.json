@@ -8,11 +8,11 @@
       "title": "Not advised ! [Deprecated] Get API Key and Shop ID",
       "description": "The SHOPID and APIKEY environment variables must be used in stdio or oAuth in http. Authenticate a user by login and password to obtain the APIKEY and SHOPID required for all other requests. Returns { result: 'OK', APIKEY, SHOPID } on success, or { result: 'ERROR', message } on failure."
     },
-    "sales_create": {
+    "sale_create": {
       "title": "Create a sale",
       "description": "Create a new sale in the connected shop. Input includes paymentMode, and items[]. Each item can be of type 'catalog' (with productId), « department » (with deptId) or 'free' (with title and price). Check if the client already exists using data_list_clients and if the client exists specify idClient. If provided, paymentMode should correspond to a payment ID from data_list_payments tool. Returns a sale confirmation JSON from the API."
     },
-    "data_list_articles": {
+    "data_list_products": {
       "title": "List items",
       "description": "Retrieve the list of articles (products) configured in the shop. Returns an array of products with fields like id, title, price, and departmentId. Optional parameter 'format' allows output as json, csv, or html."
     },
@@ -28,11 +28,11 @@
       "title": "List clients",
       "description": "Get the list of clients registered in the shop, including contact info, loyalty points."
     },
-    "data_list_declinaisons": {
+    "data_list_variations": {
       "title": "List item variants",
       "description": "Retrieve product variations (declinaisons) such as size or color. Returns an array of variant definitions with value and optional price delta."
     },
-    "data_list_deliveries": {
+    "data_list_delivery_men": {
       "title": "List delivery methods",
       "description": "List all delivery methods available for the shop, such as in-store pickup, home delivery, or courier services."
     },

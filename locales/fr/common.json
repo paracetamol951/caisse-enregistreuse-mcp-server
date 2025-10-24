@@ -20,7 +20,7 @@
       "title": "Déconseillé. Obtenir APIKEY + SHOPID [deprecated]",
       "description": "Les variables d'environnement SHOPID et APIKEY doivent être utilisées en stdio ou oAuth en http. Permet de récupérer les identifiants d’accès (APIKEY et SHOPID) à partir d’un couple login/mot de passe. Utilisé pour authentifier les appels aux autres outils du serveur."
     },
-    "sales_create": {
+    "sale_create": {
       "title": "Créer une vente",
       "description": "Crée une nouvelle vente pour l'établissement. Prend en entrée le mode de paiement (optionnel) et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec deptId) ou « libre » (avec titre et prix). Vérifier si le client n''existe déjà en utilisant data_list_clients et si le client existe préciser idClient.  Retourne un objet JSON de confirmation de la vente tel que fourni par l’API distante."
     },
@@ -28,7 +28,7 @@
       "title": "Lister les tables",
       "description": "Retourne la liste des tables configurées dans l’application, utilisée notamment pour le mode restauration ou la gestion des tables en salle."
     },
-    "data_list_articles": {
+    "data_list_products": {
       "title": "Lister les articles",
       "description": "Récupère la liste complète des articles (produits) enregistrés dans la boutique. Retourne un tableau d’articles contenant les champs id, titre, prix, rayon, TVA, etc. Le paramètre optionnel 'format' permet de choisir la sortie (json, csv ou html)."
     },
@@ -44,11 +44,11 @@
       "title": "Lister les clients",
       "description": "Retourne la liste des clients enregistrés dans la boutique, incluant leurs informations de contact, points de fidélité..."
     },
-    "data_list_declinaisons": {
+    "data_list_variations": {
       "title": "Lister les déclinaisons",
       "description": "Liste toutes les déclinaisons d’articles (par exemple : taille, couleur, grammage). Retourne un tableau d’objets indiquant les valeurs et écarts de prix éventuels."
     },
-    "data_list_deliveries": {
+    "data_list_delivery_men": {
       "title": "Lister les méthodes de livraison",
       "description": "Récupère la liste des modes de livraison disponibles dans la boutique : retrait en magasin, livraison à domicile, transporteur, etc.."
     },

@@ -36,11 +36,11 @@
       "description": "Vérifie l’état du serveur MCP. Retourne { result: 'OK' } si le serveur est opérationnel."
     },
     {
-      "name": "sales_create",
+      "name": "sale_create",
       "description": "Crée une nouvelle vente pour l'établissement connecté. Prend en entrée le mode de paiement et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec deptId) ou « libre » (avec titre et prix). Vérifier si le client n''existe déjà en utilisant data_list_clients et si le client existe préciser idClient. Si fourni, paymentMode doit correspondre à un ID de paiement de l'outil data_list_payments. Retourne un objet JSON de confirmation de la vente tel que fourni par l’API distante."
     },
     {
-      "name": "data_list_articles",
+      "name": "data_list_products",
       "description": "Récupère la liste complète des articles (produits) enregistrés dans la boutique. Retourne un tableau d’articles contenant les champs id, titre, prix, rayon, TVA, etc. Le paramètre optionnel 'format' permet de choisir la sortie (json, csv ou html)."
     },
     {
@@ -56,11 +56,11 @@
       "description": "Retourne la liste des clients enregistrés dans la boutique, incluant leurs informations de contact, points de fidélité..."
     },
     {
-      "name": "data_list_declinaisons",
+      "name": "data_list_variations",
       "description": "Liste toutes les déclinaisons d’articles (par exemple : taille, couleur, grammage). Retourne un tableau d’objets indiquant les valeurs et écarts de prix éventuels."
     },
     {
-      "name": "data_list_deliveries",
+      "name": "data_list_delivery_men",
       "description": "Récupère la liste des modes de livraison disponibles dans la boutique : retrait en magasin, livraison à domicile, transporteur, etc.."
     },
     {

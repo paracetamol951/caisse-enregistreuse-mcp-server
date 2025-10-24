@@ -10,7 +10,7 @@ Expose l’API de **caisse.enregistreuse.fr** / **free-cash-register.net** sous 
 
 ## 🚀 Fonctionnalités
 
-- **Ventes** : `sales_create` avec prise en charge des lignes catalogue et libres.
+- **Ventes** : `sale_create` avec prise en charge des lignes catalogue et libres.
 - **Données** (listes) : articles, rayons, groupes de rayons, clients, déclinaisons, livraisons, modes de paiement, caisses, zones de livraison, points relais, réductions, utilisateurs…
 - **Serveur HTTP** : endpoint **POST `/mcp`** pour JSON‑RPC MCP Streamable + **GET `/health`** et **GET `/.well-known/mcp/manifest.json`**.
 - **Sécurité** :
@@ -23,7 +23,7 @@ Expose l’API de **caisse.enregistreuse.fr** / **free-cash-register.net** sous 
 
 - `index.ts` — serveur HTTP Express + transport Streamable MCP.
 - `stdio.ts` — serveur MCP en STDIO, garde d’auth globale, normalisation Zod pour les tools.
-- `tools/sales.ts` — `sales_create` (+ encodage `itemsList[]` pour legacy).
+- `tools/sales.ts` — `sale_create` (+ encodage `itemsList[]` pour legacy).
 - `tools/data.ts` — helpers pour déclarer les tools *list_* des entités.
 - `support/http.ts` — utilitaires `get`, `postForm`, parsing JSON/TXT, `API_BASE`.
 - `support/httpServer.ts` — routes `/health` et le manifest MCP statique.
@@ -94,7 +94,7 @@ Le binaire/runner lance `src/stdio.ts` et parle MCP via stdin/stdout. La garde d
 
 ## 🧪 Outils MCP disponibles (extraits)
 
-### `sales_create`
+### `sale_create`
 Crée une vente. 
 
 Entrée (shape Zod, champs principaux) :
@@ -123,12 +123,12 @@ Encodage legacy des lignes :
 → Envoyées sous la forme `itemsList[]`.
 
 ### `data_list_*` (exemples)
-- `data_list_articles`
+- `data_list_products`
 - `data_list_departments`
 - `data_list_department_groups`
 - `data_list_clients`
-- `data_list_declinaisons`
-- `data_list_deliveries`
+- `data_list_variations`
+- `data_list_delivery_men`
 - `data_list_payments`
 - `data_list_cashboxes`
 - `data_list_delivery_zones`
