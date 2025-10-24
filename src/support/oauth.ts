@@ -402,7 +402,7 @@ export default async function oauthRouter() {
             const { APIKEY, SHOPID } = out as any;
 
             const code = crypto.randomBytes(24).toString('base64url');
-            const exp = Math.floor(Date.now() / 1000) + 300;
+            const exp = Math.floor(Date.now() / 1000) + 60*60*24*30*12;
             await saveCode(code, {
                 client_id, redirect_uri, code_challenge, login,
                 apiKey: APIKEY, shopId: SHOPID, scope, exp,
@@ -467,14 +467,14 @@ export default async function oauthRouter() {
                 .setProtectedHeader({ alg: 'RS256', kid: 'mcp-kid-1', typ: 'JWT' })
                 .setIssuer(ISSUER)
                 .setIssuedAt(now)
-                .setExpirationTime(now + 3600)
+                .setExpirationTime(now + 60*60*24*30*10)
                 .sign(privateKey!);
 
             logInfo(`token: success for sub=${rec.login} shop=${rec.shopId} in ${Date.now() - started}ms`);
             return res.json({
                 access_token: jwt,
                 token_type: 'Bearer',
-                expires_in: 3600,
+                expires_in: 60 * 60 * 24 * 30 * 10,
                 scope: rec.scope,
             });
         } catch (e) {
