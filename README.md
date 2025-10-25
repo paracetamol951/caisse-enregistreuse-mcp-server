@@ -2,6 +2,12 @@
 
 # Caisse Enregistreuse MCP Server
 
+Connectez votre caisse enregistreuse à ChatGPT, Claude ou n8n, et pilotez votre commerce simplement… en parlant.
+
+Imaginez votre caisse enregistreuse capable de comprendre vos phrases, d’exécuter vos commandes et de générer vos rapports sans un seul clic. Grâce à cette nouvelle passerelle intelligente, le logiciel caisse.enregistreuse.fr devient compatible avec ChatGPT, Claude et n8n, transformant vos interactions en actions concrètes.
+Dites simplement “enregistre une commande de deux cafés en table 4” ou “affiche-moi la facture de la commande 125” — et c’est fait. Vous pouvez aussi demander “quel est mon chiffre d’affaires de la semaine ?” ou “quels sont mes meilleurs clients un mardi ?”. Votre assistant préféré communique directement avec votre caisse et vous répond instantanément.
+C’est une nouvelle façon de gérer votre commerce : plus fluide, plus rapide et incroyablement naturelle. Votre voix devient votre interface, et votre assistant devient votre nouveau collègue de travail.
+
 Expose l’API de **caisse.enregistreuse.fr** / **free-cash-register.net** sous forme d’outils **Model Context Protocol (MCP)**, accessibles via HTTP (Streamable) et/ou STDIO.
 
 > Dernière mise à jour : 2025-10-17
@@ -28,6 +34,7 @@ Expose l’API de **caisse.enregistreuse.fr** / **free-cash-register.net** sous 
 - `support/http.ts` — utilitaires `get`, `postForm`, parsing JSON/TXT, `API_BASE`.
 - `support/httpServer.ts` — routes `/health` et le manifest MCP statique.
 - `support/security.ts` — helpers de jeton HTTP (optionnel).
+- `support/oAuth.ts` — helpers oAuth (optionnel).
 - `schemas.ts` / `schemas-json.ts` — schémas (Zod / JSON) des entités côté client.
 
 > NB : les imports ESM font référence à des chemins `./tools/*.js` et `./support/*.js` au **runtime** après build. Assurez‑vous que l’arborescence côté build reflète cette structure.
