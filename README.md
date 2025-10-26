@@ -2,10 +2,31 @@
 
 # Caisse Enregistreuse MCP Server
 
-Connectez votre caisse enregistreuse à ChatGPT, Claude ou n8n, et pilotez votre commerce simplement… en parlant.
+[![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-blue)](https://github.com/mcp-org)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/Demo-online-brightgreen.svg)](https://mcp.enregistreuse.fr)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-paracetamol951%2Fcaisse--enregistreuse--mcp--server-lightgrey)](https://github.com/paracetamol951/caisse-enregistreuse-mcp-server)
 
-Imaginez votre caisse enregistreuse capable de comprendre vos phrases, d’exécuter vos commandes et de générer vos rapports sans un seul clic. Grâce à cette nouvelle passerelle intelligente, le logiciel caisse.enregistreuse.fr devient compatible avec ChatGPT, Claude et n8n, transformant vos interactions en actions concrètes.
-Dites simplement “enregistre une commande de deux cafés en table 4” ou “affiche-moi la facture de la commande 125” — et c’est fait. Vous pouvez aussi demander “quel est mon chiffre d’affaires de la semaine ?” ou “quels sont mes meilleurs clients un mardi ?”. Votre assistant préféré communique directement avec votre caisse et vous répond instantanément.
+
+**Caisse Enregistreuse MCP Server** est un serveur conforme au protocole **MCP (Model Context Protocol)** permettant à ChatGPT (et autres clients compatibles MCP) de se connecter à un système de **caisse enregistreuse**.
+
+Il offre une interface simple pour :
+- 📊 Consulter les ventes et le chiffre d’affaires  
+- 🧾 Créer et enregistrer des tickets  
+- 🛒 Gérer les produits et le stock  
+- 🧠 Générer des rapports automatisés via des requêtes conversationnelles  
+
+> 🟢 Serveur en ligne : [https://mcp.enregistreuse.fr](https://mcp.enregistreuse.fr)
+
+---
+
+**Connectez votre caisse enregistreuse à ChatGPT, Claude ou n8n, et pilotez votre commerce simplement… en parlant**.
+
+Imaginez votre caisse enregistreuse capable de comprendre vos phrases, d’exécuter vos commandes et de générer vos rapports sans un seul clic. 
+Grâce à cette nouvelle passerelle intelligente, le logiciel caisse.enregistreuse.fr devient compatible avec ChatGPT, Claude et n8n, transformant vos interactions en actions concrètes.
+Dites simplement “enregistre une commande de deux cafés en table 4” ou “affiche-moi la facture de la commande 125” — et c’est fait. 
+
+Vous pouvez aussi demander “quel est mon chiffre d’affaires de la semaine ?” ou “quels sont mes meilleurs clients un mardi ?”. Votre assistant préféré communique directement avec votre caisse et vous répond instantanément.
 C’est une nouvelle façon de gérer votre commerce : plus fluide, plus rapide et incroyablement naturelle. Votre voix devient votre interface, et votre assistant devient votre nouveau collègue de travail.
 
 Expose l’API de **caisse.enregistreuse.fr** / **free-cash-register.net** sous forme d’outils **Model Context Protocol (MCP)**, accessibles via HTTP (Streamable) et/ou STDIO.
@@ -25,30 +46,31 @@ Expose l’API de **caisse.enregistreuse.fr** / **free-cash-register.net** sous 
 
 ---
 
-## 🧱 Architecture (aperçu)
+## 🔹 Exemple d’utilisation (ChatGPT / Claude MCP)
 
-- `index.ts` — serveur HTTP Express + transport Streamable MCP.
-- `stdio.ts` — serveur MCP en STDIO, garde d’auth globale, normalisation Zod pour les tools.
-- `tools/sales.ts` — `sale_create` (+ encodage `itemsList[]` pour legacy).
-- `tools/data.ts` — helpers pour déclarer les tools *list_* des entités.
-- `support/http.ts` — utilitaires `get`, `postForm`, parsing JSON/TXT, `API_BASE`.
-- `support/httpServer.ts` — routes `/health` et le manifest MCP statique.
-- `support/security.ts` — helpers de jeton HTTP (optionnel).
-- `support/oAuth.ts` — helpers oAuth (optionnel).
-- `schemas.ts` / `schemas-json.ts` — schémas (Zod / JSON) des entités côté client.
-
-> NB : les imports ESM font référence à des chemins `./tools/*.js` et `./support/*.js` au **runtime** après build. Assurez‑vous que l’arborescence côté build reflète cette structure.
+- 💬 “Montre-moi les ventes d’aujourd’hui”
+- 💬 “Enregistre une vente de 2 cafés et 1 croissant en table 84”
+- 💬 “Dix roses rouges à livrer pour Mme Dupond à 18h15 !”
+- 💬 “Génère un rapport de caisse pour la semaine”
+- 💬 “Les ventes à emporter ont elle beaucoup progressé cette année ?”
+- 💬 “Le client Dupont a-t-il bien payé sa commande ?”
 
 ---
 
 ## ⚙️ Installation
 
-Installation avec npx
+### Claude
+
+#### Installation avec npx
+
+Créez un dossier d'installation et executez le commande suivante dans un shell
+
 ```bash
 npx caisse-enregistreuse-mcp-server --shopid=12345 --apikey=abcdef123456
 ```
 
-Installation avec npm
+#### Installation avec npm
+
 ```bash
 # 1) Dépendances
 npm install
@@ -57,10 +79,42 @@ npm install
 
 # 3) Compilation
 npm run build
-
-# 4) Production
-npm run stdio
 ```
+
+#### Configuration
+
+Le binaire/runner lance `src/stdio.ts` et parle MCP via stdin/stdout. 
+Personnalisez le chemin d'installation, et spécifiez vos paramètres SHOPID et APIKEY (à récupérer depuis https://caisse.enregistreuse.fr )
+
+```json
+{
+  "mcpServers": {
+    "caisse": {
+      "command": "node",
+      "args": [
+        "C:\\Projets\\ChangezMoi\\caisse-enregistreuse-mcp-server\\build\\stdio.js"
+      ],
+      "cwd": "C:\\Projets\\ChangezMoi\\caisse-enregistreuse-mcp-server",
+      "env": {
+        "SHOPID": "16",
+        "APIKEY": "XXXXXXXX"
+      }
+    }
+  }
+}
+```
+
+### ChatGPT
+
+> Nécessite un compte avec Espace de travail
+
+Dans Settings, Connectors, Create connector.
+Name : Caisse enregistreuse
+Description : Peut enregistrer des ventes à partir de votre catalogue, et consulter vos rapports de ventes. Logiciel de caisse
+MCP Server URL : https://mcp.enregistreuse.fr/mcp
+Authentication : oAuth
+
+Une fois le connecteur ajouté, celui-ci sera **utilisable dans les nouvelles conversations**.
 
 
 ### Variables d’environnement
@@ -88,16 +142,11 @@ MCP_TOKENS=token_prod_1,token_prod_2
 ### Mode HTTP (Streamable MCP)
 
 Le mode http nécessite un serveur redis.
-Le serveur MCP http/Websocket est disponible à l'adresse https://mcp.enregistreuse.fr
+Il est recommandé d'utiliser le serveur MCP http/Websocket, disponible à l'adresse https://mcp.enregistreuse.fr
 - **POST** `https://mcp.enregistreuse.fr/mcp` avec un message JSON‑RPC MCP.
 - **GET** `https://mcp.enregistreuse.fr/health` → `{ "status": "ok" }`
 - **GET** `https://mcp.enregistreuse.fr/.well-known/mcp/manifest.json` → manifeste MCP
 
-
-### Mode STDIO (utilisé pour Claude)
-Le binaire/runner lance `src/stdio.ts` et parle MCP via stdin/stdout. La garde d’auth vérifie `ctx.auth` stocké en session (défini par `auth_get_token`).
-
----
 
 ## 🧪 Outils MCP disponibles (extraits)
 
@@ -148,25 +197,6 @@ Toutes acceptent : `{{ format=('json'|'csv'|'html') }}`.
 
 ---
 
-## 🧾 Manifest MCP
-
-Le manifest est servi à `/.well-known/mcp/manifest.json`. 
-
----
-
-## 🐞 Débogage
-
-- Les modules `support/http.ts` tracent les requêtes et les réponses (JSON/TXT).
-- `stdio.ts` normalise automatiquement `inputSchema`/`outputSchema` en **ZodRawShape** si un tool ne fournit pas le format attendu par le SDK MCP.
-- Les logs ressemblent à :
-  ```
-  [caisse][path] __dirname=...
-  [caisse][env] API_BASE=... 
-  [caisse][patch] GET /workers/getPaymentModes.php ...
-  [caisse][patch] response {...}
-  ```
-
----
 ## Clients compatibles
 
 - ChatGPT (OpenAI) : via configuration MCP externe
@@ -186,14 +216,6 @@ https://mcp.enregistreuse.fr/.well-known/mcp/manifest.json
 
 > 🗂️ Cette URL est celle à fournir au client MCP lors de la configuration du serveur.
 
-
-## 📦 Déploiement
-
-- Conteneurisez l’app (Node 20+ ESM). Exposez le port `PORT`.
-- Servez `/mcp` derrière un proxy TLS (Caddy, Nginx) si public.
-- Gérez les secrets (`MCP_TOKENS`, `API_BASE`) via variables d’environnement.
-
----
 
 ## 📋 Licence
 
