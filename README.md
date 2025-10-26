@@ -8,7 +8,7 @@
 [![GitHub Repo](https://img.shields.io/badge/GitHub-paracetamol951%2Fcaisse--enregistreuse--mcp--server-lightgrey)](https://github.com/paracetamol951/caisse-enregistreuse-mcp-server)
 
 
-**Caisse Enregistreuse MCP Server** est un serveur conforme au protocole **MCP (Model Context Protocol)** permettant à ChatGPT (et autres clients compatibles MCP) de se connecter à un système de **caisse enregistreuse**.
+**Caisse Enregistreuse MCP Server** est un serveur conforme au protocole **MCP (Model Context Protocol)** permettant à ChatGPT, Claude (et autres clients compatibles MCP) de se connecter à un système de **caisse enregistreuse**.
 
 Il offre une interface simple pour :
 - 📊 Consulter les ventes et le chiffre d’affaires  
@@ -84,6 +84,12 @@ npm run build
 #### Configuration
 
 Le binaire/runner lance `src/stdio.ts` et parle MCP via stdin/stdout. 
+Modifiez le fichier `claude_desktop_config.json` dans le fichier de configuration de Claude desktop :
+
+```
+~/Library/Application Support/Claude/claude_desktop_config.json
+```
+
 Personnalisez le chemin d'installation, et spécifiez vos paramètres SHOPID et APIKEY (à récupérer depuis https://caisse.enregistreuse.fr )
 
 ```json
@@ -92,9 +98,9 @@ Personnalisez le chemin d'installation, et spécifiez vos paramètres SHOPID et 
     "caisse": {
       "command": "node",
       "args": [
-        "C:\\Projets\\ChangezMoi\\caisse-enregistreuse-mcp-server\\build\\stdio.js"
+        "{{PATH_TO_SRC}}\\build\\stdio.js"
       ],
-      "cwd": "C:\\Projets\\ChangezMoi\\caisse-enregistreuse-mcp-server",
+      "cwd": "{{PATH_TO_SRC}}",
       "env": {
         "SHOPID": "16",
         "APIKEY": "XXXXXXXX"
