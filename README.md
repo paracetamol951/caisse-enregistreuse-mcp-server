@@ -20,7 +20,7 @@ It provides a simple interface to:
 
 **Connect your cash register to ChatGPT, Claude, or n8n — and manage your business simply by talking.**
 
-![Caisse MCP](./Sale_create.png)
+![Caisse MCP](./doc/ChatGPT-Screen.png)
 
 Imagine your cash register understanding your sentences, executing your commands, and analyzing your reports — without a single click.  
 With this intelligent gateway, the **caisse.enregistreuse.fr** software becomes compatible with ChatGPT, Claude, and n8n, transforming your interactions into concrete actions.  
