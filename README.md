@@ -23,7 +23,7 @@ Il offre une interface simple pour :
 
 **Connectez votre caisse enregistreuse à ChatGPT, Claude ou n8n, et pilotez votre commerce simplement… en parlant**.
 
-![Caisse MCP](./Claude_sale_create.png)
+![Caisse MCP](./Sale_create.png)
 
 Imaginez votre caisse enregistreuse capable de comprendre vos phrases, d’exécuter vos commandes et de générer vos rapports sans un seul clic. 
 Grâce à cette nouvelle passerelle intelligente, le logiciel caisse.enregistreuse.fr devient compatible avec ChatGPT, Claude et n8n, transformant vos interactions en actions concrètes.
