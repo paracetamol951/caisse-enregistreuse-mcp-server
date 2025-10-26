@@ -9,8 +9,8 @@
       "description": "The SHOPID and APIKEY environment variables must be used in stdio or oAuth in http. Authenticate a user by login and password to obtain the APIKEY and SHOPID required for all other requests. Returns { result: 'OK', APIKEY, SHOPID } on success, or { result: 'ERROR', message } on failure."
     },
     "sale_create": {
-      "title": "Create a sale",
-      "description": "Create a new sale in the connected shop. Input includes paymentMode, and items[]. Each item can be of type 'catalog' (with productId), « department » (with deptId) or 'free' (with title and price). Check if the client already exists using data_list_clients and if the client exists specify idClient. If provided, paymentMode should correspond to a payment ID from data_list_payments tool. Returns a sale confirmation JSON from the API."
+      "title": "Record a sale",
+      "description": "Record a new sale in the connected shop. Input includes paymentMode, and items[]. Each item can be of type 'catalog' (with productId), « department » (with deptId) or 'free' (with title and price). Check if the client already exists using data_list_clients and if the client exists, only specify idClient. If provided, paymentMode should correspond to a payment ID from data_list_payments tool. Returns a sale confirmation JSON from the API."
     },
     "data_list_products": {
       "title": "List items",
