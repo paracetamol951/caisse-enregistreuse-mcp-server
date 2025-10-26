@@ -1,62 +1,64 @@
+# 🧾 Caisse Enregistreuse MCP Server
 
-
-# Caisse Enregistreuse MCP Server
-
-[![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-blue)](https://github.com/mcp-org)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/Demo-online-brightgreen.svg)](https://mcp.enregistreuse.fr)
 [![GitHub Stars](https://img.shields.io/github/stars/paracetamol951/caisse-enregistreuse-mcp-server?style=social)](https://github.com/paracetamol951/caisse-enregistreuse-mcp-server/stargazers)
 
 ![Caisse MCP](./ChatGPT-MCP.png)
 
-**Caisse Enregistreuse MCP Server** est un serveur conforme au protocole **MCP (Model Context Protocol)** permettant à ChatGPT, Claude (et autres clients compatibles MCP) de se connecter à un système de **caisse enregistreuse**.
+**Caisse Enregistreuse MCP Server** is a server compliant with the **MCP (Model Context Protocol)**, allowing ChatGPT, Claude, and other MCP-compatible clients to connect to a **sales recorder system** (or POS, cash register).
 
-Il offre une interface simple pour :
-- 📊 Consulter les ventes et le chiffre d’affaires  
-- 🧾 Créer et enregistrer des tickets  
-- 🛒 Gérer les produits et le stock  
-- 🧠 Générer des rapports automatisés via des requêtes conversationnelles  
+It provides a simple interface to:
+- 📊 View sales and revenue  
+- 🧾 Create and record receipts  
+- 🛒 Manage products and stock  
+- 🧠 Generate automated reports through conversational requests  
 
-> 🟢 Serveur en ligne : [https://mcp.enregistreuse.fr](https://mcp.enregistreuse.fr)
+> 🟢 Live Server: [https://mcp.enregistreuse.fr](https://mcp.enregistreuse.fr)
 
 ---
 
-**Connectez votre caisse enregistreuse à ChatGPT, Claude ou n8n, et pilotez votre commerce simplement… en parlant**.
+**Connect your cash register to ChatGPT, Claude, or n8n — and manage your business simply by talking.**
 
 ![Caisse MCP](./Sale_create.png)
 
-Imaginez votre caisse enregistreuse capable de comprendre vos phrases, d’exécuter vos commandes et de générer vos rapports sans un seul clic. 
-Grâce à cette nouvelle passerelle intelligente, le logiciel caisse.enregistreuse.fr devient compatible avec ChatGPT, Claude et n8n, transformant vos interactions en actions concrètes.
-Dites simplement “enregistre une commande de deux cafés en table 4” ou “affiche-moi la facture de la commande 125” — et c’est fait. 
+Imagine your cash register understanding your sentences, executing your commands, and analyzing your reports — without a single click.  
+With this intelligent gateway, the **caisse.enregistreuse.fr** software becomes compatible with ChatGPT, Claude, and n8n, transforming your interactions into concrete actions.  
+Just say “record an order for two coffees at table 4” or “show me the invoice for order 125” — and it’s done.  
 
-Vous pouvez aussi demander “quel est mon chiffre d’affaires de la semaine ?” ou “quels sont mes meilleurs clients un mardi ?”. Votre assistant préféré communique directement avec votre caisse et vous répond instantanément.
-C’est une nouvelle façon de gérer votre commerce : plus fluide, plus rapide et incroyablement naturelle. Votre voix devient votre interface, et votre assistant devient votre nouveau collègue de travail.
+You can also ask “what’s my revenue for this week?” or “who are my best customers on Tuesdays?”.  
+Your favorite assistant communicates directly with your cash register and responds instantly.  
+This is a new way to run your business: smoother, faster, and incredibly natural.  
+Your **voice becomes your interface**, and your **assistant becomes your new coworker**.
 
-Expose l’API de **caisse.enregistreuse.fr** / **free-cash-register.net** sous forme d’outils **Model Context Protocol (MCP)**, accessibles via HTTP (Streamable) et/ou STDIO.
+This project exposes the **caisse.enregistreuse.fr** / **free-cash-register.net** API as **Model Context Protocol (MCP)** tools, available over **HTTP (Streamable)** and/or **STDIO**.
 
-> Dernière mise à jour : 2025-10-17
-
----
-
-## 🚀 Fonctionnalités
-
-- **Ventes** : `sale_create` avec prise en charge des lignes catalogue et libres.
-- **Données** (listes) : articles, rayons, groupes de rayons, clients, déclinaisons, livraisons, modes de paiement, caisses, zones de livraison, points relais, réductions, utilisateurs…
-- **Serveur HTTP** : endpoint **POST `/mcp`** pour JSON‑RPC MCP Streamable + **GET `/health`** et **GET `/.well-known/mcp/manifest.json`**.
-- **Sécurité** :
-  - Garde côté **STDIO** : tous les tools sont protégés par session, sauf ceux explicitement en liste blanche (par défaut `health.ping`).
-  - (Optionnel) Vérification de **token porteur** via env `MCP_TOKENS` si vous utilisez la couche `security.ts`.
+> Last updated: 2025-10-17
 
 ---
 
-## 🔹 Exemple d’utilisation (ChatGPT / Claude MCP)
+## 🚀 Features
 
-- 💬 “Montre-moi les ventes d’aujourd’hui”
-- 💬 “Enregistre une vente de 2 cafés et 1 croissant en table 84”
-- 💬 “Dix roses rouges à livrer pour Mme Dupond à 18h15 !”
-- 💬 “Génère un rapport de caisse pour la semaine”
-- 💬 “Les ventes à emporter ont elle beaucoup progressé cette année ?”
-- 💬 “Le client Dupont a-t-il bien payé sa commande ?”
+- **Sales**: `sale_create` with support for catalog and free lines.
+- **Data** (lists): products, departments, department groups, clients, variations, deliveries, payment methods, cashboxes, delivery zones, relay points, discounts, users…
+- **HTTP Server**: endpoints  
+  - **POST** `/mcp` for JSON-RPC MCP Streamable  
+  - **GET** `/health`  
+  - **GET** `/.well-known/mcp/manifest.json`
+- **Security**:
+  - Guard on **STDIO**: all tools are session-protected, except those explicitly whitelisted (by default `health.ping`).
+  - (Optional) **Bearer token** validation via `MCP_TOKENS` environment variable if using the `security.ts` layer.
+
+---
+
+## 🔹 Example usage (ChatGPT / Claude MCP)
+
+- 💬 “Show me today’s sales”  
+- 💬 “Record a sale of 2 coffees and 1 croissant at table 84”  
+- 💬 “Ten red roses to deliver to Mrs. Dupond at 6:15 PM!”  
+- 💬 “Generate a cash register report for the week”  
+- 💬 “Have takeaway sales increased this year?”  
+- 💬 “Did customer Dupont pay for their order?”
 
 ---
 
@@ -64,36 +66,36 @@ Expose l’API de **caisse.enregistreuse.fr** / **free-cash-register.net** sous 
 
 ### Claude
 
-#### Installation avec npx
+#### Install via npx
 
-Créez un dossier d'installation et executez le commande suivante dans un shell
+Create an installation folder and run the following command in your shell:
 
 ```bash
 npx caisse-enregistreuse-mcp-server --shopid=12345 --apikey=abcdef123456
 ```
 
-#### Installation avec npm
+#### Install via npm
 
 ```bash
-# 1) Dépendances
+# 1) Dependencies
 npm install
 
-# 2) Variables d'environnement (voir ci‑dessous)
+# 2) Environment variables (see below)
 
-# 3) Compilation
+# 3) Build
 npm run build
 ```
 
 #### Configuration
 
-Le binaire/runner lance `src/stdio.ts` et parle MCP via stdin/stdout. 
-Modifiez le fichier `claude_desktop_config.json` dans le fichier de configuration de Claude desktop :
+The binary/runner launches `src/stdio.ts` and communicates via MCP stdin/stdout.  
+Edit the file `claude_desktop_config.json` in your Claude Desktop configuration directory:
 
 ```
 ~/Library/Application Support/Claude/claude_desktop_config.json
 ```
 
-Personnalisez le chemin d'installation, et spécifiez vos paramètres SHOPID et APIKEY (à récupérer depuis https://caisse.enregistreuse.fr )
+Customize the installation path and set your SHOPID and APIKEY (retrieve them from [https://caisse.enregistreuse.fr](https://caisse.enregistreuse.fr)):
 
 ```json
 {
@@ -101,7 +103,7 @@ Personnalisez le chemin d'installation, et spécifiez vos paramètres SHOPID et 
     "caisse": {
       "command": "node",
       "args": [
-        "{{PATH_TO_SRC}}\\build\\stdio.js"
+        "{{PATH_TO_SRC}}\build\stdio.js"
       ],
       "cwd": "{{PATH_TO_SRC}}",
       "env": {
@@ -115,57 +117,61 @@ Personnalisez le chemin d'installation, et spécifiez vos paramètres SHOPID et 
 
 ### ChatGPT
 
-> Nécessite un compte avec Espace de travail
+> Requires a workspace account
 
-Dans Settings, Connectors, Create connector.
+In **Settings → Connectors → Create Connector**, fill in the following:
 
-| Variable        | Valeur                              |
-|----------------|------------------------------------------|
-| `Name`         | `Caisse enregistreuse`                                   |
-| `Description`         | `Peut enregistrer des ventes à partir de votre catalogue, et consulter vos rapports de ventes. Logiciel de caisse`                                   |
-| `MCP Server URL`         | `https://mcp.enregistreuse.fr/mcp`                                   |
-| `Authentication`         | `oAuth`                                   |
+| Variable | Value |
+|-----------|--------|
+| `Name` | `Caisse enregistreuse` |
+| `Description` | `Can record sales from your catalog and retrieve your sales reports. POS software integration.` |
+| `MCP Server URL` | `https://mcp.enregistreuse.fr/mcp` |
+| `Authentication` | `oAuth` |
 
-Une fois le connecteur ajouté, celui-ci sera **utilisable dans les nouvelles conversations**.
+Once added, the connector will be **available in new conversations**.
 
+---
 
-### Variables d’environnement
+### Environment variables
 
-| Variable        | Par défaut                              | Description |
-|----------------|------------------------------------------|-------------|
-| `APIKEY`         | `----`                                   | Nécessaire : votre clé API |
-| `SHOPID`         | `----`                                   | Nécessaire : votre ID boutique |
-| `PORT`         | `8787`                                   | Port HTTP du serveur |
-| `API_BASE`     | `https://caisse.enregistreuse.fr`        | Base URL de l’API distante |
-| `MCP_TOKENS`   | *(vide)*                                 | Liste de tokens HTTP autorisés, séparés par virgules (optionnel) |
+| Variable | Default | Description |
+|-----------|----------|-------------|
+| `APIKEY` | `----` | Required: your API key |
+| `SHOPID` | `----` | Required: your shop ID |
+| `PORT` | `8787` | HTTP server port |
+| `API_BASE` | `https://caisse.enregistreuse.fr` | Base URL of the remote API |
+| `MCP_TOKENS` | *(empty)* | Optional: list of authorized HTTP tokens, comma-separated |
 
-Créez un fichier `.env` :
+Create a `.env` file:
+
 ```env
 PORT=8787
 API_BASE=https://caisse.enregistreuse.fr
-# Exemple si vous activez le garde HTTP:
+# Example if enabling HTTP guard:
 MCP_TOKENS=token_prod_1,token_prod_2
 ```
 
 ---
 
-## ▶️ Lancement
+## ▶️ Launch
 
-### Mode HTTP (Streamable MCP)
+### HTTP Mode (Streamable MCP)
 
-Le mode http nécessite un serveur redis.
-Il est recommandé d'utiliser le serveur MCP http/Websocket, disponible à l'adresse https://mcp.enregistreuse.fr
-- **POST** `https://mcp.enregistreuse.fr/mcp` avec un message JSON‑RPC MCP.
-- **GET** `https://mcp.enregistreuse.fr/health` → `{ "status": "ok" }`
-- **GET** `https://mcp.enregistreuse.fr/.well-known/mcp/manifest.json` → manifeste MCP
+The HTTP mode requires a Redis server.  
+It is recommended to use the hosted MCP HTTP/WebSocket server available at [https://mcp.enregistreuse.fr](https://mcp.enregistreuse.fr):
 
+- **POST** `https://mcp.enregistreuse.fr/mcp` with a JSON-RPC MCP message  
+- **GET** `https://mcp.enregistreuse.fr/health` → `{ "status": "ok" }`  
+- **GET** `https://mcp.enregistreuse.fr/.well-known/mcp/manifest.json` → MCP manifest  
 
-## 🧪 Outils MCP disponibles (extraits)
+---
+
+## 🧪 Available MCP Tools (excerpt)
 
 ### `sale_create`
-Crée une vente. 
+Creates a sale.
 
-Entrée (shape Zod, champs principaux) :
+Input (Zod schema, main fields):
 - `shopId: string`, `apiKey: string`
 - `payment: number`
 - `deliveryMethod: 0|1|2|3|4|5|6`
@@ -184,13 +190,13 @@ Entrée (shape Zod, champs principaux) :
    | {{ type:'free', price?, title? }}
   >`
 
-Encodage legacy des lignes :
-- **Catalogue** : `productId_quantity_titleOverride_priceOverride_[...declinaisons]`
-- **Vente en rayon** : `-<departmentId>_<price>_<title>`
-- **Ligne libre** : `Free_<price>_<title>`
-→ Envoyées sous la forme `itemsList[]`.
+Legacy item encoding:
+- **Catalog**: `productId_quantity_titleOverride_priceOverride_[...declinaisons]`
+- **Department sale**: `-<departmentId>_<price>_<title>`
+- **Free line**: `Free_<price>_<title>`
+→ Sent as `itemsList[]`.
 
-### `data_list_*` (exemples)
+### `data_list_*` (examples)
 - `data_list_products`
 - `data_list_departments`
 - `data_list_department_groups`
@@ -205,30 +211,30 @@ Encodage legacy des lignes :
 - `data_list_users`
 - `data_list_tables`
 
-Toutes acceptent : `{{ format=('json'|'csv'|'html') }}`.
+All accept: `{{ format=('json'|'csv'|'html') }}`.
 
 ---
 
-## Clients compatibles
+## 💻 Compatible Clients
 
-- ChatGPT (OpenAI) : via configuration MCP externe
-- Claude (Anthropic) : via “Tools manifest URL”
-- n8n / Flowise / LangChain : import via URL publique
+- **ChatGPT (OpenAI)** — via external MCP configuration  
+- **Claude (Anthropic)** — via “Tools manifest URL”  
+- **n8n / Flowise / LangChain** — import via public URL  
 
 ---
 
 ## 🧩 MCP Manifest Endpoint
 
-L’API MCP expose un manifeste JSON décrivant l’ensemble des outils disponibles
-pour les clients compatibles (ChatGPT, Claude, n8n, etc.).
+The MCP API exposes a JSON manifest describing all available tools for compatible clients (ChatGPT, Claude, n8n, etc.).
 
-### URL publique du manifeste
+### Public manifest URL
 
 https://mcp.enregistreuse.fr/.well-known/mcp/manifest.json
 
-> 🗂️ Cette URL est celle à fournir au client MCP lors de la configuration du serveur.
+> 🗂️ This URL is the one to provide to your MCP client when configuring the server.
 
+---
 
-## 📋 Licence
+## 📋 License
 
 © 2025. GNU GENERAL PUBLIC LICENSE
