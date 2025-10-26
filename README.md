@@ -5,8 +5,9 @@
 [![MCP Compatible](https://img.shields.io/badge/MCP-Compatible-blue)](https://github.com/mcp-org)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/Demo-online-brightgreen.svg)](https://mcp.enregistreuse.fr)
-[![GitHub Repo](https://img.shields.io/badge/GitHub-paracetamol951%2Fcaisse--enregistreuse--mcp--server-lightgrey)](https://github.com/paracetamol951/caisse-enregistreuse-mcp-server)
+[![GitHub Stars](https://img.shields.io/github/stars/paracetamol951/caisse-enregistreuse-mcp-server?style=social)](https://github.com/paracetamol951/caisse-enregistreuse-mcp-server/stargazers)
 
+![Caisse MCP](./ChatGPT-MCP.png)
 
 **Caisse Enregistreuse MCP Server** est un serveur conforme au protocole **MCP (Model Context Protocol)** permettant à ChatGPT, Claude (et autres clients compatibles MCP) de se connecter à un système de **caisse enregistreuse**.
 
@@ -21,6 +22,8 @@ Il offre une interface simple pour :
 ---
 
 **Connectez votre caisse enregistreuse à ChatGPT, Claude ou n8n, et pilotez votre commerce simplement… en parlant**.
+
+![Caisse MCP](./Claude_sale_create.png)
 
 Imaginez votre caisse enregistreuse capable de comprendre vos phrases, d’exécuter vos commandes et de générer vos rapports sans un seul clic. 
 Grâce à cette nouvelle passerelle intelligente, le logiciel caisse.enregistreuse.fr devient compatible avec ChatGPT, Claude et n8n, transformant vos interactions en actions concrètes.
