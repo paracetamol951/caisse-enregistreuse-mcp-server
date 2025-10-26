@@ -118,10 +118,13 @@ Personnalisez le chemin d'installation, et spécifiez vos paramètres SHOPID et 
 > Nécessite un compte avec Espace de travail
 
 Dans Settings, Connectors, Create connector.
-Name : Caisse enregistreuse
-Description : Peut enregistrer des ventes à partir de votre catalogue, et consulter vos rapports de ventes. Logiciel de caisse
-MCP Server URL : https://mcp.enregistreuse.fr/mcp
-Authentication : oAuth
+
+| Variable        | Valeur                              |
+|----------------|------------------------------------------|
+| `Name`         | `Caisse enregistreuse`                                   |
+| `Description`         | `Peut enregistrer des ventes à partir de votre catalogue, et consulter vos rapports de ventes. Logiciel de caisse`                                   |
+| `MCP Server URL`         | `https://mcp.enregistreuse.fr/mcp`                                   |
+| `Authentication`         | `oAuth`                                   |
 
 Une fois le connecteur ajouté, celui-ci sera **utilisable dans les nouvelles conversations**.
 
