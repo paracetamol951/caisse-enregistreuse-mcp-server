@@ -62,6 +62,16 @@ This project exposes the **caisse.enregistreuse.fr** / **free-cash-register.net*
 
 ---
 
+## ⚙Prerequisities
+
+You need to have a free-cash-register.net account.
+If you don't have one, you can register at :
+https://www.free-cash-register.net/free-pos-software/
+
+Then in the software, you have to get your APIKEY and SHOPID in Setup, Webservices page.
+
+---
+
 ## ⚙️ Installation
 
 ### Claude
