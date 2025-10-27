@@ -63,7 +63,7 @@ function loadDotenv(filePath?: string) {
         console.log(`[MCP] HTTP → port=${port}, langue=${lang}, shop=${process.env.SHOPID}`);
         await import("./index.js");
     } else {
-        console.log(`[MCP] STDIO → langue=${lang}, shop=${process.env.SHOPID}`);
+        //console.log(`[MCP] STDIO → langue=${lang}, shop=${process.env.SHOPID}`);
         await import("./stdio.js");
     }
 })();

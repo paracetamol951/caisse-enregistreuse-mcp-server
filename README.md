@@ -103,7 +103,7 @@ Customize the installation path and set your SHOPID and APIKEY (retrieve them fr
     "caisse": {
       "command": "node",
       "args": [
-        "{{PATH_TO_SRC}}\build\stdio.js"
+        "{{PATH_TO_SRC}}/build/stdio.js"
       ],
       "cwd": "{{PATH_TO_SRC}}",
       "env": {
