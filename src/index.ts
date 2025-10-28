@@ -152,6 +152,11 @@ const handleSessionRequest = asyncHandler(async (req: express.Request, res: expr
 app.get('/mcp', handleSessionRequest);
 app.delete('/mcp', handleSessionRequest);
 
+app.get("/", (req, res) => {
+    // Redirige vers une autre URL (ex : https://example.com)
+    res.redirect("https://www.free-cash-register.net/free-pos-software/mcp");
+});
+
 // Lancement HTTP
 const port = Number(process.env.PORT || 8787);
 app

@@ -41,13 +41,6 @@ This project exposes the **caisse.enregistreuse.fr** / **free-cash-register.net*
 
 - **Sales**: `sale_create` with support for catalog and free lines.
 - **Data** (lists): products, departments, department groups, clients, variations, deliveries, payment methods, cashboxes, delivery zones, relay points, discounts, users…
-- **HTTP Server**: endpoints  
-  - **POST** `/mcp` for JSON-RPC MCP Streamable  
-  - **GET** `/health`  
-  - **GET** `/.well-known/mcp/manifest.json`
-- **Security**:
-  - Guard on **STDIO**: all tools are session-protected, except those explicitly whitelisted (by default `health.ping`).
-  - (Optional) **Bearer token** validation via `MCP_TOKENS` environment variable if using the `security.ts` layer.
 
 ---
 
@@ -66,7 +59,7 @@ This project exposes the **caisse.enregistreuse.fr** / **free-cash-register.net*
 
 You need to have a free-cash-register.net account.
 If you don't have one, you can register at :
-https://www.free-cash-register.net/free-pos-software/
+https://www.free-cash-register.net/free-pos-software/ChatGPT
 
 Then in the software, you have to get your APIKEY and SHOPID in Setup, Webservices page.
 
@@ -75,6 +68,38 @@ Then in the software, you have to get your APIKEY and SHOPID in Setup, Webservic
 ## ⚙️ Installation
 
 ### Claude
+
+#### Minimum installation
+
+Edit the file `claude_desktop_config.json` in your Claude Desktop configuration directory:
+
+Windows
+```
+%APPDATA%\Claude\claude_desktop_config.json
+```
+
+Mac OS
+```
+~/Library/Application Support/Claude/claude_desktop_config.json
+```
+
+Provide the following content after replacing your SHOPID and APIKEY.
+
+```json
+  <pre><code>{
+  "mcpServers": {
+    "caisse": {
+      "command": "npx",
+      "args": [
+        "caisse-enregistreuse-mcp-server",
+        "--shopid=[replaceWithYourSHOPID]",
+        "--apikey=[replaceWithYourAPIKEY]"
+      ]
+    }
+  }
+}
+</code></pre>
+```
 
 #### Install via npx
 
@@ -99,12 +124,7 @@ npm run build
 #### Configuration
 
 The binary/runner launches `src/stdio.ts` and communicates via MCP stdin/stdout.  
-Edit the file `claude_desktop_config.json` in your Claude Desktop configuration directory:
-
-```
-~/Library/Application Support/Claude/claude_desktop_config.json
-```
-
+Edit the file `claude_desktop_config.json` in your Claude Desktop configuration directory
 Customize the installation path and set your SHOPID and APIKEY (retrieve them from [https://caisse.enregistreuse.fr](https://caisse.enregistreuse.fr)):
 
 ```json
