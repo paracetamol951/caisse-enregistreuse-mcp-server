@@ -1,4 +1,4 @@
-# 🧾 Caisse Enregistreuse MCP Server
+# 🧾 Kash MCP Server
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/Demo-online-brightgreen.svg)](https://mcp.enregistreuse.fr)
@@ -6,7 +6,7 @@
 
 ![Caisse MCP](./ChatGPT-MCP.png)
 
-**Caisse Enregistreuse MCP Server** is a server compliant with the **MCP (Model Context Protocol)**, allowing ChatGPT, Claude, and other MCP-compatible clients to connect to a **sales recorder system** (or POS, cash register).
+**Kash MCP Server** is a server compliant with the **MCP (Model Context Protocol)**, allowing ChatGPT, Claude, and other MCP-compatible clients to connect to a **sales recorder system** (or POS, cash register).
 
 It provides a simple interface to:
 - 📊 View sales and revenue  
@@ -23,7 +23,7 @@ It provides a simple interface to:
 ![Caisse MCP](./doc/ChatGPT-Screen.png)
 
 Imagine your cash register understanding your sentences, executing your commands, and analyzing your reports — without a single click.  
-With this intelligent gateway, the **caisse.enregistreuse.fr** software becomes compatible with ChatGPT, Claude, and n8n, transforming your interactions into concrete actions.  
+With this intelligent gateway, the **free-cash-register.net** software becomes compatible with ChatGPT, Claude, and n8n, transforming your interactions into concrete actions.  
 Just say “record an order for two coffees at table 4” or “show me the invoice for order 125” — and it’s done.  
 
 You can also ask “what’s my revenue for this week?” or “who are my best customers on Tuesdays?”.  
