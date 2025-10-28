@@ -154,7 +154,7 @@ app.delete('/mcp', handleSessionRequest);
 
 app.get("/", (req, res) => {
     // Redirige vers une autre URL (ex : https://example.com)
-    res.redirect("https://www.free-cash-register.net/free-pos-software/mcp");
+    res.redirect("https://www.free-cash-register.net/free-pos-software/ChatGPT");
 });
 
 // Lancement HTTP
