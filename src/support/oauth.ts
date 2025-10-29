@@ -1,17 +1,17 @@
 ﻿// src/support/oauth.ts
 import 'dotenv/config';
-import express, { Request, Response } from 'express';
+import express from 'express';
 import crypto from 'node:crypto';
-import { generateKeyPair, exportJWK, importPKCS8, SignJWT, jwtVerify, createLocalJWKSet, importSPKI } from 'jose';
+import {  exportJWK, importPKCS8, SignJWT, jwtVerify, createLocalJWKSet, importSPKI } from 'jose';
 import { URL } from 'node:url';
 import { postForm } from './http.js';
-import { saveCode, loadCode, deleteCode, type PendingCode } from './oauth-store.js';
+import { saveCode, loadCode, deleteCode } from './oauth-store.js';
 import { saveClient, getClient, clientExists, type OAuthClient } from './oauth-clients-store.js';
 
 
 // ---------- CONFIG ----------
-const ISSUER = process.env.MCP_OAUTH_ISSUER || 'https://mcp.enregistreuse.fr';
-const AUD = process.env.MCP_OAUTH_AUDIENCE || 'https://mcp.enregistreuse.fr';
+const ISSUER = process.env.MCP_OAUTH_ISSUER || 'https://mcp.kash.click';
+const AUD = process.env.MCP_OAUTH_AUDIENCE || 'https://mcp.kash.click';
 const AUTH_WS = process.env.MCP_AUTH_WS_BASE || 'https://caisse.enregistreuse.fr'; // base pour getAuthToken.php
 
 // Clés pour RS256 (publiques via JWKS)

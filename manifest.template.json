@@ -5,7 +5,7 @@
   "endpoints": [
     {
       "type": "http",
-      "url": "https://mcp.enregistreuse.fr/mcp",
+      "url": "https://mcp.kash.click/mcp",
       "supports_streaming": true
     }
   ],

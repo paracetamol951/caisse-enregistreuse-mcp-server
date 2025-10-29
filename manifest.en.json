@@ -1,11 +1,11 @@
 {
-  "name": "Caisse Enregistreuse MCP Server",
+  "name": "Kash.click MCP Server",
   "version": "1.2.0",
-  "description": "Exposes caisse.enregistreuse.fr API as MCP tools, enabling programmatic access to authentication, sales creation, and data listing features for shops.",
+  "description": "Exposes kash.click API as MCP tools, enabling programmatic access to authentication, sales creation, and data listing features for shops.",
   "endpoints": [
     {
       "type": "http",
-      "url": "https://mcp.enregistreuse.fr/mcp",
+      "url": "https://mcp.kash.click/mcp",
       "supports_streaming": true
     }
   ],

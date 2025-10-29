@@ -1,11 +1,11 @@
 {
-  "name": "Serveur MCP Caisse Enregistreuse",
+  "name": "Serveur MCP Kash.click",
   "version": "1.2.0",
-  "description": "Expose l’API caisse.enregistreuse.fr sous forme d’outils MCP, permettant un accès programmatique à l’authentification, à la création de ventes et à la consultation des données du commerce.",
+  "description": "Expose l’API kash.click sous forme d’outils MCP, permettant un accès programmatique à l’authentification, à la création de ventes et à la consultation des données du commerce.",
   "endpoints": [
     {
       "type": "http",
-      "url": "https://mcp.enregistreuse.fr/mcp",
+      "url": "https://mcp.kash.click/mcp",
       "supports_streaming": true
     }
   ],

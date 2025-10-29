@@ -1,7 +1,7 @@
 # 🧾 Kash MCP Server
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
-[![Live Demo](https://img.shields.io/badge/Demo-online-brightgreen.svg)](https://mcp.enregistreuse.fr)
+[![Live Demo](https://img.shields.io/badge/Demo-online-brightgreen.svg)](https://mcp.kash.click)
 [![GitHub Stars](https://img.shields.io/github/stars/paracetamol951/caisse-enregistreuse-mcp-server?style=social)](https://github.com/paracetamol951/caisse-enregistreuse-mcp-server/stargazers)
 
 ![Caisse MCP](./ChatGPT-MCP.png)
@@ -14,7 +14,7 @@ It provides a simple interface to:
 - 🛒 Manage products and stock  
 - 🧠 Generate automated reports through conversational requests  
 
-> 🟢 Live Server: [https://mcp.enregistreuse.fr](https://mcp.enregistreuse.fr)
+> 🟢 Live Server: [https://mcp.kash.click](https://mcp.kash.click)
 
 ---
 
@@ -31,7 +31,7 @@ Your favorite assistant communicates directly with your cash register and respon
 This is a new way to run your business: smoother, faster, and incredibly natural.  
 Your **voice becomes your interface**, and your **assistant becomes your new coworker**.
 
-This project exposes the **caisse.enregistreuse.fr** / **free-cash-register.net** API as **Model Context Protocol (MCP)** tools, available over **HTTP (Streamable)** and/or **STDIO**.
+This project exposes the **kash.click** API as **Model Context Protocol (MCP)** tools, available over **HTTP (Streamable)** and/or **STDIO**.
 
 > Last updated: 2025-10-17
 
@@ -125,7 +125,7 @@ npm run build
 
 The binary/runner launches `src/stdio.ts` and communicates via MCP stdin/stdout.  
 Edit the file `claude_desktop_config.json` in your Claude Desktop configuration directory
-Customize the installation path and set your SHOPID and APIKEY (retrieve them from [https://caisse.enregistreuse.fr](https://caisse.enregistreuse.fr)):
+Customize the installation path and set your SHOPID and APIKEY (retrieve them from [https://kash.click](https://kash.click)):
 
 ```json
 {
@@ -153,9 +153,9 @@ In **Settings → Connectors → Create Connector**, fill in the following:
 
 | Variable | Value |
 |-----------|--------|
-| `Name` | `Caisse enregistreuse` |
+| `Name` | `Kash POS` |
 | `Description` | `Can record sales from your catalog and retrieve your sales reports. POS software integration.` |
-| `MCP Server URL` | `https://mcp.enregistreuse.fr/mcp` |
+| `MCP Server URL` | `https://mcp.kash.click/mcp` |
 | `Authentication` | `oAuth` |
 
 Once added, the connector will be **available in new conversations**.
@@ -168,17 +168,12 @@ Once added, the connector will be **available in new conversations**.
 |-----------|----------|-------------|
 | `APIKEY` | `----` | Required: your API key |
 | `SHOPID` | `----` | Required: your shop ID |
-| `PORT` | `8787` | HTTP server port |
-| `API_BASE` | `https://caisse.enregistreuse.fr` | Base URL of the remote API |
-| `MCP_TOKENS` | *(empty)* | Optional: list of authorized HTTP tokens, comma-separated |
 
 Create a `.env` file:
 
 ```env
-PORT=8787
-API_BASE=https://caisse.enregistreuse.fr
-# Example if enabling HTTP guard:
-MCP_TOKENS=token_prod_1,token_prod_2
+APIKEY=XXXXXXXXXXXXXX
+SHOPID=XXX
 ```
 
 ---
@@ -188,11 +183,11 @@ MCP_TOKENS=token_prod_1,token_prod_2
 ### HTTP Mode (Streamable MCP)
 
 The HTTP mode requires a Redis server.  
-It is recommended to use the hosted MCP HTTP/WebSocket server available at [https://mcp.enregistreuse.fr](https://mcp.enregistreuse.fr):
+It is recommended to use the hosted MCP HTTP/WebSocket server available at [https://mcp.kash.click](https://mcp.kash.click):
 
-- **POST** `https://mcp.enregistreuse.fr/mcp` with a JSON-RPC MCP message  
-- **GET** `https://mcp.enregistreuse.fr/health` → `{ "status": "ok" }`  
-- **GET** `https://mcp.enregistreuse.fr/.well-known/mcp/manifest.json` → MCP manifest  
+- **POST** `https://mcp.kash.click/mcp` with a JSON-RPC MCP message  
+- **GET** `https://mcp.kash.click/health` → `{ "status": "ok" }`  
+- **GET** `https://mcp.kash.click/.well-known/mcp/manifest.json` → MCP manifest  
 
 ---
 
@@ -259,7 +254,7 @@ The MCP API exposes a JSON manifest describing all available tools for compatibl
 
 ### Public manifest URL
 
-https://mcp.enregistreuse.fr/.well-known/mcp/manifest.json
+https://mcp.kash.click/.well-known/mcp/manifest.json
 
 > 🗂️ This URL is the one to provide to your MCP client when configuring the server.
 
