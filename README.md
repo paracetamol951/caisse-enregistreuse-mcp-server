@@ -88,7 +88,7 @@ Mac OS
 Provide the following content after replacing your SHOPID and APIKEY.
 
 ```json
-  <pre><code>{
+  {
   "mcpServers": {
     "caisse": {
       "command": "npx",
@@ -100,7 +100,6 @@ Provide the following content after replacing your SHOPID and APIKEY.
     }
   }
 }
-</code></pre>
 ```
 
 #### Install via npx
