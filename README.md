@@ -58,8 +58,10 @@ This project exposes the **kash.click** API as **Model Context Protocol (MCP)** 
 ## ⚙Prerequisities
 
 You need to have a free-cash-register.net account.
+
 If you don't have one, you can register at :
-https://www.free-cash-register.net/free-pos-software/ChatGPT
+
+https://kash.click/free-pos-software/ChatGPT
 
 Then in the software, you have to get your APIKEY and SHOPID in Setup, Webservices page.
 
