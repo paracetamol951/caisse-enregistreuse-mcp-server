@@ -38,6 +38,7 @@ This project exposes the **kash.click** API as **Model Context Protocol (MCP)** 
 ## 🚀 Features
 
 - **Sales**: `sale_create` with support for catalog and free lines.
+- **Orders** : get the order list in the specified date range
 - **Data** (lists): products, departments, department groups, clients, variations, deliveries, payment methods, cashboxes, delivery zones, relay points, discounts, users…
 
 ---
