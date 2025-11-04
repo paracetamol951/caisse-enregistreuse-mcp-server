@@ -33,8 +33,6 @@ Your **voice becomes your interface**, and your **assistant becomes your new cow
 
 This project exposes the **kash.click** API as **Model Context Protocol (MCP)** tools, available over **HTTP (Streamable)** and/or **STDIO**.
 
-> Last updated: 2025-10-17
-
 ---
 
 ## 🚀 Features
