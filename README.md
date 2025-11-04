@@ -4,7 +4,7 @@
 [![Live Demo](https://img.shields.io/badge/Demo-online-brightgreen.svg)](https://mcp.kash.click)
 [![GitHub Stars](https://img.shields.io/github/stars/paracetamol951/caisse-enregistreuse-mcp-server?style=social)](https://github.com/paracetamol951/caisse-enregistreuse-mcp-server/stargazers)
 
-![Caisse MCP](./ChatGPT-MCP.png)
+[![Kash MCP](./ChatGPT-MCP.png)](https://www.youtube.com/watch?v=PpkrUfEy4ns)
 
 **Kash MCP Server** is a server compliant with the **MCP (Model Context Protocol)**, allowing ChatGPT, Claude, and other MCP-compatible clients to connect to a **sales recorder system** (or POS, cash register).
 
