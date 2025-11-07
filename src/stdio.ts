@@ -54,60 +54,7 @@ async function main() {
         name: 'caisse-enregistreuse-api',
         version: '1.2.0',
     });
-    // --- Guard inline: protège tous les tools sauf whitelist ---
-    type Ctx = { auth?: { ok: boolean; user?: string; shopId?: string; scopes?: string[] } };
-    // Wrap de registerTool
-    function enforceAuthOnTools(server: any, whitelist: string[] = []) {
-        const original = server.registerTool.bind(server);
-
-        server.registerTool = (
-            name: string,
-            meta: any,
-            handler: (args: any, ctx: Ctx) => Promise<any>
-        ) => {
-            const guarded = async (args: any, ctx: Ctx = {}) => {
-                // Réinjecter l’auth de la session dans ce ctx “éphémère”
-                const current = getSessionAuth();
-                if (current) ctx.auth = current;
-
-                // Autoriser les tools publics
-                if (whitelist.includes(name)) {
-                    return handler(args, ctx);
-                }
-
-                // Protéger les autres
-                if (!ctx.auth?.ok) {
-                    const err: any = new Error('Login required');
-                    err.code = -32001;
-                    throw err;
-                }
-
-                // (Optionnel) Scopes fins par tool
-                if (meta?.requiredScopes?.length) {
-                    const have = new Set(ctx.auth.scopes || []);
-                    const need: string[] = meta.requiredScopes;
-                    const ok = need.every(s => have.has(s) || have.has('*'));
-                    if (!ok) {
-                        const err: any = new Error('Forbidden: missing scope');
-                        err.code = -32003;
-                        throw err;
-                    }
-                }
-
-                return handler(args, ctx);
-            };
-
-            return original(name, meta, guarded);
-        };
-    }
-
-
-    // Activer le guard avec une whitelist minimale
-    enforceAuthOnTools(server, [
-        'health.ping',      // public
-        //'auth_get_token',   // public si tu veux que la 1ère étape reste ouverte
-        // si tu veux AU CONTRAIRE fermer auth_get_token, enlève-le de la whitelist
-    ]);
+    
 
     // --- Wrapper registerTool : forcera inputSchema/outputSchema en ZodRawShape ---
     const registeredToolNames: string[] = [];
