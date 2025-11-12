@@ -6,6 +6,10 @@
 
 [![Kash MCP](./ChatGPT-MCP.png)](https://www.youtube.com/watch?v=PpkrUfEy4ns)
 
+<a href="https://glama.ai/mcp/servers/@paracetamol951/caisse-enregistreuse-mcp-server">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@paracetamol951/caisse-enregistreuse-mcp-server/badge" alt="caisse-enregistreuse-mcp-server MCP server" />
+</a>
+
 **Kash MCP Server** is a server compliant with the **MCP (Model Context Protocol)**, allowing ChatGPT, Claude, and other MCP-compatible clients to connect to a **sales recorder system** (or POS, cash register).
 
 It provides a simple interface to:
@@ -24,9 +28,9 @@ It provides a simple interface to:
 
 Imagine your cash register understanding your sentences, executing your commands, and analyzing your reports — without a single click.  
 With this intelligent gateway, the **free-cash-register.net** software becomes compatible with ChatGPT, Claude, and n8n, transforming your interactions into concrete actions.  
-Just say “record an order for two coffees at table 4” or “show me the invoice for order 125” — and it’s done.  
+Just say "record an order for two coffees at table 4" or "show me the invoice for order 125" — and it's done.  
 
-You can also ask “what’s my revenue for this week?” or “who are my best customers on Tuesdays?”.  
+You can also ask "what's my revenue for this week?" or "who are my best customers on Tuesdays?".  
 Your favorite assistant communicates directly with your cash register and responds instantly.  
 This is a new way to run your business: smoother, faster, and incredibly natural.  
 Your **voice becomes your interface**, and your **assistant becomes your new coworker**.
@@ -45,12 +49,12 @@ This project exposes the **kash.click** API as **Model Context Protocol (MCP)** 
 
 ## 🔹 Example usage (ChatGPT / Claude MCP)
 
-- 💬 “Show me today’s sales”  
-- 💬 “Record a sale of 2 coffees and 1 croissant at table 84”  
-- 💬 “Ten red roses to deliver to Mrs. Dupond at 6:15 PM!”  
-- 💬 “Generate a cash register report for the week”  
-- 💬 “Have takeaway sales increased this year?”  
-- 💬 “Did customer Dupont pay for their order?”
+- 💬 "Show me today's sales"  
+- 💬 "Record a sale of 2 coffees and 1 croissant at table 84"  
+- 💬 "Ten red roses to deliver to Mrs. Dupond at 6:15 PM!"  
+- 💬 "Generate a cash register report for the week"  
+- 💬 "Have takeaway sales increased this year?"  
+- 💬 "Did customer Dupont pay for their order?"
 
 ---
 
@@ -243,7 +247,7 @@ All accept: `{{ format=('json'|'csv'|'html') }}`.
 ## 💻 Compatible Clients
 
 - **ChatGPT (OpenAI)** — via external MCP configuration  
-- **Claude (Anthropic)** — via “Tools manifest URL”  
+- **Claude (Anthropic)** — via "Tools manifest URL"  
 - **n8n / Flowise / LangChain** — import via public URL  
 
 ---
