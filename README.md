@@ -263,3 +263,8 @@ https://mcp.kash.click/.well-known/mcp/manifest.json
 ## 📋 License
 
 © 2025. GNU GENERAL PUBLIC LICENSE
+
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/paracetamol951-caisse-enregistreuse-mcp-server).
+
