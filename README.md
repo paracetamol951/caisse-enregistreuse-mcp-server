@@ -1,3 +1,5 @@
+[![smithery badge](https://smithery.ai/badge/paracetamol951/kash)](https://smithery.ai/servers/paracetamol951/kash)
+
 # 🧾 Kash MCP Server
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
