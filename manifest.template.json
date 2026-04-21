@@ -60,12 +60,24 @@
       "description": "Record a new sale in the connected shop. Input includes paymentMode, and items[]. Each item can be of type 'catalog' (with productId), « department » (with deptId) or 'free' (with title and price). Check if the client already exists using data_list_clients and if the client exists, only specify idClient. If provided, paymentMode should correspond to a payment ID from data_list_payments tool. Returns a sale confirmation JSON from the API."
     },
     {
+      "name": "order_edit",
+      "description": "Modify an existing order by its ID. Use the payment field to control the order state: -2 = keep as unvalidated quote; -1 = validate as invoice without payment; a payment method ID = record an actual payment and validate the order. Items can only be changed on unvalidated orders. Once validated, only payments can be recorded."
+    },
+    {
       "name": "order_detail",
       "description": "Retrieve full order information by its unique ID, including items, client data, payment mode, and total amount."
     },
     {
       "name": "data_list_orders",
       "description": "List either : unvalidated orders (called quotes) with creation date between from_date_ISO8601 and to_date_ISO8601 OR validated orders (called orders, invoices) with date of value between from_date_ISO8601 and to_date_ISO8601. You can also filter delivery methods (using filterDeliveryMethod)"
+    },
+    {
+      "name": "report_get",
+      "description": "Download a synthetic HTML sales report for a given period. Omit all date fields for yesterday; y only = full year; y+m = full month; y+m+d = specific day. Returns an HTML summary with total revenue, order count, department breakdown, VAT summary, and payment methods."
+    },
+    {
+      "name": "data_list_pending_orders",
+      "description": "Retrieve the list of unvalidated orders (that can still be modified)"
     },
     {
       "name": "data_list_products",
@@ -104,11 +116,35 @@
       "description": "Retrieve product variations (declinaisons) such as size or color. Returns an array of variant definitions with value and optional price delta."
     },
     {
+      "name": "variation_add",
+      "description": "Add a new variation type (e.g. \"Size\", \"Color\"). Requires a title. Use variation_choice_add to add choices afterwards."
+    },
+    {
+      "name": "variation_edit",
+      "description": "Rename an existing variation type by its ID."
+    },
+    {
+      "name": "variation_delete",
+      "description": "Permanently remove a variation type and all its choices."
+    },
+    {
+      "name": "variation_choice_add",
+      "description": "Add a new choice to a variation (e.g. \"Large\" to \"Size\"). Requires title and idVariation. Optional: deltaPrice, position, description, ending, unavailable."
+    },
+    {
+      "name": "variation_choice_edit",
+      "description": "Edit an existing variation choice by its ID. All fields optional except ID."
+    },
+    {
+      "name": "variation_choice_delete",
+      "description": "Permanently remove a variation choice by its ID."
+    },
+    {
       "name": "data_list_delivery_men",
       "description": "List all delivery methods available for the shop, such as in-store pickup, home delivery, or courier services."
     },
     {
-      "name": "data_list_payments",
+      "name": "data_list_payments_modes",
       "description": "Return the list of payment methods (e.g. cash, card, mobile payment) available for this shop."
     },
     {
@@ -158,6 +194,18 @@
     {
       "name": "dept_delete",
       "description": "Permanently remove a department/category from the catalog by its ID."
+    },
+    {
+      "name": "dept_group_add",
+      "description": "Add a new department group to organize product categories. Requires a title. Optional: position, accounting chapter."
+    },
+    {
+      "name": "dept_group_edit",
+      "description": "Edit an existing department group by its ID. Use data_list_department_groups to find the ID."
+    },
+    {
+      "name": "dept_group_delete",
+      "description": "Permanently remove a department group by its ID."
     },
     {
       "name": "vat_add",

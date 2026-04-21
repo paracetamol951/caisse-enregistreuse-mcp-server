@@ -1,6 +1,6 @@
 {
   "name": "caisse-enregistreuse-mcp-server",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "MCP server exposing caisse.enregistreuse.fr API as tools",
   "type": "module",
   "scripts": {
@@ -16,7 +16,7 @@
     "prepublishOnly": "npm run build"
   },
   "bin": {
-    "caisse-mcp": "./build/cli.js"
+    "caisse-enregistreuse-mcp-server": "./build/cli.js"
   },
   "files": [
     "build",

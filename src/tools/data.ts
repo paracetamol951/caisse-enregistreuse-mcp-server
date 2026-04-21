@@ -133,7 +133,7 @@ export function registerDataTools(server: McpServer | any) {
     registerSimple(server, 'data_list_users', '/workers/getUsers.php', t('tools.data_list_users.description'), t('tools.data_list_users.title'));
     registerSimple(server, 'data_list_tables', '/workers/getTables.php', t('tools.data_list_tables.description'), t('tools.data_list_tables.title'));
     registerSimple(server, 'data_list_vats', '/workers/getVATs.php', t('tools.data_list_vats.description'), t('tools.data_list_vats.title'));
-    //registerSimple(server, 'data_list_orders', '/workers/getPending.php', t('tools.data_list_orders.description'), t('tools.data_list_orders.title'),);
+    registerSimple(server, 'data_list_pending_orders', '/workers/getPending.php', t('tools.data_list_pending_orders.description'), t('tools.data_list_pending_orders.title'),);
 
     server.registerTool(
         'data_list_orders',

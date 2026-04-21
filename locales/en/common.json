@@ -68,6 +68,10 @@
       "title": "List orders",
       "description": "List either : unvalidated orders (called quotes) with creation date between from_date_ISO8601 and to_date_ISO8601 OR validated orders (called orders, invoices) with date of value between from_date_ISO8601 and to_date_ISO8601. You can also filter delivery methods (using filterDeliveryMethod)"
     },
+    "data_list_pending_orders": {
+      "title": "List pending orders",
+      "description": "Retrieve the list of unvalidated orders (that can still be modified)"
+    },
     "ping": {
       "title": "Ping",
       "description": "Simple MCP server health check. Returns { result: 'OK' } if the server is alive."
@@ -147,6 +151,50 @@
     "client_delete": {
       "title": "Delete a client",
       "description": "Permanently remove a customer from the shop's customer file by their ID."
+    },
+    "order_edit": {
+      "title": "Edit an order",
+      "description": "Modify an existing order by its ID. Use the payment field to control the order state: -2 = keep as unvalidated quote (not paid); -1 = validate as invoice without payment; a payment method ID (from data_list_payments) = record an actual payment and validate the order. Use paymentAmount to specify a partial payment amount (omit for full payment). Items can only be added or changed on unvalidated orders. Once validated, only payments can be recorded. Returns the orderID, a payment link, and a PDF invoice or quote URL."
+    },
+    "report_get": {
+      "title": "Get a sales report",
+      "description": "Download a synthetic HTML sales report for a given period. Period logic: omit all date fields to get yesterday's report; provide y only for a full-year report; y + m for a full-month report; y + m + d for a specific day. Returns an HTML summary including total revenue, number of orders, breakdown by department, VAT summary, and payment methods."
+    },
+    "dept_group_add": {
+      "title": "Add a department group",
+      "description": "Add a new department group to organize product categories. Requires a title. Optional: position, accounting chapter."
+    },
+    "dept_group_edit": {
+      "title": "Edit a department group",
+      "description": "Edit an existing department group by its ID. Use data_list_department_groups to find the ID."
+    },
+    "dept_group_delete": {
+      "title": "Delete a department group",
+      "description": "Permanently remove a department group by its ID."
+    },
+    "variation_add": {
+      "title": "Add a variation",
+      "description": "Add a new variation type to the catalog (e.g. \"Size\", \"Color\"). Requires a title. Use variation_choice_add to add choices to this variation afterwards."
+    },
+    "variation_edit": {
+      "title": "Edit a variation",
+      "description": "Rename an existing variation type by its ID. Use data_list_variations to find the ID."
+    },
+    "variation_delete": {
+      "title": "Delete a variation",
+      "description": "Permanently remove a variation type and all its choices by its ID."
+    },
+    "variation_choice_add": {
+      "title": "Add a variation choice",
+      "description": "Add a new choice to a variation (e.g. \"Large\" to the \"Size\" variation). Requires a title and idVariation. Optional: deltaPrice to adjust the price, position, description, ending (marks it as last choice), unavailable."
+    },
+    "variation_choice_edit": {
+      "title": "Edit a variation choice",
+      "description": "Edit an existing variation choice by its ID. All fields optional except ID. Use data_list_variations to find choice IDs."
+    },
+    "variation_choice_delete": {
+      "title": "Delete a variation choice",
+      "description": "Permanently remove a variation choice by its ID."
     }
   },
   "messages": {

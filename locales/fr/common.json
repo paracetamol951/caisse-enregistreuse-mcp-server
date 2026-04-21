@@ -80,6 +80,10 @@
       "title": "Lister les commandes",
       "description": "Listez soit les commandes non validées (les devis) dont la date de création est comprise entre from_date_ISO8601 et to_date_ISO8601, soit les commandes validées (dénommées commandes ou factures) dont la date de valeur est comprise entre from_date_ISO8601 et to_date_ISO8601. Vous pouvez également filtrer les modes de livraison (avec filterDeliveryMethod)."
     },
+    "data_list_pending_orders": {
+      "title": "Lister les commandes en cours (non validées)",
+      "description": "Récupérer la liste des commandes en cours (non validées)"
+    },
     "data_list_vats": {
       "title": "Lister les taux de TVA",
       "description": "Récupère la liste des taux de TVA configurés dans la boutique, avec leur titre, pourcentage et éventuellement le chapitre comptable associé."
@@ -151,6 +155,50 @@
     "client_delete": {
       "title": "Supprimer un client",
       "description": "Supprime définitivement un client du fichier clients de la boutique à partir de son identifiant."
+    },
+    "order_edit": {
+      "title": "Modifier une commande",
+      "description": "Modifie une commande existante à partir de son identifiant. Utilisez le champ payment pour contrôler l'état de la commande : -2 = garder comme devis non validé (non payé) ; -1 = valider en facture sans paiement ; un ID de mode de paiement (depuis data_list_payments) = enregistrer un paiement réel et valider. Utilisez paymentAmount pour préciser un montant partiel (omis = paiement total). Les articles ne peuvent être modifiés que sur les commandes non validées. Une fois validée, seuls des paiements peuvent être enregistrés. Retourne l'orderID, un lien de paiement, et une URL de facture ou devis PDF."
+    },
+    "report_get": {
+      "title": "Obtenir un rapport de ventes",
+      "description": "Télécharge un rapport HTML synthétique des ventes sur une période donnée. Logique de période : omettre toutes les dates pour le rapport d'hier ; fournir y seul pour un rapport annuel complet ; y + m pour un rapport mensuel ; y + m + d pour un jour précis. Retourne un résumé HTML incluant le chiffre d'affaires total, le nombre de commandes, la ventilation par rayon, le récapitulatif TVA et les modes de paiement."
+    },
+    "dept_group_add": {
+      "title": "Ajouter un groupe de rayons",
+      "description": "Ajoute un nouveau groupe de rayons pour organiser les catégories. Requiert un titre. Optionnel : position, chapitre comptable."
+    },
+    "dept_group_edit": {
+      "title": "Modifier un groupe de rayons",
+      "description": "Modifie un groupe de rayons existant par son ID. Utiliser data_list_department_groups pour trouver l'ID."
+    },
+    "dept_group_delete": {
+      "title": "Supprimer un groupe de rayons",
+      "description": "Supprime définitivement un groupe de rayons par son ID."
+    },
+    "variation_add": {
+      "title": "Ajouter une déclinaison",
+      "description": "Ajoute un nouveau type de déclinaison au catalogue (ex. \"Taille\", \"Couleur\"). Requiert un titre. Utiliser variation_choice_add pour ajouter des choix ensuite."
+    },
+    "variation_edit": {
+      "title": "Modifier une déclinaison",
+      "description": "Renomme un type de déclinaison existant par son ID. Utiliser data_list_variations pour trouver l'ID."
+    },
+    "variation_delete": {
+      "title": "Supprimer une déclinaison",
+      "description": "Supprime définitivement un type de déclinaison et tous ses choix par son ID."
+    },
+    "variation_choice_add": {
+      "title": "Ajouter un choix de déclinaison",
+      "description": "Ajoute un nouveau choix à une déclinaison (ex. \"Grande\" à la déclinaison \"Taille\"). Requiert un titre et idVariation. Optionnel : deltaPrice pour ajuster le prix, position, description, ending (dernier choix), unavailable."
+    },
+    "variation_choice_edit": {
+      "title": "Modifier un choix de déclinaison",
+      "description": "Modifie un choix de déclinaison existant par son ID. Tous les champs sont optionnels sauf l'ID."
+    },
+    "variation_choice_delete": {
+      "title": "Supprimer un choix de déclinaison",
+      "description": "Supprime définitivement un choix de déclinaison par son ID."
     }
   },
   "messages": {

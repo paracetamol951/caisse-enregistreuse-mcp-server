@@ -58,10 +58,10 @@ app.use((req, res, next) => {
 // Ton serveur MCP — ajoute ici tes tools/resources/prompts
 const mcpServer = new McpServer({
     name: 'caisse-enregistreuse-api',
-    version: '1.0.0',
+    version: '1.4.0',
 });
 
-//registerAuthTools(mcpServer);
+registerAuthTools(mcpServer);
 registerSalesTools(mcpServer);
 registerDataTools(mcpServer);
 registerVatTools(mcpServer);

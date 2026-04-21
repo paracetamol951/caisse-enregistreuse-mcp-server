@@ -3,263 +3,312 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/Demo-online-brightgreen.svg)](https://mcp.kash.click)
 [![GitHub Stars](https://img.shields.io/github/stars/paracetamol951/caisse-enregistreuse-mcp-server?style=social)](https://github.com/paracetamol951/caisse-enregistreuse-mcp-server/stargazers)
+[![npm](https://img.shields.io/npm/v/caisse-enregistreuse-mcp-server)](https://www.npmjs.com/package/caisse-enregistreuse-mcp-server)
 
 [![Kash MCP](./ChatGPT-MCP.png)](https://www.youtube.com/watch?v=PpkrUfEy4ns)
 
-**Kash MCP Server** is a server compliant with the **MCP (Model Context Protocol)**, allowing ChatGPT, Claude, and other MCP-compatible clients to connect to a **sales recorder system** (or POS, cash register).
+**Kash MCP Server** is the official [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server for **[Kash](https://kash.click)** — a free, cloud-based POS, invoicing, CRM and webshop platform trusted by thousands of merchants since 2011.
 
-It provides a simple interface to:
-- 📊 View sales and revenue  
-- 🧾 Create and record receipts  
-- 🛒 Manage products and stock  
-- 🧠 Generate automated reports through conversational requests  
+Connect your Kash account to **Claude, ChatGPT, n8n**, or any MCP-compatible AI — and manage your entire business through natural conversation.
 
-> 🟢 Live Server: [https://mcp.kash.click](https://mcp.kash.click)
+> 🟢 Hosted server: [https://mcp.kash.click](https://mcp.kash.click)  
+> 📖 Full documentation: [kash.click/cash-register-software](https://kash.click/cash-register-software/)
 
 ---
 
-**Connect your cash register to ChatGPT, Claude, or n8n — and manage your business simply by talking.**
+## ✨ What you can do
 
-![Caisse MCP](./doc/ChatGPT-Screen.png)
+Just talk. No menus, no clicks.
 
-Imagine your cash register understanding your sentences, executing your commands, and analyzing your reports — without a single click.  
-With this intelligent gateway, the **free-cash-register.net** software becomes compatible with ChatGPT, Claude, and n8n, transforming your interactions into concrete actions.  
-Just say “record an order for two coffees at table 4” or “show me the invoice for order 125” — and it’s done.  
-
-You can also ask “what’s my revenue for this week?” or “who are my best customers on Tuesdays?”.  
-Your favorite assistant communicates directly with your cash register and responds instantly.  
-This is a new way to run your business: smoother, faster, and incredibly natural.  
-Your **voice becomes your interface**, and your **assistant becomes your new coworker**.
-
-This project exposes the **kash.click** API as **Model Context Protocol (MCP)** tools, available over **HTTP (Streamable)** and/or **STDIO**.
+```
+"Record a sale of 2 coffees and 1 croissant at table 84"
+"Show me this week's revenue report"
+"Add a new item called Summer Tart at €4.50 in the Pastries department"
+"Who are my best customers this month?"
+"Create a Kash account for my restaurant"
+"Record the card payment for order #1042"
+"Add a Large size option to the Size variation"
+```
 
 ---
 
 ## 🚀 Features
 
-- **Sales**: `sale_create` with support for catalog and free lines.
-- **Orders** : get the order list in the specified date range
-- **Data** (lists): products, departments, department groups, clients, variations, deliveries, payment methods, cashboxes, delivery zones, relay points, discounts, users…
+### 🔐 Account & Authentication — no config required
+- **Create** a new Kash account directly from the conversation
+- **List** accounts linked to an email to check if one already exists
+- **Login via OTP** — a one-time password is sent to your email, no password needed
+- **Logout** to clear the session at any time
+
+### 🧾 Sales & Orders
+- **Record sales** with catalog items, department lines, or free lines
+- **Edit orders** — add items, assign a client, record payments, validate as invoice
+- **List orders** by date range, validated or unvalidated, filtered by delivery method
+- **Get order details** — full breakdown of items, client, payments and totals
+
+### 📊 Reports
+- **Sales report** — HTML summary for any period: a specific day, month, or full year (defaults to yesterday)
+
+### 📦 Catalog Management
+- **Items (PLU)**: add, edit, delete — with price, department, VAT, barcode, stock, variations...
+- **Departments**: add, edit, delete — with VAT, price, group, variations...
+- **Department groups**: add, edit, delete — to organize your catalog
+- **VAT rates**: add, edit, delete
+- **Variations**: add, edit, delete (e.g. "Size", "Color")
+- **Variation choices**: add, edit, delete (e.g. "S", "M", "L" for "Size") with optional price delta
+
+### 👥 Customer Management (CRM)
+- **Add, edit, delete** customers with full contact info, company details, VAT number, barcode, loyalty data, private notes, blacklist status...
+
+### 📋 Data & Lists
+Retrieve any reference data from your shop:
+
+| Tool | Data |
+|---|---|
+| `data_list_products` | Items / articles |
+| `data_list_departments` | Departments / categories |
+| `data_list_department_groups` | Department groups |
+| `data_list_vats` | VAT rates |
+| `data_list_clients` | Customers |
+| `data_list_variations` | Variation types |
+| `data_list_payments` | Payment methods |
+| `data_list_cashboxes` | Cashboxes |
+| `data_list_delivery_men` | Delivery methods |
+| `data_list_delivery_zones` | Delivery zones |
+| `data_list_relay_points` | Relay / pickup points |
+| `data_list_discounts` | Discounts & supplements |
+| `data_list_users` | Staff / users |
+| `data_list_tables` | Tables (restaurant mode) |
+| `data_list_orders` | Orders by date range |
 
 ---
 
-## 🔹 Example usage (ChatGPT / Claude MCP)
+## 🛠 Available Tools (46)
 
-- 💬 “Show me today’s sales”  
-- 💬 “Record a sale of 2 coffees and 1 croissant at table 84”  
-- 💬 “Ten red roses to deliver to Mrs. Dupond at 6:15 PM!”  
-- 💬 “Generate a cash register report for the week”  
-- 💬 “Have takeaway sales increased this year?”  
-- 💬 “Did customer Dupont pay for their order?”
-
----
-
-## ⚙Prerequisities
-
-You need to have a free-cash-register.net account.
-
-If you don't have one, you can register at :
-
-https://kash.click/free-pos-software/ChatGPT
-
-Then in the software, you have to get your APIKEY and SHOPID in Setup, Webservices page.
+| Category | Tools |
+|---|---|
+| **Account** | `account_list`, `account_create` |
+| **Auth** | `auth_request_otp`, `auth_login_with_otp`, `auth_logout` |
+| **Sales** | `sale_create`, `order_edit`, `order_detail`, `data_list_orders` |
+| **Reports** | `report_get` |
+| **Items** | `plu_add`, `plu_edit`, `plu_delete`, `data_list_products` |
+| **Departments** | `dept_add`, `dept_edit`, `dept_delete`, `data_list_departments` |
+| **Dept groups** | `dept_group_add`, `dept_group_edit`, `dept_group_delete`, `data_list_department_groups` |
+| **VAT** | `vat_add`, `vat_edit`, `vat_delete`, `data_list_vats` |
+| **Variations** | `variation_add`, `variation_edit`, `variation_delete`, `data_list_variations` |
+| **Variation choices** | `variation_choice_add`, `variation_choice_edit`, `variation_choice_delete` |
+| **Customers** | `client_add`, `client_edit`, `client_delete`, `data_list_clients` |
+| **Data** | `data_list_payments`, `data_list_cashboxes`, `data_list_delivery_men`, `data_list_delivery_zones`, `data_list_relay_points`, `data_list_discounts`, `data_list_users`, `data_list_tables` |
+| **Utility** | `ping` |
 
 ---
 
-## ⚙️ Installation
+## ⚙️ Prerequisites
 
-### Claude
+You need a [Kash / free-cash-register.net](https://kash.click) account.
 
-#### Minimum installation
+**Don't have one?** You can create it directly from the conversation using `account_create`, or register at [kash.click/free-pos-software](https://kash.click/free-pos-software/).
 
-Edit the file `claude_desktop_config.json` in your Claude Desktop configuration directory:
+**Already have one?** Retrieve your `APIKEY` and `SHOPID` in the software under **Setup → Webservices**.
 
-Windows
+---
+
+## 🔌 Option 1 — Hosted server (recommended)
+
+The easiest way: connect directly to the hosted MCP server at `https://mcp.kash.click/mcp`.
+
+No installation needed. Authentication is handled via OAuth 2.0 with PKCE.
+
+### Claude.ai
+
+In **Settings → Integrations**, add a new connector:
+
+| Field | Value |
+|---|---|
+| Name | `Kash` |
+| MCP Server URL | `https://mcp.kash.click/mcp` |
+| Authentication | `OAuth` |
+
+### ChatGPT
+
+In **Settings → Connectors → Create Connector**:
+
+| Field | Value |
+|---|---|
+| Name | `Kash POS` |
+| MCP Server URL | `https://mcp.kash.click/mcp` |
+| Authentication | `OAuth` |
+
+### Smithery
+
+Available on [smithery.ai](https://smithery.ai) — search for **Kash**.
+
+---
+
+## 💻 Option 2 — Self-hosted (STDIO)
+
+Run the server locally for Claude Desktop or any STDIO-based MCP client.
+
+### Quick start via npx
+
+```bash
+npx caisse-enregistreuse-mcp-server --shopid=YOUR_SHOPID --apikey=YOUR_APIKEY
 ```
-%APPDATA%\Claude\claude_desktop_config.json
-```
 
-Mac OS
-```
-~/Library/Application Support/Claude/claude_desktop_config.json
-```
+### Claude Desktop configuration
 
-Provide the following content after replacing your SHOPID and APIKEY.
+Edit `claude_desktop_config.json`:
+
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 
 ```json
-  {
+{
   "mcpServers": {
-    "caisse": {
+    "kash": {
       "command": "npx",
       "args": [
         "caisse-enregistreuse-mcp-server",
-        "--shopid=[replaceWithYourSHOPID]",
-        "--apikey=[replaceWithYourAPIKEY]"
+        "--shopid=YOUR_SHOPID",
+        "--apikey=YOUR_APIKEY"
       ]
     }
   }
 }
 ```
 
-#### Install via npx
-
-Create an installation folder and run the following command in your shell:
-
-```bash
-npx caisse-enregistreuse-mcp-server --shopid=12345 --apikey=abcdef123456
-```
-
-#### Install via npm
-
-```bash
-# 1) Dependencies
-npm install
-
-# 2) Environment variables (see below)
-
-# 3) Build
-npm run build
-```
-
-#### Configuration
-
-The binary/runner launches `src/stdio.ts` and communicates via MCP stdin/stdout.  
-Edit the file `claude_desktop_config.json` in your Claude Desktop configuration directory
-Customize the installation path and set your SHOPID and APIKEY (retrieve them from [https://kash.click](https://kash.click)):
+Or using environment variables:
 
 ```json
 {
   "mcpServers": {
-    "caisse": {
+    "kash": {
       "command": "node",
-      "args": [
-        "{{PATH_TO_SRC}}/build/stdio.js"
-      ],
-      "cwd": "{{PATH_TO_SRC}}",
+      "args": ["PATH_TO_BUILD/build/stdio.js"],
+      "cwd": "PATH_TO_BUILD",
       "env": {
-        "SHOPID": "16",
-        "APIKEY": "XXXXXXXX"
+        "SHOPID": "YOUR_SHOPID",
+        "APIKEY": "YOUR_APIKEY"
       }
     }
   }
 }
 ```
 
-### ChatGPT
+### Install from source
 
-> Requires a workspace account
+```bash
+# 1) Clone
+git clone https://github.com/paracetamol951/caisse-enregistreuse-mcp-server.git
+cd caisse-enregistreuse-mcp-server
 
-In **Settings → Connectors → Create Connector**, fill in the following:
+# 2) Install dependencies
+npm install
 
-| Variable | Value |
-|-----------|--------|
-| `Name` | `Kash POS` |
-| `Description` | `Can record sales from your catalog and retrieve your sales reports. POS software integration.` |
-| `MCP Server URL` | `https://mcp.kash.click/mcp` |
-| `Authentication` | `oAuth` |
+# 3) Create .env
+echo "SHOPID=YOUR_SHOPID" > .env
+echo "APIKEY=YOUR_APIKEY" >> .env
 
-Once added, the connector will be **available in new conversations**.
+# 4) Build
+npm run build
 
----
+# 5) Run
+node build/stdio.js
+```
 
-### Environment variables
+### Docker (HTTP mode)
 
-| Variable | Default | Description |
-|-----------|----------|-------------|
-| `APIKEY` | `----` | Required: your API key |
-| `SHOPID` | `----` | Required: your shop ID |
+HTTP mode requires Redis. Use Docker Compose:
 
-Create a `.env` file:
+```bash
+docker compose up
+```
 
-```env
-APIKEY=XXXXXXXXXXXXXX
-SHOPID=XXX
+Or run manually:
+
+```bash
+docker run -d -p 6379:6379 redis
+npm run dev
 ```
 
 ---
 
-## ▶️ Launch
+## 🔐 Authentication flow
 
-### HTTP Mode (Streamable MCP)
+### Hosted server (OAuth)
+Authentication is handled automatically by the OAuth 2.0 + PKCE flow when you connect through Claude.ai, ChatGPT, or Smithery.
 
-The HTTP mode requires a Redis server.  
-It is recommended to use the hosted MCP HTTP/WebSocket server available at [https://mcp.kash.click](https://mcp.kash.click):
+### In-conversation authentication (OTP)
+You can also authenticate directly within the conversation — no password required:
 
-- **POST** `https://mcp.kash.click/mcp` with a JSON-RPC MCP message  
-- **GET** `https://mcp.kash.click/health` → `{ "status": "ok" }`  
-- **GET** `https://mcp.kash.click/.well-known/mcp/manifest.json` → MCP manifest  
+```
+1. auth_request_otp(email)         → OTP sent to your inbox
+2. auth_login_with_otp(email, otp) → session initialized ✓
+3. auth_logout()                   → clear session when done
+```
 
----
+If you don't have an account yet:
 
-## 🧪 Available MCP Tools (excerpt)
+```
+1. account_list(email)             → check existing accounts
+2. account_create(email, title)    → create + session auto-initialized ✓
+```
 
-### `sale_create`
-Creates a sale.
-
-Input (Zod schema, main fields):
-- `shopId: string`, `apiKey: string`
-- `payment: number`
-- `deliveryMethod: 0|1|2|3|4|5|6`
-- `idUser?: number | string`
-- `idClient?: number | string`
-- `idtable?: number | string`
-- `idcaisse?: number | string`
-- `numcouverts?: number | string`
-- `publicComment?: string`
-- `privateComment?: string`
-- `pagerNum?: number | string`
-- `client?: {{ firstname?, lastname?, email?, phone?, address?, zip?, city?, country? }}`
-- `items: Array<
-   {{ type:'catalog', productId?, quantity?, titleOverride?, priceOverride?, declinaisons? }}
-   | {{ type:'dept', departmentId?, price?, title? }}
-   | {{ type:'free', price?, title? }}
-  >`
-
-Legacy item encoding:
-- **Catalog**: `productId_quantity_titleOverride_priceOverride_[...declinaisons]`
-- **Department sale**: `-<departmentId>_<price>_<title>`
-- **Free line**: `Free_<price>_<title>`
-→ Sent as `itemsList[]`.
-
-### `data_list_*` (examples)
-- `data_list_products`
-- `data_list_departments`
-- `data_list_department_groups`
-- `data_list_clients`
-- `data_list_variations`
-- `data_list_delivery_men`
-- `data_list_payments`
-- `data_list_cashboxes`
-- `data_list_delivery_zones`
-- `data_list_relay_points`
-- `data_list_discounts`
-- `data_list_users`
-- `data_list_tables`
-
-All accept: `{{ format=('json'|'csv'|'html') }}`.
+### STDIO / self-hosted
+Pass credentials via CLI args or environment variables — `SHOPID` and `APIKEY`.
 
 ---
 
-## 💻 Compatible Clients
+## 📡 API endpoints
 
-- **ChatGPT (OpenAI)** — via external MCP configuration  
-- **Claude (Anthropic)** — via “Tools manifest URL”  
-- **n8n / Flowise / LangChain** — import via public URL  
+| Endpoint | Description |
+|---|---|
+| `POST https://mcp.kash.click/mcp` | MCP JSON-RPC endpoint |
+| `GET https://mcp.kash.click/health` | Health check → `{ "status": "ok" }` |
+| `GET https://mcp.kash.click/.well-known/mcp/manifest.json` | MCP manifest (tool list) |
+| `GET https://mcp.kash.click/.well-known/openid-configuration` | OAuth discovery |
 
 ---
 
-## 🧩 MCP Manifest Endpoint
+## 🌍 Internationalization
 
-The MCP API exposes a JSON manifest describing all available tools for compatible clients (ChatGPT, Claude, n8n, etc.).
+Tool titles and descriptions are available in **English** and **French**, resolved automatically from the `Accept-Language` header or the `MCP_LANG` environment variable.
 
-### Public manifest URL
+Locale files: `locales/en/common.json`, `locales/fr/common.json`
 
-https://mcp.kash.click/.well-known/mcp/manifest.json
+---
 
-> 🗂️ This URL is the one to provide to your MCP client when configuring the server.
+## 💻 Compatible clients
+
+| Client | Mode |
+|---|---|
+| Claude.ai | HTTP / OAuth |
+| Claude Desktop | STDIO |
+| ChatGPT | HTTP / OAuth |
+| n8n | HTTP |
+| Flowise / LangChain | HTTP |
+| Smithery | HTTP / OAuth |
+| Any MCP client | STDIO or HTTP |
+
+---
+
+## 🏪 Supported business types
+
+When creating an account with `account_create`, use `configType` to pre-load a dataset tailored to your business:
+
+`Bar` · `Bakery` · `Restaurant` · `Fast-food` · `Cafe` · `Coffee-shop` · `Pizzeria` · `Brewery` · `Food-truck` · `Snack` · `Florist` · `Retail` · `Pharmacy` · `Supermarket` · `Clothing-store` · `Ecommerce` · `Services` · `Beauty-institute` · `Coiffeur` · `Market` · `Library` · `Camping` · and more...
+
+---
+
+## 🔗 Links
+
+- 🌐 **Website**: [kash.click](https://kash.click)
+- 📖 **Documentation**: [kash.click/cash-register-software](https://kash.click/cash-register-software/)
+- 🔧 **API Reference**: [kash.click/cash-register-software/mcp](https://kash.click/cash-register-software/mcp/)
+- 🆓 **Register for free**: [kash.click/free-pos-software](https://kash.click/free-pos-software/)
 
 ---
 
 ## 📋 License
 
-© 2025. GNU GENERAL PUBLIC LICENSE
+© 2025 Net-assembly. [GNU General Public License v3.0](LICENSE)

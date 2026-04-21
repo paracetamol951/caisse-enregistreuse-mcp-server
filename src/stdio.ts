@@ -89,7 +89,7 @@ async function main() {
 
     // --- Enregistrement des outils métier ---
     try {
-        //registerAuthTools(server);
+        registerAuthTools(server);
         registerSalesTools(server);
         registerDataTools(server);
         registerVatTools(server);
