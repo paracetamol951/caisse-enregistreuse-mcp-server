@@ -280,6 +280,15 @@ Locale files: `locales/en/common.json`, `locales/fr/common.json`
 
 ---
 
+## Demo credentials
+
+If you want to try the tool without creating an account, you can use the following credentials
+
+Login: Demo15
+Password : demodemo
+
+---
+
 ## 💻 Compatible clients
 
 | Client | Mode |
