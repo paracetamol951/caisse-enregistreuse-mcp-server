@@ -193,9 +193,9 @@ export default async function oauthRouter() {
 
         const base = path.resolve(__dirname, '..', '..');
         const tmpl = JSON.parse(fs.readFileSync(path.join(base, 'manifest.template.json'), 'utf-8'));
-        const dict = loadDict(lang);
-        const rendered = render(tmpl, dict);
-        res.json(rendered);
+        /*const dict = loadDict(lang);
+        const rendered = render(tmpl, dict);*/
+        res.json(tmpl);
     });
     // a) Well-known discovery côté resource server (requis par MCP)
     router.get('/.well-known/oauth-protected-resource', (_req, res) => {
@@ -231,13 +231,21 @@ export default async function oauthRouter() {
 
     // d) Enregistrement dynamique (optionnel – ici no-op minimal)
     router.post('/oauth/register', async (req, res) => {
-        const { redirect_uris = [], client_id } = req.body || {};
+        const { redirect_uris = [], client_id, client_name, scope } = req.body || {};
         const id = client_id || `pub-${crypto.randomUUID()}`;
-        //clients.set(id, { redirect_uris, public: true });
         const rec: OAuthClient = { redirect_uris, public: true };
         await saveClient(id, rec);
-
-        res.json({ client_id: id, token_endpoint_auth_method: 'none', redirect_uris });
+        // RFC 7591 exige HTTP 201 + client_id_issued_at
+        res.status(201).json({
+            client_id: id,
+            client_id_issued_at: Math.floor(Date.now() / 1000),
+            client_name: client_name || id,
+            redirect_uris,
+            token_endpoint_auth_method: 'none',
+            grant_types: ['authorization_code'],
+            response_types: ['code'],
+            scope: scope || 'mcp:invoke',
+        });
     });
 
     // e) Formulaire de login (GET -> HTML)

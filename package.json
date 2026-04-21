@@ -22,8 +22,6 @@
     "build",
     "static",
     "locales",
-    "manifest.en.json",
-    "manifest.fr.json",
     "manifest.template.json",
     "scripts/generate-manifest.mjs",
     "README.md"

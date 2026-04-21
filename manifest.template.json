@@ -1,7 +1,7 @@
 {
-  "name": "{{app.name}}",
-  "version": "1.2.0",
-  "description": "{{app.description}}",
+  "name": "Kash.click MCP Server",
+  "version": "1.3.1",
+  "description": "Exposes Kash.click API as MCP tools, enabling programmatic access to authentication, sales creation, and data listing features for shops.",
   "endpoints": [
     {
       "type": "http",
@@ -33,67 +33,143 @@
   "tools": [
     {
       "name": "ping",
-      "description": "{{tools.ping.description}}"
+      "description": "Simple MCP server health check. Returns { result: 'OK' } if the server is alive."
+    },
+    {
+      "name": "account_list",
+      "description": "List all Kash / free-cash-register.net accounts linked to an email address. Use this before account_create to check if the user already has an account. Returns an array of accounts, each with accountTitle, accountID, and a getOTPForAccount URL that can be used to request a one-time password (OTP) to retrieve the APIKEY. This endpoint is public and requires no authentication."
+    },
+    {
+      "name": "account_create",
+      "description": "Create a new Kash / free-cash-register.net account. First call account_list to check if the user already has an account. Requires an email address and a shop name (accountTitle). Optional: configType to pre-load a dataset matching the business type (e.g. 'Restaurant', 'Bakery', 'Bar', 'Shops'...), plus address and legal info. On success, returns APIKEY and SHOPID and automatically initializes the session so all other tools can be used immediately. IMPORTANT: the user must validate their email via the link sent automatically, otherwise the account may be deleted after a period of inactivity."
+    },
+    {
+      "name": "auth_request_otp",
+      "description": "Step 1 of 2 for in-conversation authentication. Sends a one-time password (OTP) to the user's email address. If the user has multiple accounts, provide accountID (obtained from account_list) to target the right one. On success, an OTP code is sent by email — then call auth_login_with_otp with that code."
+    },
+    {
+      "name": "auth_login_with_otp",
+      "description": "Step 2 of 2 for in-conversation authentication. Exchange the OTP received by email for an APIKEY and SHOPID, and automatically initialize the session so all other tools work immediately. Call auth_request_otp first to receive the OTP by email."
+    },
+    {
+      "name": "auth_logout",
+      "description": "Clear the current authentication session (APIKEY and SHOPID). After this, all tools requiring authentication will fail until a new login is performed."
     },
     {
       "name": "sale_create",
-      "description": "{{tools.sale_create.description}}"
+      "description": "Record a new sale in the connected shop. Input includes paymentMode, and items[]. Each item can be of type 'catalog' (with productId), « department » (with deptId) or 'free' (with title and price). Check if the client already exists using data_list_clients and if the client exists, only specify idClient. If provided, paymentMode should correspond to a payment ID from data_list_payments tool. Returns a sale confirmation JSON from the API."
     },
     {
-      "name": "data_list_products",
-      "description": "{{tools.data_list_products.description}}"
-    },
-    {
-      "name": "data_list_departments",
-      "description": "{{tools.data_list_departments.description}}"
-    },
-    {
-      "name": "data_list_department_groups",
-      "description": "{{tools.data_list_department_groups.description}}"
-    },
-    {
-      "name": "data_list_clients",
-      "description": "{{tools.data_list_clients.description}}"
-    },
-    {
-      "name": "data_list_variations",
-      "description": "{{tools.data_list_variations.description}}"
-    },
-    {
-      "name": "data_list_delivery_men",
-      "description": "{{tools.data_list_delivery_men.description}}"
-    },
-    {
-      "name": "data_list_payments",
-      "description": "{{tools.data_list_payments.description}}"
-    },
-    {
-      "name": "data_list_cashboxes",
-      "description": "{{tools.data_list_cashboxes.description}}"
-    },
-    {
-      "name": "data_list_delivery_zones",
-      "description": "{{tools.data_list_delivery_zones.description}}"
-    },
-    {
-      "name": "data_list_relay_points",
-      "description": "{{tools.data_list_relay_points.description}}"
-    },
-    {
-      "name": "data_list_discounts",
-      "description": "{{tools.data_list_discounts.description}}"
-    },
-    {
-      "name": "data_list_users",
-      "description": "{{tools.data_list_users.description}}"
-    },
-    {
-      "name": "data_list_tables",
-      "description": "{{tools.data_list_tables.description}}"
+      "name": "order_detail",
+      "description": "Retrieve full order information by its unique ID, including items, client data, payment mode, and total amount."
     },
     {
       "name": "data_list_orders",
-      "description": "{{tools.data_list_orders.description}}"
+      "description": "List either : unvalidated orders (called quotes) with creation date between from_date_ISO8601 and to_date_ISO8601 OR validated orders (called orders, invoices) with date of value between from_date_ISO8601 and to_date_ISO8601. You can also filter delivery methods (using filterDeliveryMethod)"
+    },
+    {
+      "name": "data_list_products",
+      "description": "Retrieve the list of articles (products) configured in the shop. Returns an array of products with fields like id, title, price, and departmentId. Optional parameter 'format' allows output as json, csv, or html."
+    },
+    {
+      "name": "data_list_departments",
+      "description": "Get all departments (product categories) defined in the shop, including their names and default tax rates. Supports format=json|csv|html."
+    },
+    {
+      "name": "data_list_department_groups",
+      "description": "Return the list of department groups, used to organize product categories. Each group may include multiple department IDs."
+    },
+    {
+      "name": "data_list_vats",
+      "description": "Retrieve the list of VAT rates configured in the shop, including their title, rate percentage, and optional accounting chapter."
+    },
+    {
+      "name": "data_list_clients",
+      "description": "Get the list of clients registered in the shop, including contact info, loyalty points."
+    },
+    {
+      "name": "client_add",
+      "description": "Add a new customer to the shop's customer file. All fields are optional: name, surname, email, phone, address, company registration number, VAT number, barcode, private/public comment, blacklist status, birth date, etc. Use data_list_clients to check if the customer already exists first."
+    },
+    {
+      "name": "client_edit",
+      "description": "Edit an existing customer by their ID. All fields are optional except the ID. Use data_list_clients to find the customer ID first."
+    },
+    {
+      "name": "client_delete",
+      "description": "Permanently remove a customer from the shop's customer file by their ID."
+    },
+    {
+      "name": "data_list_variations",
+      "description": "Retrieve product variations (declinaisons) such as size or color. Returns an array of variant definitions with value and optional price delta."
+    },
+    {
+      "name": "data_list_delivery_men",
+      "description": "List all delivery methods available for the shop, such as in-store pickup, home delivery, or courier services."
+    },
+    {
+      "name": "data_list_payments",
+      "description": "Return the list of payment methods (e.g. cash, card, mobile payment) available for this shop."
+    },
+    {
+      "name": "data_list_cashboxes",
+      "description": "List the registered cashboxes (physical or virtual) linked to the shop, including their current status and identifiers."
+    },
+    {
+      "name": "data_list_delivery_zones",
+      "description": "Return all configured delivery zones, including area names, postal codes, and applicable delivery fees or restrictions."
+    },
+    {
+      "name": "data_list_relay_points",
+      "description": "List all relay points where customers can pick up their orders, including address, city, and postal code."
+    },
+    {
+      "name": "data_list_discounts",
+      "description": "Return all available discounts or promotions, including their names, types (percentage or fixed), values, and conditions."
+    },
+    {
+      "name": "data_list_users",
+      "description": "List all users (cashiers, managers, etc.) associated with the shop, including their roles and identifiers."
+    },
+    {
+      "name": "data_list_tables",
+      "description": "Retrieve the list of tables configured in the app, used for restaurant mode or table management."
+    },
+    {
+      "name": "plu_add",
+      "description": "Add a new item/article to the shop catalog. Requires a title. Optional fields include price, department (deptID), VAT rate (vatID), barcode, stock, variations, and many more."
+    },
+    {
+      "name": "plu_edit",
+      "description": "Edit an existing item/article in the catalog by its ID. All fields are optional except the ID. Use data_list_products to find the article ID first."
+    },
+    {
+      "name": "plu_delete",
+      "description": "Permanently remove an item/article from the catalog by its ID."
+    },
+    {
+      "name": "dept_add",
+      "description": "Add a new department (product category) to the catalog. Requires a title. Optional fields include VAT rate (vatID), price, discount, position, department group, and variations."
+    },
+    {
+      "name": "dept_edit",
+      "description": "Edit an existing department/category by its ID. All fields are optional except the ID. Use data_list_departments to find the department ID first."
+    },
+    {
+      "name": "dept_delete",
+      "description": "Permanently remove a department/category from the catalog by its ID."
+    },
+    {
+      "name": "vat_add",
+      "description": "Add a new VAT rate to the shop configuration. Requires a title and a rate (e.g. 20 for 20%). Optional fields: accountingChapter, legal mention."
+    },
+    {
+      "name": "vat_edit",
+      "description": "Modify an existing VAT rate by its ID. All fields are optional except the ID."
+    },
+    {
+      "name": "vat_delete",
+      "description": "Permanently remove a VAT rate from the shop configuration by its ID."
     }
   ]
 }

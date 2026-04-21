@@ -6,8 +6,12 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { registerAuthTools } from './tools/auth.js';
 import { registerSalesTools } from './tools/sales.js';
 import { registerDataTools } from './tools/data.js';
+import { registerVatTools } from './tools/vats.js';
+import { registerCatalogTools } from './tools/catalog.js';
+import { registerAccountTools } from './tools/account.js';
 import { setSessionAuth } from './context.js';
 import oauthRouter, { bearerValidator } from './support/oauth.js';
+import { registerClientTools } from './tools/clients.js';
 
 const app = express();
 
@@ -60,6 +64,10 @@ const mcpServer = new McpServer({
 //registerAuthTools(mcpServer);
 registerSalesTools(mcpServer);
 registerDataTools(mcpServer);
+registerVatTools(mcpServer);
+registerCatalogTools(mcpServer);
+registerAccountTools(mcpServer);
+registerClientTools(mcpServer);
 
 // Map sessionId -> transport
 const transports = new Map<string, StreamableHTTPServerTransport>();

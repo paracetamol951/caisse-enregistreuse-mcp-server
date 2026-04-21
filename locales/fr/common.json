@@ -119,6 +119,38 @@
     "dept_delete": {
       "title": "Supprimer un rayon",
       "description": "Supprime définitivement un rayon du catalogue à partir de son identifiant."
+    },
+    "account_create": {
+      "title": "Créer un compte Kash",
+      "description": "Crée un nouveau compte Kash / caisse.enregistreuse.fr. Requiert une adresse email et un nom de boutique (accountTitle). Optionnel : configType pour pré-charger un jeu de données adapté à votre activité (ex. 'Restaurant', 'Bakery', 'Bar', 'Shops'...), ainsi que les informations d'adresse et légales. En cas de succès, retourne l'APIKEY et le SHOPID et initialise automatiquement la session pour que tous les autres outils soient utilisables immédiatement. IMPORTANT : l'utilisateur doit valider son email via le lien envoyé automatiquement, sinon le compte peut être supprimé après une période d'inactivité."
+    },
+    "account_list": {
+      "title": "Lister les comptes Kash",
+      "description": "Liste tous les comptes Kash / caisse.enregistreuse.fr associés à une adresse email. À utiliser avant account_create pour vérifier si l'utilisateur possède déjà un compte. Retourne un tableau de comptes, chacun contenant accountTitle, accountID, et une URL getOTPForAccount permettant de demander un mot de passe à usage unique (OTP) pour récupérer l'APIKEY. Cet endpoint est public et ne nécessite aucune authentification."
+    },
+    "auth_request_otp": {
+      "title": "Demander un OTP de connexion",
+      "description": "Étape 1/2 de l'authentification dans la conversation. Envoie un mot de passe à usage unique (OTP) à l'adresse email de l'utilisateur. Si l'utilisateur a plusieurs comptes, fournir accountID (obtenu via account_list) pour cibler le bon compte. En cas de succès, un code OTP est envoyé par email — appeler ensuite auth_login_with_otp avec ce code."
+    },
+    "auth_login_with_otp": {
+      "title": "Se connecter avec l'OTP",
+      "description": "Étape 2/2 de l'authentification dans la conversation. Échange le code OTP reçu par email contre un APIKEY et un SHOPID, et initialise automatiquement la session pour que tous les autres outils fonctionnent immédiatement. Appeler auth_request_otp d'abord pour recevoir l'OTP par email."
+    },
+    "auth_logout": {
+      "title": "Déconnexion / vider la session",
+      "description": "Efface la session d'authentification courante (APIKEY et SHOPID). Après cela, tous les outils nécessitant une authentification échoueront jusqu'à une nouvelle connexion."
+    },
+    "client_add": {
+      "title": "Ajouter un client",
+      "description": "Ajoute un nouveau client au fichier clients de la boutique. Tous les champs sont optionnels : nom, prénom, email, téléphone, adresse, numéro SIRET, numéro TVA, code-barre, commentaire privé/public, statut blacklist, date de naissance, etc. Utiliser data_list_clients pour vérifier si le client existe déjà."
+    },
+    "client_edit": {
+      "title": "Modifier un client",
+      "description": "Modifie un client existant à partir de son identifiant. Tous les champs sont optionnels sauf l'ID. Utiliser data_list_clients pour retrouver l'ID du client."
+    },
+    "client_delete": {
+      "title": "Supprimer un client",
+      "description": "Supprime définitivement un client du fichier clients de la boutique à partir de son identifiant."
     }
   },
   "messages": {

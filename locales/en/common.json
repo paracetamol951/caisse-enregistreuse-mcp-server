@@ -115,6 +115,38 @@
     "dept_delete": {
       "title": "Delete a department",
       "description": "Permanently remove a department/category from the catalog by its ID."
+    },
+    "account_create": {
+      "title": "Create a Kash account",
+      "description": "Create a new Kash / free-cash-register.net account. Requires an email address and a shop name (accountTitle). Optional: configType to pre-load a dataset matching your business type (e.g. 'Restaurant', 'Bakery', 'Bar', 'Retail'...), plus address and legal info. On success, returns APIKEY and SHOPID and automatically initializes the session so all other tools can be used immediately. IMPORTANT: the user must validate their email via the link sent automatically, otherwise the account may be deleted after a period of inactivity."
+    },
+    "account_list": {
+      "title": "List Kash accounts",
+      "description": "List all Kash / free-cash-register.net accounts linked to an email address. Use this before account_create to check if the user already has an account. Returns an array of accounts, each with accountTitle, accountID, and a getOTPForAccount URL that can be used to request a one-time password (OTP) to retrieve the APIKEY. This endpoint is public and requires no authentication."
+    },
+    "auth_request_otp": {
+      "title": "Request a login OTP",
+      "description": "Step 1 of 2 for in-conversation authentication. Sends a one-time password (OTP) to the user's email address. If the user has multiple accounts, provide accountID (obtained from account_list) to target the right one. On success, an OTP code is sent by email — then call auth_login_with_otp with that code."
+    },
+    "auth_login_with_otp": {
+      "title": "Login with OTP",
+      "description": "Step 2 of 2 for in-conversation authentication. Exchange the OTP received by email for an APIKEY and SHOPID, and automatically initialize the session so all other tools work immediately. Call auth_request_otp first to receive the OTP by email."
+    },
+    "auth_logout": {
+      "title": "Logout / clear session",
+      "description": "Clear the current authentication session (APIKEY and SHOPID). After this, all tools requiring authentication will fail until a new login is performed."
+    },
+    "client_add": {
+      "title": "Add a client",
+      "description": "Add a new customer to the shop's customer file. All fields are optional: name, surname, email, phone, address, company registration number, VAT number, barcode, private/public comment, blacklist status, birth date, etc. Use data_list_clients to check if the customer already exists first."
+    },
+    "client_edit": {
+      "title": "Edit a client",
+      "description": "Edit an existing customer by their ID. All fields are optional except the ID. Use data_list_clients to find the customer ID first."
+    },
+    "client_delete": {
+      "title": "Delete a client",
+      "description": "Permanently remove a customer from the shop's customer file by their ID."
     }
   },
   "messages": {
