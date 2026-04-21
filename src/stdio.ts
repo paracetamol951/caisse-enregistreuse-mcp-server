@@ -12,7 +12,6 @@ import { registerDataTools } from './tools/data.js';
 import { setSessionAuth, getSessionAuth } from './context.js';
 import { registerVatTools } from './tools/vats.js';
 import { registerCatalogTools } from './tools/catalog.js';
-import { registerAccountTools } from './tools/account.js';
 import { registerClientTools } from './tools/clients.js';
 
 // ==== Session globale (STDIO: une seule connexion) ====

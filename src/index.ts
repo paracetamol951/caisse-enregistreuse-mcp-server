@@ -8,7 +8,6 @@ import { registerSalesTools } from './tools/sales.js';
 import { registerDataTools } from './tools/data.js';
 import { registerVatTools } from './tools/vats.js';
 import { registerCatalogTools } from './tools/catalog.js';
-import { registerAccountTools } from './tools/account.js';
 import { setSessionAuth } from './context.js';
 import oauthRouter, { bearerValidator } from './support/oauth.js';
 import { registerClientTools } from './tools/clients.js';
