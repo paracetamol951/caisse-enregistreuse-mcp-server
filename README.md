@@ -91,7 +91,7 @@ Retrieve any reference data from your shop:
 |---|---|
 | **Account** | `account_list`, `account_create` |
 | **Auth** | `auth_request_otp`, `auth_login_with_otp`, `auth_logout` |
-| **Sales** | `sale_create`, `order_edit`, `order_detail`, `data_list_orders` |
+| **Sales** | `sale_create`, `order_edit`, `order_detail`, `data_list_orders`, `data_list_pending_orders` |
 | **Reports** | `report_get` |
 | **Items** | `plu_add`, `plu_edit`, `plu_delete`, `data_list_products` |
 | **Departments** | `dept_add`, `dept_edit`, `dept_delete`, `data_list_departments` |
@@ -111,7 +111,7 @@ You need a [Kash / free-cash-register.net](https://kash.click) account.
 
 **Don't have one?** You can create it directly from the conversation using `account_create`, or register at [kash.click/free-pos-software](https://kash.click/free-pos-software/).
 
-**Already have one?** Retrieve your `APIKEY` and `SHOPID` in the software under **Setup → Webservices**.
+**Already have one?** Retrieve your `APIKEY` and `SHOPID` in the software under **Setup → Webservices** or connect using oAuth.
 
 ---
 
@@ -143,7 +143,7 @@ In **Settings → Connectors → Create Connector**:
 
 ### Smithery
 
-Available on [smithery.ai](https://smithery.ai) — search for **Kash**.
+Available on [smithery.ai](https://smithery.ai/servers/paracetamol951/kash) — search for **Kash**.
 
 ---
 
