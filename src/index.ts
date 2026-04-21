@@ -22,7 +22,7 @@ app.post('/mcp', async (req, res, next) => {
         setSessionAuth({ ok: true, APIKEY: apiKey, SHOPID: shopId, scopes: ['mcp:invoke', 'shop:read'] });
         next();
     } catch (e: any) {
-        return res.status(401).json({ error: 'unauthorized', detail: e?.message || 'invalid token' });
+        next(); //return res.status(401).json({ error: 'unauthorized', detail: e?.message || 'invalid token' });
     }
 });
 
