@@ -1,6 +1,6 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z, ZodTypeAny } from 'zod';
-import { postForm, postJsonRaw } from '../support/http.js';
+import { get, postForm, postJsonRaw } from '../support/http.js';
 import { t } from '../i18n/index.js';
 import { resolveAuth, type Ctx } from '../context.js';
 
@@ -153,7 +153,7 @@ export function registerSalesTools(server: McpServer | any) {
             if (input.m !== undefined) params.m = input.m;
             if (input.y !== undefined) params.y = input.y;
 
-            const data = await postForm('/workers/getSales.php', params);
+            const data = await get('/workers/getSales.php', params);
             const text = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
             return {
                 content: [{ type: 'text', text }],
