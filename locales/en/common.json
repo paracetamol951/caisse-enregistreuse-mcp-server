@@ -75,6 +75,46 @@
     "order_detail": {
       "title": "Get order detail",
       "description": "Retrieve full order information by its unique ID, including items, client data, payment mode, and total amount."
+    },
+    "data_list_vats": {
+      "title": "List VAT rates",
+      "description": "Retrieve the list of VAT rates configured in the shop, including their title, rate percentage, and optional accounting chapter."
+    },
+    "vat_add": {
+      "title": "Add a VAT rate",
+      "description": "Add a new VAT rate to the shop configuration. Requires a title and a rate (e.g. 20 for 20%). Optional fields: accountingChapter, legal mention."
+    },
+    "vat_edit": {
+      "title": "Edit a VAT rate",
+      "description": "Modify an existing VAT rate by its ID. All fields are optional except the ID."
+    },
+    "vat_delete": {
+      "title": "Delete a VAT rate",
+      "description": "Permanently remove a VAT rate from the shop configuration by its ID."
+    },
+    "plu_add": {
+      "title": "Add an article",
+      "description": "Add a new item/article to the shop catalog. Requires a title. Optional fields include price, department (deptID), VAT rate (vatID), barcode, stock, variations, and many more."
+    },
+    "plu_edit": {
+      "title": "Edit an article",
+      "description": "Edit an existing item/article in the catalog by its ID. All fields are optional except the ID. Use data_list_products to find the article ID first."
+    },
+    "plu_delete": {
+      "title": "Delete an article",
+      "description": "Permanently remove an item/article from the catalog by its ID."
+    },
+    "dept_add": {
+      "title": "Add a department",
+      "description": "Add a new department (product category) to the catalog. Requires a title. Optional fields include VAT rate (vatID), price, discount, position, department group, and variations."
+    },
+    "dept_edit": {
+      "title": "Edit a department",
+      "description": "Edit an existing department/category by its ID. All fields are optional except the ID. Use data_list_departments to find the department ID first."
+    },
+    "dept_delete": {
+      "title": "Delete a department",
+      "description": "Permanently remove a department/category from the catalog by its ID."
     }
   },
   "messages": {

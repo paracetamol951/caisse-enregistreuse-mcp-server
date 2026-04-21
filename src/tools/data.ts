@@ -121,7 +121,7 @@ export function registerDataTools(server: McpServer | any) {
     // Noms de tools avec UNDERSCORE (comme vus dans tes logs) t('tools.sale_create.title')
     registerSimple(server, 'data_list_products', '/workers/getPlus.php', t('tools.data_list_products.description'), t('tools.data_list_products.title'));
     registerSimple(server, 'data_list_departments', '/workers/getDepartments.php', t('tools.data_list_departments.description'), t('tools.data_list_departments.title'));
-    registerSimple(server, 'data_list_department_groups', '/workers/getDepartmentsGroups.php', t('tools.data_list_department_groups.description'), t('tools.data_list_department_groups.title'));
+    registerSimple(server, 'data_list_department_groups', '/workers/getDepartmentGroups.php', t('tools.data_list_department_groups.description'), t('tools.data_list_department_groups.title'));
     registerSimple(server, 'data_list_clients', '/workers/getClients.php', t('tools.data_list_clients.description'), t('tools.data_list_clients.title'));
     registerSimple(server, 'data_list_variations', '/workers/getDeclinaisons.php', t('tools.data_list_variations.description'), t('tools.data_list_variations.title'));
     registerSimple(server, 'data_list_delivery_men', '/workers/getLivreurs.php', t('tools.data_list_delivery_men.description'), t('tools.data_list_delivery_men.title'));
@@ -132,6 +132,7 @@ export function registerDataTools(server: McpServer | any) {
     registerSimple(server, 'data_list_discounts', '/workers/getDiscounts.php', t('tools.data_list_discounts.description'), t('tools.data_list_discounts.title'));
     registerSimple(server, 'data_list_users', '/workers/getUsers.php', t('tools.data_list_users.description'), t('tools.data_list_users.title'));
     registerSimple(server, 'data_list_tables', '/workers/getTables.php', t('tools.data_list_tables.description'), t('tools.data_list_tables.title'));
+    registerSimple(server, 'data_list_vats', '/workers/getVATs.php', t('tools.data_list_vats.description'), t('tools.data_list_vats.title'));
     //registerSimple(server, 'data_list_orders', '/workers/getPending.php', t('tools.data_list_orders.description'), t('tools.data_list_orders.title'),);
 
     server.registerTool(

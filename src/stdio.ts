@@ -10,6 +10,8 @@ import { registerAuthTools } from './tools/auth.js';
 import { registerSalesTools } from './tools/sales.js';
 import { registerDataTools } from './tools/data.js';
 import { setSessionAuth, getSessionAuth } from './context.js';
+import { registerVatTools } from './tools/vats.js';
+import { registerCatalogTools } from './tools/catalog.js';
 
 // ==== Session globale (STDIO: une seule connexion) ====
 type AuthState = { ok: boolean; SHOPID?: string; APIKEY?: string; scopes?: string[] };
@@ -88,7 +90,9 @@ async function main() {
         //registerAuthTools(server);
         registerSalesTools(server);
         registerDataTools(server);
-        process.stderr.write(`[caisse][info] Tools enregistrés (après registerX): ${JSON.stringify(registeredToolNames)}\n`);
+        registerVatTools(server);
+        registerCatalogTools(server);
+        process.stderr.write(`[caisse][info] Tools enregistrés : ${JSON.stringify(registeredToolNames)}\n`);
     } catch (e: any) {
         process.stderr.write(`[caisse][error] Echec registerXTools: ${e?.stack || e}\n`);
     }

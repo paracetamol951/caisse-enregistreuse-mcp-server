@@ -79,6 +79,46 @@
     "data_list_orders": {
       "title": "Lister les commandes",
       "description": "Listez soit les commandes non validées (les devis) dont la date de création est comprise entre from_date_ISO8601 et to_date_ISO8601, soit les commandes validées (dénommées commandes ou factures) dont la date de valeur est comprise entre from_date_ISO8601 et to_date_ISO8601. Vous pouvez également filtrer les modes de livraison (avec filterDeliveryMethod)."
+    },
+    "data_list_vats": {
+      "title": "Lister les taux de TVA",
+      "description": "Récupère la liste des taux de TVA configurés dans la boutique, avec leur titre, pourcentage et éventuellement le chapitre comptable associé."
+    },
+    "vat_add": {
+      "title": "Ajouter un taux de TVA",
+      "description": "Ajoute un nouveau taux de TVA à la configuration de la boutique. Requiert un titre et un taux (ex. 20 pour 20%). Champs optionnels : chapitre comptable, mention légale."
+    },
+    "vat_edit": {
+      "title": "Modifier un taux de TVA",
+      "description": "Modifie un taux de TVA existant à partir de son identifiant. Tous les champs sont optionnels sauf l'ID."
+    },
+    "vat_delete": {
+      "title": "Supprimer un taux de TVA",
+      "description": "Supprime définitivement un taux de TVA de la configuration de la boutique à partir de son identifiant."
+    },
+    "plu_add": {
+      "title": "Ajouter un article",
+      "description": "Ajoute un nouvel article au catalogue de la boutique. Requiert un titre. Les champs optionnels incluent le prix, le rayon (deptID), le taux de TVA (vatID), le code-barre, le stock, les déclinaisons, et bien d'autres."
+    },
+    "plu_edit": {
+      "title": "Modifier un article",
+      "description": "Modifie un article existant du catalogue à partir de son identifiant. Tous les champs sont optionnels sauf l'ID. Utiliser data_list_products pour retrouver l'ID de l'article."
+    },
+    "plu_delete": {
+      "title": "Supprimer un article",
+      "description": "Supprime définitivement un article du catalogue à partir de son identifiant."
+    },
+    "dept_add": {
+      "title": "Ajouter un rayon",
+      "description": "Ajoute un nouveau rayon (catégorie de produits) au catalogue. Requiert un titre. Les champs optionnels incluent le taux de TVA (vatID), le prix, la réduction, la position, le groupe de rayons et les déclinaisons."
+    },
+    "dept_edit": {
+      "title": "Modifier un rayon",
+      "description": "Modifie un rayon existant à partir de son identifiant. Tous les champs sont optionnels sauf l'ID. Utiliser data_list_departments pour retrouver l'ID du rayon."
+    },
+    "dept_delete": {
+      "title": "Supprimer un rayon",
+      "description": "Supprime définitivement un rayon du catalogue à partir de son identifiant."
     }
   },
   "messages": {
