@@ -66,7 +66,7 @@ registerSalesTools(mcpServer);
 registerDataTools(mcpServer);
 registerVatTools(mcpServer);
 registerCatalogTools(mcpServer);
-registerAccountTools(mcpServer);
+//registerAccountTools(mcpServer);
 registerClientTools(mcpServer);
 
 // Map sessionId -> transport

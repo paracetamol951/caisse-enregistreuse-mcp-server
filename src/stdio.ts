@@ -94,7 +94,7 @@ async function main() {
         registerDataTools(server);
         registerVatTools(server);
         registerCatalogTools(server);
-        registerAccountTools(server);
+        //registerAccountTools(server);
         registerClientTools(server);
 
         process.stderr.write(`[caisse][info] Tools enregistrés : ${JSON.stringify(registeredToolNames)}\n`);
