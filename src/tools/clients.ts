@@ -15,33 +15,32 @@ function appendData(body: Record<string, unknown>, fields: Record<string, unknow
 // ============================================================
 // SHAPES
 // ============================================================
-
 const ClientDataShape = {
-    title: z.string().optional(),
-    surname: z.string().optional(),
-    name: z.string().optional(),
-    position: z.union([z.number(), z.string()]).optional(),
-    email: z.string().email().optional(),
-    phone: z.string().optional(),
-    phone2: z.string().optional(),
-    addressline1: z.string().optional(),
-    addressline2: z.string().optional(),
-    adressComment: z.string().optional(),
-    postcode: z.string().optional(),
-    city: z.string().optional(),
-    country: z.string().optional(),
-    identificationID: z.string().optional(),
-    lat: z.union([z.number(), z.string()]).optional(),
-    lng: z.union([z.number(), z.string()]).optional(),
-    commentPrivate: z.string().optional(),
-    commentPublic: z.string().optional(),
-    registrationNumber: z.string().optional(),
-    VATnum: z.string().optional(),
-    barcode: z.string().optional(),
-    blacklist: z.union([z.number(), z.string()]).optional(),
-    clientGroupID: z.union([z.number(), z.string()]).optional(),
-    birthDate: z.union([z.number(), z.string()]).optional(),
-    activityCode: z.string().optional(),
+    title: z.string().optional().describe('Honorific or title (e.g. Mr, Mrs, Company)'),
+    surname: z.string().optional().describe('Customer surname / last name'),
+    name: z.string().optional().describe('Customer first name'),
+    position: z.union([z.number(), z.string()]).optional().describe('Sort order / priority within the customer list'),
+    email: z.string().email().optional().describe('Customer email address'),
+    phone: z.string().optional().describe('Primary phone number'),
+    phone2: z.string().optional().describe('Secondary phone number'),
+    addressline1: z.string().optional().describe('Street address line 1'),
+    addressline2: z.string().optional().describe('Street address line 2'),
+    adressComment: z.string().optional().describe('Delivery instructions or address comment'),
+    postcode: z.string().optional().describe('Postal/ZIP code'),
+    city: z.string().optional().describe('City'),
+    country: z.string().optional().describe('Country'),
+    identificationID: z.string().optional().describe('National ID or passport number'),
+    lat: z.union([z.number(), z.string()]).optional().describe('GPS latitude of the customer address'),
+    lng: z.union([z.number(), z.string()]).optional().describe('GPS longitude of the customer address'),
+    commentPrivate: z.string().optional().describe('Internal staff-only note'),
+    commentPublic: z.string().optional().describe('Note visible to the customer'),
+    registrationNumber: z.string().optional().describe('Company registration number (SIRET, etc.)'),
+    VATnum: z.string().optional().describe('VAT registration number'),
+    barcode: z.string().optional().describe('Customer loyalty card barcode'),
+    blacklist: z.union([z.number(), z.string()]).optional().describe('1 to blacklist this customer'),
+    clientGroupID: z.union([z.number(), z.string()]).optional().describe('ID of the customer group/segment'),
+    birthDate: z.union([z.number(), z.string()]).optional().describe('Date of birth (YYYY-MM-DD or timestamp)'),
+    activityCode: z.string().optional().describe('Accounting activity code'),
 } satisfies Record<string, ZodTypeAny>;
 
 const AddClientShape = {
@@ -49,13 +48,14 @@ const AddClientShape = {
 } satisfies Record<string, ZodTypeAny>;
 
 const EditClientShape = {
-    id: z.union([z.number().int(), z.string()]),
+    id: z.union([z.number().int(), z.string()]).describe('ID of the customer to modify'),
     ...ClientDataShape,
 } satisfies Record<string, ZodTypeAny>;
 
 const DelClientShape = {
-    id: z.union([z.number().int(), z.string()]),
+    id: z.union([z.number().int(), z.string()]).describe('ID of the customer to delete'),
 } satisfies Record<string, ZodTypeAny>;
+
 
 type AddClientArgs = InferFromShape<typeof AddClientShape>;
 type EditClientArgs = InferFromShape<typeof EditClientShape>;
@@ -69,11 +69,12 @@ export function registerClientTools(server: McpServer | any) {
 
     // -- ADD CLIENT --
     server.registerTool(
-        'client_add',
+        'client.add',
         {
-            title: t('tools.client_add.title'),
-            description: t('tools.client_add.description'),
+            title: t('tools.client.add.title'),
+            description: t('tools.client.add.description'),
             inputSchema: AddClientShape,
+            annotations: { destructiveHint: false, idempotentHint: false },
         },
         async (input: AddClientArgs, ctx: Ctx) => {
             const { shopId, apiKey } = resolveAuth(undefined, ctx);
@@ -89,11 +90,12 @@ export function registerClientTools(server: McpServer | any) {
 
     // -- EDIT CLIENT --
     server.registerTool(
-        'client_edit',
+        'client.edit',
         {
-            title: t('tools.client_edit.title'),
-            description: t('tools.client_edit.description'),
+            title: t('tools.client.edit.title'),
+            description: t('tools.client.edit.description'),
             inputSchema: EditClientShape,
+            annotations: { destructiveHint: false, idempotentHint: true },
         },
         async (input: EditClientArgs, ctx: Ctx) => {
             const { shopId, apiKey } = resolveAuth(undefined, ctx);
@@ -110,11 +112,12 @@ export function registerClientTools(server: McpServer | any) {
 
     // -- DELETE CLIENT --
     server.registerTool(
-        'client_delete',
+        'client.delete',
         {
-            title: t('tools.client_delete.title'),
-            description: t('tools.client_delete.description'),
+            title: t('tools.client.delete.title'),
+            description: t('tools.client.delete.description'),
             inputSchema: DelClientShape,
+            annotations: { destructiveHint: true, idempotentHint: true },
         },
         async (input: DelClientArgs, ctx: Ctx) => {
             const { shopId, apiKey } = resolveAuth(undefined, ctx);

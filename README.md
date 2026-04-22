@@ -67,21 +67,21 @@ Retrieve any reference data from your shop:
 
 | Tool | Data |
 |---|---|
-| `data_list_products` | Items / articles |
-| `data_list_departments` | Departments / categories |
-| `data_list_department_groups` | Department groups |
-| `data_list_vats` | VAT rates |
-| `data_list_clients` | Customers |
-| `data_list_variations` | Variation types |
+| `data.list.products` | Items / articles |
+| `data.list.departments` | Departments / categories |
+| `data.list.department_groups` | Department groups |
+| `data.list.vats` | VAT rates |
+| `data.list.clients` | Customers |
+| `data.list.variations` | Variation types |
 | `data_list_payments` | Payment methods |
-| `data_list_cashboxes` | Cashboxes |
-| `data_list_delivery_men` | Delivery methods |
-| `data_list_delivery_zones` | Delivery zones |
-| `data_list_relay_points` | Relay / pickup points |
-| `data_list_discounts` | Discounts & supplements |
-| `data_list_users` | Staff / users |
-| `data_list_tables` | Tables (restaurant mode) |
-| `data_list_orders` | Orders by date range |
+| `data.list.cashboxes` | Cashboxes |
+| `data.list.delivery_men` | Delivery methods |
+| `data.list.delivery_zones` | Delivery zones |
+| `data.list.relay_points` | Relay / pickup points |
+| `data.list.discounts` | Discounts & supplements |
+| `data.list.users` | Staff / users |
+| `data.list.tables` | Tables (restaurant mode) |
+| `data.list.orders` | Orders by date range |
 
 ---
 
@@ -89,18 +89,18 @@ Retrieve any reference data from your shop:
 
 | Category | Tools |
 |---|---|
-| **Account** | `account_list`, `account_create` |
-| **Auth** | `auth_request_otp`, `auth_login_with_otp`, `auth_logout` |
-| **Sales** | `sale_create`, `order_edit`, `order_detail`, `data_list_orders`, `data_list_pending_orders` |
-| **Reports** | `report_get` |
-| **Items** | `plu_add`, `plu_edit`, `plu_delete`, `data_list_products` |
-| **Departments** | `dept_add`, `dept_edit`, `dept_delete`, `data_list_departments` |
-| **Dept groups** | `dept_group_add`, `dept_group_edit`, `dept_group_delete`, `data_list_department_groups` |
-| **VAT** | `vat_add`, `vat_edit`, `vat_delete`, `data_list_vats` |
-| **Variations** | `variation_add`, `variation_edit`, `variation_delete`, `data_list_variations` |
-| **Variation choices** | `variation_choice_add`, `variation_choice_edit`, `variation_choice_delete` |
-| **Customers** | `client_add`, `client_edit`, `client_delete`, `data_list_clients` |
-| **Data** | `data_list_payments`, `data_list_cashboxes`, `data_list_delivery_men`, `data_list_delivery_zones`, `data_list_relay_points`, `data_list_discounts`, `data_list_users`, `data_list_tables` |
+| **Account** | `account.list`, `account.create` |
+| **Auth** | `auth.request.otp`, `auth.login.with_otp`, `auth.logout` |
+| **Sales** | `order.create`, `order.edit`, `order.detail`, `data.list.orders`, `data.list.pending_orders` |
+| **Reports** | `report.get` |
+| **Items** | `plu.add`, `plu.edit`, `plu.delete`, `data.list.products` |
+| **Departments** | `dept.add`, `dept.edit`, `dept.delete`, `data.list.departments` |
+| **Dept groups** | `dept_group.add`, `dept_group.edit`, `dept_group.delete`, `data.list.department_groups` |
+| **VAT** | `vat.add`, `vat.edit`, `vat.delete`, `data.list.vats` |
+| **Variations** | `variation.add`, `variation.edit`, `variation.delete`, `data.list.variations` |
+| **Variation choices** | `variation_choice.add`, `variation_choice.edit`, `variation_choice.delete` |
+| **Customers** | `client.add`, `client.edit`, `client.delete`, `data.list.clients` |
+| **Data** | `data_list_payments`, `data.list.cashboxes`, `data.list.delivery_men`, `data.list.delivery_zones`, `data.list.relay_points`, `data.list.discounts`, `data.list.users`, `data.list.tables` |
 | **Utility** | `ping` |
 
 ---
@@ -109,7 +109,7 @@ Retrieve any reference data from your shop:
 
 You need a [Kash / free-cash-register.net](https://kash.click) account.
 
-**Don't have one?** You can create it directly from the conversation using `account_create`, or register at [kash.click/free-pos-software](https://kash.click/free-pos-software/).
+**Don't have one?** You can create it directly from the conversation using `account.create`, or register at [kash.click/free-pos-software](https://kash.click/free-pos-software/).
 
 **Already have one?** Retrieve your `APIKEY` and `SHOPID` in the software under **Setup → Webservices** or connect using oAuth.
 
@@ -244,16 +244,16 @@ Authentication is handled automatically by the OAuth 2.0 + PKCE flow when you co
 You can also authenticate directly within the conversation — no password required:
 
 ```
-1. auth_request_otp(email)         → OTP sent to your inbox
-2. auth_login_with_otp(email, otp) → session initialized ✓
-3. auth_logout()                   → clear session when done
+1. auth.request.otp(email)         → OTP sent to your inbox
+2. auth.login.with_otp(email, otp) → session initialized ✓
+3. auth.logout()                   → clear session when done
 ```
 
 If you don't have an account yet:
 
 ```
-1. account_list(email)             → check existing accounts
-2. account_create(email, title)    → create + session auto-initialized ✓
+1. account.list(email)             → check existing accounts
+2. account.create(email, title)    → create + session auto-initialized ✓
 ```
 
 ### STDIO / self-hosted
@@ -305,7 +305,7 @@ Password : demodemo
 
 ## 🏪 Supported business types
 
-When creating an account with `account_create`, use `configType` to pre-load a dataset tailored to your business:
+When creating an account with `account.create`, use `configType` to pre-load a dataset tailored to your business:
 
 `Bar` · `Bakery` · `Restaurant` · `Fast-food` · `Cafe` · `Coffee-shop` · `Pizzeria` · `Brewery` · `Food-truck` · `Snack` · `Florist` · `Retail` · `Pharmacy` · `Supermarket` · `Clothing-store` · `Ecommerce` · `Services` · `Beauty-institute` · `Coiffeur` · `Market` · `Library` · `Camping` · and more...
 

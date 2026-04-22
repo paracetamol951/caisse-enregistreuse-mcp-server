@@ -10,60 +10,49 @@ type InferFromShape<S extends Record<string, ZodTypeAny>> = z.infer<z.ZodObject<
 // SHARED SHAPES
 // ============================================================
 
-/** Item de vente : soit du catalogue, soit un rayon, soit une ligne libre */
 const SalesItemShape = {
-    type: z.enum(['catalog', 'dept', 'free']).default('catalog'),
-    productId: z.string().optional(),
-    quantity: z.union([z.number(), z.string()]).optional(),
-    titleOverride: z.string().optional(),
-    priceOverride: z.union([z.number(), z.string()]).optional(),
-    declinaisons: z.array(z.string()).optional(),
-    departmentId: z.union([z.string(), z.number()]).optional(),
-    price: z.union([z.number(), z.string()]).optional(),
-    title: z.string().optional(),
+    type: z.enum(['catalog', 'dept', 'free']).default('catalog').describe("Item type: 'catalog' for a PLU product, 'dept' for a department item, 'free' for a free-text line"),
+    productId: z.string().optional().describe("PLU product ID (required for type 'catalog')"),
+    quantity: z.union([z.number(), z.string()]).optional().describe('Item quantity (default 1)'),
+    titleOverride: z.string().optional().describe('Override the product title on the receipt'),
+    priceOverride: z.union([z.number(), z.string()]).optional().describe('Override the unit price'),
+    declinaisons: z.array(z.string()).optional().describe('Array of variation choice IDs applied to this item'),
+    departmentId: z.union([z.string(), z.number()]).optional().describe("Department ID (required for type 'dept')"),
+    price: z.union([z.number(), z.string()]).optional().describe("Unit price (required for type 'free' or 'dept')"),
+    title: z.string().optional().describe("Item label (required for type 'free')"),
 } satisfies Record<string, ZodTypeAny>;
 
 const ClientShape = {
-    firstname: z.string().optional(),
-    lastname: z.string().optional(),
-    email: z.string().email().optional(),
-    phone: z.string().optional(),
-    address: z.string().optional(),
-    zip: z.string().optional(),
-    city: z.string().optional(),
-    country: z.string().optional(),
+    firstname: z.string().optional().describe('Customer first name'),
+    lastname: z.string().optional().describe('Customer last name'),
+    email: z.string().email().optional().describe('Customer email address'),
+    phone: z.string().optional().describe('Customer phone number'),
+    address: z.string().optional().describe('Customer street address'),
+    zip: z.string().optional().describe('Customer postal/ZIP code'),
+    city: z.string().optional().describe('Customer city'),
+    country: z.string().optional().describe('Customer country'),
 } satisfies Record<string, ZodTypeAny>;
 
-// ============================================================
-// SALE CREATE SHAPE
-// ============================================================
-
 const SalesCreateShape = {
-    payment: z.union([z.number(), z.string()]).transform((v) => Number(v)).optional(),
+    payment: z.union([z.number(), z.string()]).transform((v) => Number(v)).optional().describe('Payment method ID; omit to leave as unpaid quote'),
     deliveryMethod: z.union([
         z.number().int().min(0).max(6),
         z.enum(['0', '1', '2', '3', '4', '5', '6'])
-    ]).transform((v) => Number(v)).optional(),
-    idtable: z.union([z.number().int(), z.string()]).optional(),
-    idcaisse: z.union([z.number().int(), z.string()]).optional(),
-    numcouverts: z.union([z.number().int(), z.string()]).optional(),
-    publicComment: z.string().optional(),
-    privateComment: z.string().optional(),
-    pagerNum: z.union([z.number().int(), z.string()]).optional(),
-    idUser: z.union([z.number().int(), z.string()]).optional(),
-    idClient: z.union([z.number().int(), z.string()]).optional(),
-    client: z.object(ClientShape).partial().optional(),
-    items: z.array(z.object(SalesItemShape)).min(1),
+    ]).transform((v) => Number(v)).optional().describe('Delivery method: 0=on-site, 1=delivery, 2=takeaway, 3=drive, 4=relay, 5=table service, 6=room service'),
+    idtable: z.union([z.number().int(), z.string()]).optional().describe('Table ID for table-service orders'),
+    idcaisse: z.union([z.number().int(), z.string()]).optional().describe('Cash register ID'),
+    numcouverts: z.union([z.number().int(), z.string()]).optional().describe('Number of covers/guests'),
+    publicComment: z.string().optional().describe('Comment visible on the receipt'),
+    privateComment: z.string().optional().describe('Internal staff-only comment'),
+    pagerNum: z.union([z.number().int(), z.string()]).optional().describe('Pager/buzzer number for the customer'),
+    idUser: z.union([z.number().int(), z.string()]).optional().describe('Staff member ID to assign the sale to'),
+    idClient: z.union([z.number().int(), z.string()]).optional().describe('Existing customer ID (alternative to inline client object)'),
+    client: z.object(ClientShape).partial().optional().describe('Inline customer details (used when no existing idClient)'),
+    items: z.array(z.object(SalesItemShape)).min(1).describe('List of sale items (at least one required)'),
 } satisfies Record<string, ZodTypeAny>;
 
-// ============================================================
-// ORDER EDIT SHAPE
-// ============================================================
-
 const OrderEditShape = {
-    orderID: z.number().int(),
-    // payment: -2 = not paid/not validated, -1 = not paid/validated,
-    //          or a payment method ID to record an actual payment
+    orderID: z.number().int().describe('ID of the order to modify'),
     payment: z.union([
         z.literal(-2),
         z.literal(-1),
@@ -72,34 +61,31 @@ const OrderEditShape = {
     ]).describe(
         '-2 = not paid, not validated | -1 = not paid, validated (invoice) | payment method ID = record a payment'
     ),
-    paymentAmount: z.union([z.number(), z.string()]).optional(),
-    idUser: z.union([z.number().int(), z.string()]).optional(),
-    idClient: z.union([z.number().int(), z.string()]).optional(),
-    client: z.object(ClientShape).partial().optional(),
-    idtable: z.union([z.number().int(), z.string()]).optional(),
-    idcaisse: z.union([z.number().int(), z.string()]).optional(),
-    numcouverts: z.union([z.number().int(), z.string()]).optional(),
-    publicComment: z.string().optional(),
-    privateComment: z.string().optional(),
-    pagerNum: z.union([z.number().int(), z.string()]).optional(),
+    paymentAmount: z.union([z.number(), z.string()]).optional().describe('Amount paid (partial payment support)'),
+    idUser: z.union([z.number().int(), z.string()]).optional().describe('Staff member ID'),
+    idClient: z.union([z.number().int(), z.string()]).optional().describe('Customer ID'),
+    client: z.object(ClientShape).partial().optional().describe('Inline customer details'),
+    idtable: z.union([z.number().int(), z.string()]).optional().describe('Table ID'),
+    idcaisse: z.union([z.number().int(), z.string()]).optional().describe('Cash register ID'),
+    numcouverts: z.union([z.number().int(), z.string()]).optional().describe('Number of covers/guests'),
+    publicComment: z.string().optional().describe('Comment visible on the receipt'),
+    privateComment: z.string().optional().describe('Internal staff-only comment'),
+    pagerNum: z.union([z.number().int(), z.string()]).optional().describe('Pager/buzzer number'),
     deliveryMethod: z.union([
         z.number().int().min(0).max(6),
         z.enum(['0', '1', '2', '3', '4', '5', '6'])
-    ]).transform((v) => Number(v)).optional(),
-    // items only usable on unvalidated orders
-    items: z.array(z.object(SalesItemShape)).optional(),
+    ]).transform((v) => Number(v)).optional().describe('Delivery method: 0=on-site, 1=delivery, 2=takeaway, 3=drive, 4=relay, 5=table service, 6=room service'),
+    items: z.array(z.object(SalesItemShape)).optional().describe('Items to add (only for unvalidated orders or new orders)'),
+} satisfies Record<string, ZodTypeAny>;
+
+const GetReportShape = {
+    d: z.number().int().min(1).max(31).optional().describe('Day of month (1–31); omit for full-month report'),
+    m: z.number().int().min(1).max(12).optional().describe('Month (1–12); omit for full-year report'),
+    y: z.number().int().min(2010).optional().describe('Year (e.g. 2024); omit for current year'),
 } satisfies Record<string, ZodTypeAny>;
 
 type SalesCreateArgs = InferFromShape<typeof SalesCreateShape>;
 type OrderEditArgs = InferFromShape<typeof OrderEditShape>;
-
-
-const GetReportShape = {
-    d: z.number().int().min(1).max(31).optional(),
-    m: z.number().int().min(1).max(12).optional(),
-    y: z.number().int().min(2010).optional(),
-} satisfies Record<string, ZodTypeAny>;
-
 type GetReportArgs = InferFromShape<typeof GetReportShape>;
 
 // ============================================================
@@ -134,10 +120,10 @@ function encodeItemsList(items: SalesCreateArgs['items']): string[] {
 export function registerSalesTools(server: McpServer | any) {
 
     server.registerTool(
-        'report_get',
+        'report.get',
         {
-            title: t('tools.report_get.title'),
-            description: t('tools.report_get.description'),
+            title: t('tools.report.get.title'),
+            description: t('tools.report.get.description'),
             inputSchema: GetReportShape,
             annotations: { readOnlyHint: true },
         },
@@ -163,11 +149,12 @@ export function registerSalesTools(server: McpServer | any) {
     );
     // -- SALE CREATE --
     server.registerTool(
-        'sale_create',
+        'order.create',
         {
-            title: t('tools.sale_create.title'),
-            description: t('tools.sale_create.description'),
+            title: t('tools.order.create.title'),
+            description: t('tools.order.create.description'),
             inputSchema: SalesCreateShape,
+            annotations: { destructiveHint: false, idempotentHint: false },
         },
         async (input: SalesCreateArgs, ctx: Ctx) => {
             const { shopId, apiKey } = resolveAuth(undefined, ctx);
@@ -201,11 +188,12 @@ export function registerSalesTools(server: McpServer | any) {
 
     // -- ORDER EDIT --
     server.registerTool(
-        'order_edit',
+        'order.edit',
         {
-            title: t('tools.order_edit.title'),
-            description: t('tools.order_edit.description'),
+            title: t('tools.order.edit.title'),
+            description: t('tools.order.edit.description'),
             inputSchema: OrderEditShape,
+            annotations: { destructiveHint: false, idempotentHint: true },
         },
         async (input: OrderEditArgs, ctx: Ctx) => {
             const { shopId, apiKey } = resolveAuth(undefined, ctx);

@@ -7,7 +7,7 @@ import { setSessionAuth, clearSessionAuth } from '../context.js';
 type InferFromShape<S extends Record<string, ZodTypeAny>> = z.infer<z.ZodObject<S>>;
 
 // ============================================================
-// CONFIG TYPES (pour account_create)
+// CONFIG TYPES (pour account.create)
 // ============================================================
 
 const CONFIG_TYPES = [
@@ -26,33 +26,33 @@ const CONFIG_TYPES = [
 // ============================================================
 
 const ListAccountsShape = {
-    email: z.string().email(),
-    accountTitle: z.string().optional(),
+    email: z.string().email().describe('Email address to look up linked Kash accounts'),
+    accountTitle: z.string().optional().describe('Filter results by account title'),
 } satisfies Record<string, ZodTypeAny>;
 
 const CreateAccountShape = {
-    email: z.string().email(),
-    accountTitle: z.string(),
-    configType: z.enum(CONFIG_TYPES).optional(),
-    companyRegistrationNum: z.string().optional(),
-    taxRegistrationNum: z.string().optional(),
-    adressline1: z.string().optional(),
-    postCode: z.string().optional(),
-    city: z.string().optional(),
-    country: z.string().optional(),
-    phone: z.string().optional(),
-    currency: z.string().optional(),
-    language: z.string().optional(),
+    email: z.string().email().describe('Email address for the new Kash account'),
+    accountTitle: z.string().describe('Display name for the new account'),
+    configType: z.enum(CONFIG_TYPES).optional().describe('Pre-loaded dataset type (e.g. Restaurant, Bar, Bakery)'),
+    companyRegistrationNum: z.string().optional().describe('Company registration number (SIRET, etc.)'),
+    taxRegistrationNum: z.string().optional().describe('VAT / tax registration number'),
+    adressline1: z.string().optional().describe('Street address line 1'),
+    postCode: z.string().optional().describe('Postal/ZIP code'),
+    city: z.string().optional().describe('City name'),
+    country: z.string().optional().describe('Country code or name'),
+    phone: z.string().optional().describe('Contact phone number'),
+    currency: z.string().optional().describe('Currency code (e.g. EUR, USD)'),
+    language: z.string().optional().describe('Language code (e.g. fr, en)'),
 } satisfies Record<string, ZodTypeAny>;
 
 const RequestOtpShape = {
-    email: z.string().email(),
-    accountID: z.union([z.number().int(), z.string()]).optional(),
+    email: z.string().email().describe('Email address to send the OTP to'),
+    accountID: z.union([z.number().int(), z.string()]).optional().describe('Target account ID if the email has multiple accounts'),
 } satisfies Record<string, ZodTypeAny>;
 
 const LoginWithOtpShape = {
-    email: z.string().email(),
-    otp: z.string(),
+    email: z.string().email().describe('Email address used to request the OTP'),
+    otp: z.string().describe('One-time password received by email'),
 } satisfies Record<string, ZodTypeAny>;
 
 const LogoutShape = {} satisfies Record<string, ZodTypeAny>;
@@ -84,10 +84,10 @@ export function registerAuthTools(server: McpServer | any) {
 
     // -- LIST ACCOUNTS --
     server.registerTool(
-        'account_list',
+        'account.list',
         {
-            title: t('tools.account_list.title'),
-            description: t('tools.account_list.description'),
+            title: t('tools.account.list.title'),
+            description: t('tools.account.list.description'),
             inputSchema: ListAccountsShape,
             annotations: { readOnlyHint: true },
         },
@@ -104,11 +104,12 @@ export function registerAuthTools(server: McpServer | any) {
 
     // -- CREATE ACCOUNT --
     server.registerTool(
-        'account_create',
+        'account.create',
         {
-            title: t('tools.account_create.title'),
-            description: t('tools.account_create.description'),
+            title: t('tools.account.create.title'),
+            description: t('tools.account.create.description'),
             inputSchema: CreateAccountShape,
+            annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true },
         },
         async (input: CreateAccountArgs) => {
             const body: Record<string, unknown> = {
@@ -127,7 +128,7 @@ export function registerAuthTools(server: McpServer | any) {
             if (input.language) body['data[language]'] = input.language;
 
             const data = await postForm('/workers/addShop.php', body);
-            tryInitSession(data, 'account_create');
+            tryInitSession(data, 'account.create');
             return {
                 content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
                 structuredContent: data,
@@ -137,12 +138,12 @@ export function registerAuthTools(server: McpServer | any) {
 
     // -- REQUEST OTP --
     server.registerTool(
-        'auth_request_otp',
+        'auth.request.otp',
         {
-            title: t('tools.auth_request_otp.title'),
-            description: t('tools.auth_request_otp.description'),
+            title: t('tools.auth.request.otp.title'),
+            description: t('tools.auth.request.otp.description'),
             inputSchema: RequestOtpShape,
-            annotations: { readOnlyHint: true },
+            annotations: { readOnlyHint: false, idempotentHint: false, openWorldHint: true },
         },
         async (input: RequestOtpArgs) => {
             const body: Record<string, unknown> = { email: input.email };
@@ -157,18 +158,19 @@ export function registerAuthTools(server: McpServer | any) {
 
     // -- LOGIN WITH OTP --
     server.registerTool(
-        'auth_login_with_otp',
+        'auth.login.with_otp',
         {
-            title: t('tools.auth_login_with_otp.title'),
-            description: t('tools.auth_login_with_otp.description'),
+            title: t('tools.auth.login.with_otp.title'),
+            description: t('tools.auth.login.with_otp.description'),
             inputSchema: LoginWithOtpShape,
+            annotations: { destructiveHint: false, idempotentHint: false },
         },
         async (input: LoginWithOtpArgs) => {
             const data = await postForm('/workers/getAuthTokenWithOTP.php', {
                 email: input.email,
                 otp: input.otp,
             });
-            tryInitSession(data, 'auth_login_with_otp');
+            tryInitSession(data, 'auth.login.with_otp');
             return {
                 content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
                 structuredContent: data,
@@ -178,11 +180,12 @@ export function registerAuthTools(server: McpServer | any) {
 
     // -- LOGOUT --
     server.registerTool(
-        'auth_logout',
+        'auth.logout',
         {
-            title: t('tools.auth_logout.title'),
-            description: t('tools.auth_logout.description'),
+            title: t('tools.auth.logout.title'),
+            description: t('tools.auth.logout.description'),
             inputSchema: LogoutShape,
+            annotations: { destructiveHint: false, idempotentHint: true },
         },
         async () => {
             clearSessionAuth();

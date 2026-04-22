@@ -8,31 +8,31 @@
       "title": "Not advised ! [Deprecated] Get API Key and Shop ID",
       "description": "The SHOPID and APIKEY environment variables must be used in stdio or oAuth in http. Authenticate a user by login and password to obtain the APIKEY and SHOPID required for all other requests. Returns { result: 'OK', APIKEY, SHOPID } on success, or { result: 'ERROR', message } on failure."
     },
-    "sale_create": {
+    "order.create": {
       "title": "Record a sale",
-      "description": "Record a new sale in the connected shop. Input includes paymentMode, and items[]. Each item can be of type 'catalog' (with productId), « department » (with deptId) or 'free' (with title and price). Check if the client already exists using data_list_clients and if the client exists, only specify idClient. If provided, paymentMode should correspond to a payment ID from data_list_payments tool. Returns a sale confirmation JSON from the API."
+      "description": "Record a new sale in the connected shop. Input includes paymentMode, and items[]. Each item can be of type 'catalog' (with productId), « department » (with deptId) or 'free' (with title and price). Check if the client already exists using data.list.clients and if the client exists, only specify idClient. If provided, paymentMode should correspond to a payment ID from data_list_payments tool. Returns a sale confirmation JSON from the API."
     },
-    "data_list_products": {
+    "data.list.products": {
       "title": "List items",
       "description": "Retrieve the list of articles (products) configured in the shop. Returns an array of products with fields like id, title, price, and departmentId. Optional parameter 'format' allows output as json, csv, or html."
     },
-    "data_list_departments": {
+    "data.list.departments": {
       "title": "List departments",
       "description": "Get all departments (product categories) defined in the shop, including their names and default tax rates. Supports format=json|csv|html."
     },
-    "data_list_department_groups": {
+    "data.list.department_groups": {
       "title": "List department groups",
       "description": "Return the list of department groups, used to organize product categories. Each group may include multiple department IDs."
     },
-    "data_list_clients": {
+    "data.list.clients": {
       "title": "List clients",
       "description": "Get the list of clients registered in the shop, including contact info, loyalty points."
     },
-    "data_list_variations": {
+    "data.list.variations": {
       "title": "List item variants",
       "description": "Retrieve product variations (declinaisons) such as size or color. Returns an array of variant definitions with value and optional price delta."
     },
-    "data_list_delivery_men": {
+    "data.list.delivery_men": {
       "title": "List delivery methods",
       "description": "List all delivery methods available for the shop, such as in-store pickup, home delivery, or courier services."
     },
@@ -40,35 +40,35 @@
       "title": "List payment modes",
       "description": "Return the list of payment methods (e.g. cash, card, mobile payment) available for this shop."
     },
-    "data_list_cashboxes": {
+    "data.list.cashboxes": {
       "title": "List cashboxes",
       "description": "List the registered cashboxes (physical or virtual) linked to the shop, including their current status and identifiers."
     },
-    "data_list_delivery_zones": {
+    "data.list.delivery_zones": {
       "title": "List delivery zones",
       "description": "Return all configured delivery zones, including area names, postal codes, and applicable delivery fees or restrictions."
     },
-    "data_list_relay_points": {
+    "data.list.relay_points": {
       "title": "List relay points",
       "description": "List all relay points where customers can pick up their orders, including address, city, and postal code."
     },
-    "data_list_discounts": {
+    "data.list.discounts": {
       "title": "List discounts",
       "description": "Return all available discounts or promotions, including their names, types (percentage or fixed), values, and conditions."
     },
-    "data_list_users": {
+    "data.list.users": {
       "title": "List users",
       "description": "List all users (cashiers, managers, etc.) associated with the shop, including their roles and identifiers."
     },
-    "data_list_tables": {
+    "data.list.tables": {
       "title": "List tables",
       "description": "Retrieve the list of tables configured in the app, used for restaurant mode or table management."
     },
-    "data_list_orders": {
+    "data.list.orders": {
       "title": "List orders",
       "description": "List either : unvalidated orders (called quotes) with creation date between from_date_ISO8601 and to_date_ISO8601 OR validated orders (called orders, invoices) with date of value between from_date_ISO8601 and to_date_ISO8601. You can also filter delivery methods (using filterDeliveryMethod)"
     },
-    "data_list_pending_orders": {
+    "data.list.pending_orders": {
       "title": "List pending orders",
       "description": "Retrieve the list of unvalidated orders (that can still be modified)"
     },
@@ -76,123 +76,123 @@
       "title": "Ping",
       "description": "Simple MCP server health check. Returns { result: 'OK' } if the server is alive."
     },
-    "order_detail": {
+    "order.detail": {
       "title": "Get order detail",
       "description": "Retrieve full order information by its unique ID, including items, client data, payment mode, and total amount."
     },
-    "data_list_vats": {
+    "data.list.vats": {
       "title": "List VAT rates",
       "description": "Retrieve the list of VAT rates configured in the shop, including their title, rate percentage, and optional accounting chapter."
     },
-    "vat_add": {
+    "vat.add": {
       "title": "Add a VAT rate",
       "description": "Add a new VAT rate to the shop configuration. Requires a title and a rate (e.g. 20 for 20%). Optional fields: accountingChapter, legal mention."
     },
-    "vat_edit": {
+    "vat.edit": {
       "title": "Edit a VAT rate",
       "description": "Modify an existing VAT rate by its ID. All fields are optional except the ID."
     },
-    "vat_delete": {
+    "vat.delete": {
       "title": "Delete a VAT rate",
       "description": "Permanently remove a VAT rate from the shop configuration by its ID."
     },
-    "plu_add": {
+    "plu.add": {
       "title": "Add an article",
       "description": "Add a new item/article to the shop catalog. Requires a title. Optional fields include price, department (deptID), VAT rate (vatID), barcode, stock, variations, and many more."
     },
-    "plu_edit": {
+    "plu.edit": {
       "title": "Edit an article",
-      "description": "Edit an existing item/article in the catalog by its ID. All fields are optional except the ID. Use data_list_products to find the article ID first."
+      "description": "Edit an existing item/article in the catalog by its ID. All fields are optional except the ID. Use data.list.products to find the article ID first."
     },
-    "plu_delete": {
+    "plu.delete": {
       "title": "Delete an article",
       "description": "Permanently remove an item/article from the catalog by its ID."
     },
-    "dept_add": {
+    "dept.add": {
       "title": "Add a department",
       "description": "Add a new department (product category) to the catalog. Requires a title. Optional fields include VAT rate (vatID), price, discount, position, department group, and variations."
     },
-    "dept_edit": {
+    "dept.edit": {
       "title": "Edit a department",
-      "description": "Edit an existing department/category by its ID. All fields are optional except the ID. Use data_list_departments to find the department ID first."
+      "description": "Edit an existing department/category by its ID. All fields are optional except the ID. Use data.list.departments to find the department ID first."
     },
-    "dept_delete": {
+    "dept.delete": {
       "title": "Delete a department",
       "description": "Permanently remove a department/category from the catalog by its ID."
     },
-    "account_create": {
+    "account.create": {
       "title": "Create a Kash account",
       "description": "Create a new Kash / free-cash-register.net account. Requires an email address and a shop name (accountTitle). Optional: configType to pre-load a dataset matching your business type (e.g. 'Restaurant', 'Bakery', 'Bar', 'Retail'...), plus address and legal info. On success, returns APIKEY and SHOPID and automatically initializes the session so all other tools can be used immediately. IMPORTANT: the user must validate their email via the link sent automatically, otherwise the account may be deleted after a period of inactivity."
     },
-    "account_list": {
+    "account.list": {
       "title": "List Kash accounts",
-      "description": "List all Kash / free-cash-register.net accounts linked to an email address. Use this before account_create to check if the user already has an account. Returns an array of accounts, each with accountTitle, accountID, and a getOTPForAccount URL that can be used to request a one-time password (OTP) to retrieve the APIKEY. This endpoint is public and requires no authentication."
+      "description": "List all Kash / free-cash-register.net accounts linked to an email address. Use this before account.create to check if the user already has an account. Returns an array of accounts, each with accountTitle, accountID, and a getOTPForAccount URL that can be used to request a one-time password (OTP) to retrieve the APIKEY. This endpoint is public and requires no authentication."
     },
-    "auth_request_otp": {
+    "auth.request.otp": {
       "title": "Request a login OTP",
-      "description": "Step 1 of 2 for in-conversation authentication. Sends a one-time password (OTP) to the user's email address. If the user has multiple accounts, provide accountID (obtained from account_list) to target the right one. On success, an OTP code is sent by email — then call auth_login_with_otp with that code."
+      "description": "Step 1 of 2 for in-conversation authentication. Sends a one-time password (OTP) to the user's email address. If the user has multiple accounts, provide accountID (obtained from account.list) to target the right one. On success, an OTP code is sent by email — then call auth.login.with_otp with that code."
     },
-    "auth_login_with_otp": {
+    "auth.login.with_otp": {
       "title": "Login with OTP",
-      "description": "Step 2 of 2 for in-conversation authentication. Exchange the OTP received by email for an APIKEY and SHOPID, and automatically initialize the session so all other tools work immediately. Call auth_request_otp first to receive the OTP by email."
+      "description": "Step 2 of 2 for in-conversation authentication. Exchange the OTP received by email for an APIKEY and SHOPID, and automatically initialize the session so all other tools work immediately. Call auth.request.otp first to receive the OTP by email."
     },
-    "auth_logout": {
+    "auth.logout": {
       "title": "Logout / clear session",
       "description": "Clear the current authentication session (APIKEY and SHOPID). After this, all tools requiring authentication will fail until a new login is performed."
     },
-    "client_add": {
+    "client.add": {
       "title": "Add a client",
-      "description": "Add a new customer to the shop's customer file. All fields are optional: name, surname, email, phone, address, company registration number, VAT number, barcode, private/public comment, blacklist status, birth date, etc. Use data_list_clients to check if the customer already exists first."
+      "description": "Add a new customer to the shop's customer file. All fields are optional: name, surname, email, phone, address, company registration number, VAT number, barcode, private/public comment, blacklist status, birth date, etc. Use data.list.clients to check if the customer already exists first."
     },
-    "client_edit": {
+    "client.edit": {
       "title": "Edit a client",
-      "description": "Edit an existing customer by their ID. All fields are optional except the ID. Use data_list_clients to find the customer ID first."
+      "description": "Edit an existing customer by their ID. All fields are optional except the ID. Use data.list.clients to find the customer ID first."
     },
-    "client_delete": {
+    "client.delete": {
       "title": "Delete a client",
       "description": "Permanently remove a customer from the shop's customer file by their ID."
     },
-    "order_edit": {
+    "order.edit": {
       "title": "Edit an order",
       "description": "Modify an existing order by its ID. Use the payment field to control the order state: -2 = keep as unvalidated quote (not paid); -1 = validate as invoice without payment; a payment method ID (from data_list_payments) = record an actual payment and validate the order. Use paymentAmount to specify a partial payment amount (omit for full payment). Items can only be added or changed on unvalidated orders. Once validated, only payments can be recorded. Returns the orderID, a payment link, and a PDF invoice or quote URL."
     },
-    "report_get": {
+    "report.get": {
       "title": "Get a sales report",
       "description": "Download a synthetic HTML sales report for a given period. Period logic: omit all date fields to get yesterday's report; provide y only for a full-year report; y + m for a full-month report; y + m + d for a specific day. Returns an HTML summary including total revenue, number of orders, breakdown by department, VAT summary, and payment methods."
     },
-    "dept_group_add": {
+    "dept_group.add": {
       "title": "Add a department group",
       "description": "Add a new department group to organize product categories. Requires a title. Optional: position, accounting chapter."
     },
-    "dept_group_edit": {
+    "dept_group.edit": {
       "title": "Edit a department group",
-      "description": "Edit an existing department group by its ID. Use data_list_department_groups to find the ID."
+      "description": "Edit an existing department group by its ID. Use data.list.department_groups to find the ID."
     },
-    "dept_group_delete": {
+    "dept_group.delete": {
       "title": "Delete a department group",
       "description": "Permanently remove a department group by its ID."
     },
-    "variation_add": {
+    "variation.add": {
       "title": "Add a variation",
-      "description": "Add a new variation type to the catalog (e.g. \"Size\", \"Color\"). Requires a title. Use variation_choice_add to add choices to this variation afterwards."
+      "description": "Add a new variation type to the catalog (e.g. \"Size\", \"Color\"). Requires a title. Use variation_choice.add to add choices to this variation afterwards."
     },
-    "variation_edit": {
+    "variation.edit": {
       "title": "Edit a variation",
-      "description": "Rename an existing variation type by its ID. Use data_list_variations to find the ID."
+      "description": "Rename an existing variation type by its ID. Use data.list.variations to find the ID."
     },
-    "variation_delete": {
+    "variation.delete": {
       "title": "Delete a variation",
       "description": "Permanently remove a variation type and all its choices by its ID."
     },
-    "variation_choice_add": {
+    "variation_choice.add": {
       "title": "Add a variation choice",
       "description": "Add a new choice to a variation (e.g. \"Large\" to the \"Size\" variation). Requires a title and idVariation. Optional: deltaPrice to adjust the price, position, description, ending (marks it as last choice), unavailable."
     },
-    "variation_choice_edit": {
+    "variation_choice.edit": {
       "title": "Edit a variation choice",
-      "description": "Edit an existing variation choice by its ID. All fields optional except ID. Use data_list_variations to find choice IDs."
+      "description": "Edit an existing variation choice by its ID. All fields optional except ID. Use data.list.variations to find choice IDs."
     },
-    "variation_choice_delete": {
+    "variation_choice.delete": {
       "title": "Delete a variation choice",
       "description": "Permanently remove a variation choice by its ID."
     }

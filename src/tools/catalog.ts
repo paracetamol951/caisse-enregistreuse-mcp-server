@@ -15,87 +15,82 @@ function appendData(body: Record<string, unknown>, fields: Record<string, unknow
 // ============================================================
 // ARTICLE (PLU)
 // ============================================================
-
 const PluDataShape = {
-    title: z.string().optional(),
-    shortTitle: z.string().optional(),
-    description: z.string().optional(),
-    buyingPrice: z.union([z.number(), z.string()]).optional(),
-    price: z.union([z.number(), z.string()]).optional(),
-    calories: z.union([z.number(), z.string()]).optional(),
-    weight: z.union([z.number(), z.string()]).optional(),
-    unitID: z.union([z.number(), z.string()]).optional(),
-    variationID0: z.union([z.number(), z.string()]).optional(),
-    variationID1: z.union([z.number(), z.string()]).optional(),
-    variationID2: z.union([z.number(), z.string()]).optional(),
-    variationID3: z.union([z.number(), z.string()]).optional(),
-    variationID4: z.union([z.number(), z.string()]).optional(),
-    deptID: z.union([z.number(), z.string()]).optional(),
-    supplierID: z.union([z.number(), z.string()]).optional(),
-    vatID: z.union([z.number(), z.string()]).optional(),
-    eatinvatID: z.union([z.number(), z.string()]).optional(),
-    discountID: z.union([z.number(), z.string()]).optional(),
-    barcode: z.string().optional(),
-    stock: z.union([z.number(), z.string()]).optional(),
-    stockAlert: z.union([z.number(), z.string()]).optional(),
-    consumptionDate: z.string().optional(),
-    shopHide: z.union([z.number(), z.string()]).optional(),
-    keyboardHide: z.union([z.number(), z.string()]).optional(),
-    needPrepa: z.union([z.number(), z.string()]).optional(),
-    prepaLength: z.union([z.number(), z.string()]).optional(),
-    position: z.union([z.number(), z.string()]).optional(),
-    activityCode: z.string().optional(),
-    internalID: z.string().optional(),
+    title: z.string().optional().describe('Product display name'),
+    shortTitle: z.string().optional().describe('Short label shown on receipt or keyboard'),
+    description: z.string().optional().describe('Full product description'),
+    buyingPrice: z.union([z.number(), z.string()]).optional().describe('Cost/buying price (for margin calculation)'),
+    price: z.union([z.number(), z.string()]).optional().describe('Selling price'),
+    calories: z.union([z.number(), z.string()]).optional().describe('Calorie count'),
+    weight: z.union([z.number(), z.string()]).optional().describe('Product weight'),
+    unitID: z.union([z.number(), z.string()]).optional().describe('Unit of measure ID (e.g. kg, litre)'),
+    variationID0: z.union([z.number(), z.string()]).optional().describe('Variation type ID for slot 0'),
+    variationID1: z.union([z.number(), z.string()]).optional().describe('Variation type ID for slot 1'),
+    variationID2: z.union([z.number(), z.string()]).optional().describe('Variation type ID for slot 2'),
+    variationID3: z.union([z.number(), z.string()]).optional().describe('Variation type ID for slot 3'),
+    variationID4: z.union([z.number(), z.string()]).optional().describe('Variation type ID for slot 4'),
+    deptID: z.union([z.number(), z.string()]).optional().describe('Parent department ID'),
+    supplierID: z.union([z.number(), z.string()]).optional().describe('Supplier ID'),
+    vatID: z.union([z.number(), z.string()]).optional().describe('VAT rate ID for takeaway/standard sales'),
+    eatinvatID: z.union([z.number(), z.string()]).optional().describe('VAT rate ID for eat-in sales'),
+    discountID: z.union([z.number(), z.string()]).optional().describe('Default discount ID applied to this product'),
+    barcode: z.string().optional().describe('Product barcode (EAN, QR, etc.)'),
+    stock: z.union([z.number(), z.string()]).optional().describe('Current stock quantity'),
+    stockAlert: z.union([z.number(), z.string()]).optional().describe('Low-stock alert threshold'),
+    consumptionDate: z.string().optional().describe('Expiry/consumption date'),
+    shopHide: z.union([z.number(), z.string()]).optional().describe('1 to hide from online shop, 0 to show'),
+    keyboardHide: z.union([z.number(), z.string()]).optional().describe('1 to hide from POS keyboard, 0 to show'),
+    needPrepa: z.union([z.number(), z.string()]).optional().describe('1 if product requires kitchen preparation'),
+    prepaLength: z.union([z.number(), z.string()]).optional().describe('Estimated preparation time in minutes'),
+    position: z.union([z.number(), z.string()]).optional().describe('Display position/order on keyboard'),
+    activityCode: z.string().optional().describe('Accounting activity code'),
+    internalID: z.string().optional().describe('Internal reference or SKU'),
 } satisfies Record<string, ZodTypeAny>;
 
-
 const EditPluShape = {
-    id: z.union([z.number().int(), z.string()]),
+    id: z.union([z.number().int(), z.string()]).describe('ID of the product to modify'),
     ...PluDataShape,
 } satisfies Record<string, ZodTypeAny>;
 
 const DelPluShape = {
-    id: z.union([z.number().int(), z.string()]),
+    id: z.union([z.number().int(), z.string()]).describe('ID of the product to delete'),
+} satisfies Record<string, ZodTypeAny>;
+
+const DeptDataShape = {
+    title: z.string().optional().describe('Department/category display name'),
+    shortTitle: z.string().optional().describe('Short label for receipt or keyboard'),
+    stock: z.union([z.number(), z.string()]).optional().describe('Stock quantity override at department level'),
+    vatID: z.union([z.number(), z.string()]).optional().describe('Default VAT rate ID for this department'),
+    eatinvatID: z.union([z.number(), z.string()]).optional().describe('Eat-in VAT rate ID'),
+    discountID: z.union([z.number(), z.string()]).optional().describe('Default discount ID'),
+    price: z.union([z.number(), z.string()]).optional().describe('Default price for free-price items'),
+    keyboardHide: z.union([z.number(), z.string()]).optional().describe('1 to hide from POS keyboard'),
+    shopHide: z.union([z.number(), z.string()]).optional().describe('1 to hide from online shop'),
+    position: z.union([z.number(), z.string()]).optional().describe('Display order on keyboard'),
+    deptGroupID: z.union([z.number(), z.string()]).optional().describe('Department group this department belongs to'),
+    unitID: z.union([z.number(), z.string()]).optional().describe('Unit of measure ID'),
+    needPrepa: z.union([z.number(), z.string()]).optional().describe('1 if items require kitchen preparation'),
+    variationID0: z.union([z.number(), z.string()]).optional().describe('Variation type ID for slot 0'),
+    variationID1: z.union([z.number(), z.string()]).optional().describe('Variation type ID for slot 1'),
+    variationID2: z.union([z.number(), z.string()]).optional().describe('Variation type ID for slot 2'),
+    variationID3: z.union([z.number(), z.string()]).optional().describe('Variation type ID for slot 3'),
+    variationID4: z.union([z.number(), z.string()]).optional().describe('Variation type ID for slot 4'),
+    activityCode: z.string().optional().describe('Accounting activity code'),
+} satisfies Record<string, ZodTypeAny>;
+
+const EditDeptShape = {
+    id: z.union([z.number().int(), z.string()]).describe('ID of the department to modify'),
+    ...DeptDataShape,
+} satisfies Record<string, ZodTypeAny>;
+
+const DelDeptShape = {
+    id: z.union([z.number().int(), z.string()]).describe('ID of the department to delete'),
 } satisfies Record<string, ZodTypeAny>;
 
 type AddPluArgs = InferFromShape<typeof PluDataShape>;
 type EditPluArgs = InferFromShape<typeof EditPluShape>;
 type DelPluArgs = InferFromShape<typeof DelPluShape>;
 
-// ============================================================
-// DEPARTMENT
-// ============================================================
-
-const DeptDataShape = {
-    title: z.string().optional(),
-    shortTitle: z.string().optional(),
-    stock: z.union([z.number(), z.string()]).optional(),
-    vatID: z.union([z.number(), z.string()]).optional(),
-    eatinvatID: z.union([z.number(), z.string()]).optional(),
-    discountID: z.union([z.number(), z.string()]).optional(),
-    price: z.union([z.number(), z.string()]).optional(),
-    keyboardHide: z.union([z.number(), z.string()]).optional(),
-    shopHide: z.union([z.number(), z.string()]).optional(),
-    position: z.union([z.number(), z.string()]).optional(),
-    deptGroupID: z.union([z.number(), z.string()]).optional(),
-    unitID: z.union([z.number(), z.string()]).optional(),
-    needPrepa: z.union([z.number(), z.string()]).optional(),
-    variationID0: z.union([z.number(), z.string()]).optional(),
-    variationID1: z.union([z.number(), z.string()]).optional(),
-    variationID2: z.union([z.number(), z.string()]).optional(),
-    variationID3: z.union([z.number(), z.string()]).optional(),
-    variationID4: z.union([z.number(), z.string()]).optional(),
-    activityCode: z.string().optional(),
-} satisfies Record<string, ZodTypeAny>;
-
-const EditDeptShape = {
-    id: z.union([z.number().int(), z.string()]),
-    ...DeptDataShape,
-} satisfies Record<string, ZodTypeAny>;
-
-const DelDeptShape = {
-    id: z.union([z.number().int(), z.string()]),
-} satisfies Record<string, ZodTypeAny>;
 
 type AddDeptArgs = InferFromShape<typeof DeptDataShape>;
 type EditDeptArgs = InferFromShape<typeof EditDeptShape>;
@@ -110,11 +105,12 @@ export function registerCatalogTools(server: McpServer | any) {
     // ---- ARTICLES ----
 
     server.registerTool(
-        'plu_add',
+        'plu.add',
         {
-            title: t('tools.plu_add.title'),
-            description: t('tools.plu_add.description'),
-            inputSchema: PluDataShape,
+            title: t('tools.plu.add.title'),
+            description: t('tools.plu.add.description'),
+            inputSchema: PluDataShape, 
+            annotations: { destructiveHint: false, idempotentHint: false },
         },
         async (input: AddPluArgs, ctx: Ctx) => {
             const { shopId, apiKey } = resolveAuth(undefined, ctx);
@@ -127,11 +123,12 @@ export function registerCatalogTools(server: McpServer | any) {
     );
 
     server.registerTool(
-        'plu_edit',
+        'plu.edit',
         {
-            title: t('tools.plu_edit.title'),
-            description: t('tools.plu_edit.description'),
+            title: t('tools.plu.edit.title'),
+            description: t('tools.plu.edit.description'),
             inputSchema: EditPluShape,
+            annotations: { destructiveHint: false, idempotentHint: true },
         },
         async (input: EditPluArgs, ctx: Ctx) => {
             const { shopId, apiKey } = resolveAuth(undefined, ctx);
@@ -144,11 +141,12 @@ export function registerCatalogTools(server: McpServer | any) {
     );
 
     server.registerTool(
-        'plu_delete',
+        'plu.delete',
         {
-            title: t('tools.plu_delete.title'),
-            description: t('tools.plu_delete.description'),
+            title: t('tools.plu.delete.title'),
+            description: t('tools.plu.delete.description'),
             inputSchema: DelPluShape,
+            annotations: { destructiveHint: true, idempotentHint: true },
         },
         async (input: DelPluArgs, ctx: Ctx) => {
             const { shopId, apiKey } = resolveAuth(undefined, ctx);
@@ -160,11 +158,12 @@ export function registerCatalogTools(server: McpServer | any) {
     // ---- DEPARTMENTS ----
 
     server.registerTool(
-        'dept_add',
+        'dept.add',
         {
-            title: t('tools.dept_add.title'),
-            description: t('tools.dept_add.description'),
+            title: t('tools.dept.add.title'),
+            description: t('tools.dept.add.description'),
             inputSchema: DeptDataShape,
+            annotations: { destructiveHint: false, idempotentHint: false },
         },
         async (input: AddDeptArgs, ctx: Ctx) => {
             const { shopId, apiKey } = resolveAuth(undefined, ctx);
@@ -177,11 +176,12 @@ export function registerCatalogTools(server: McpServer | any) {
     );
 
     server.registerTool(
-        'dept_edit',
+        'dept.edit',
         {
-            title: t('tools.dept_edit.title'),
-            description: t('tools.dept_edit.description'),
+            title: t('tools.dept.edit.title'),
+            description: t('tools.dept.edit.description'),
             inputSchema: EditDeptShape,
+            annotations: { destructiveHint: false, idempotentHint: true },
         },
         async (input: EditDeptArgs, ctx: Ctx) => {
             const { shopId, apiKey } = resolveAuth(undefined, ctx);
@@ -194,11 +194,12 @@ export function registerCatalogTools(server: McpServer | any) {
     );
 
     server.registerTool(
-        'dept_delete',
+        'dept.delete',
         {
-            title: t('tools.dept_delete.title'),
-            description: t('tools.dept_delete.description'),
+            title: t('tools.dept.delete.title'),
+            description: t('tools.dept.delete.description'),
             inputSchema: DelDeptShape,
+            annotations: { destructiveHint: true, idempotentHint: true },
         },
         async (input: DelDeptArgs, ctx: Ctx) => {
             const { shopId, apiKey } = resolveAuth(undefined, ctx);
