@@ -82,8 +82,8 @@ function registerSimple(
     server.registerTool(
         toolName,
         {
-            title,
-            description: `Liste des ${entityLabel}`,
+            title: entityLabel,
+            description: title,
             inputSchema: CommonShape, // ZodRawShape,
             annotations: { readOnlyHint: true }
         },
