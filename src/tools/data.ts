@@ -23,7 +23,7 @@ const getOrdersShape = {
     filterDeliveryMethod: z.union([
         z.number().int().min(0).max(6),
         z.enum(['0', '1', '2', '3', '4', '5', '6'])
-    ]).transform((v) => Number(v)).optional().describe('Filter by delivery method: 0=all, 1=delivery, 2=takeaway, 3=drive, 4=relay, 5=table, 6=room'),
+    ]).transform((v) => Number(v)).optional().describe('Filter by delivery method: 0=takeaway, 1=delivery, 2=on-site, 3=drive, 4=relay, 5=table, 6=room'),
 } satisfies Record<string, ZodTypeAny>;
 
 type CommonArgs = InferFromShape<typeof CommonShape>;

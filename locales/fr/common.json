@@ -43,7 +43,7 @@
     "order": {
       "create": {
         "title": "Créer une commande",
-        "description": "Crée une nouvelle commande pour l'établissement. Prend en entrée le mode de paiement (optionnel) et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec deptId) ou « libre » (avec titre et prix). Vérifier si le client n'existe déjà en utilisant data.list.clients et si le client existe, uniquement préciser idClient. Retourne un objet JSON de confirmation de la vente tel que fourni par l'API distante."
+        "description": "Crée une nouvelle commande pour l'établissement. Prend en entrée le mode de paiement (optionnel) et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec deptId) ou « libre » (avec titre et prix). Vérifier si le client n'existe déjà en utilisant data.list.clients et si le client existe, uniquement préciser idClient. Retourne un JSON de confirmation contenant : un lien vers la facture PDF, et un lien vers une page privée de la commande affichant le détail de la commande, utilisable également par le client pour payer en ligne."
       },
       "edit": {
         "title": "Modifier une commande",

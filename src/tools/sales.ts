@@ -38,7 +38,7 @@ const SalesCreateShape = {
     deliveryMethod: z.union([
         z.number().int().min(0).max(6),
         z.enum(['0', '1', '2', '3', '4', '5', '6'])
-    ]).transform((v) => Number(v)).optional().describe('Delivery method: 0=on-site, 1=delivery, 2=takeaway, 3=drive, 4=relay, 5=table service, 6=room service'),
+    ]).transform((v) => Number(v)).optional().describe('Delivery method: 0=takeaway, 1=delivery, 2=on-site, 3=drive, 4=relay, 5=table service, 6=room service'),
     idtable: z.union([z.number().int(), z.string()]).optional().describe('Table ID for table-service orders'),
     idcaisse: z.union([z.number().int(), z.string()]).optional().describe('Cash register ID'),
     numcouverts: z.union([z.number().int(), z.string()]).optional().describe('Number of covers/guests'),
@@ -74,7 +74,7 @@ const OrderEditShape = {
     deliveryMethod: z.union([
         z.number().int().min(0).max(6),
         z.enum(['0', '1', '2', '3', '4', '5', '6'])
-    ]).transform((v) => Number(v)).optional().describe('Delivery method: 0=on-site, 1=delivery, 2=takeaway, 3=drive, 4=relay, 5=table service, 6=room service'),
+    ]).transform((v) => Number(v)).optional().describe('Delivery method: 0=takeaway, 1=delivery, 2=on-site, 3=drive, 4=relay, 5=table service, 6=room service'),
     items: z.array(z.object(SalesItemShape)).optional().describe('Items to add (only for unvalidated orders or new orders)'),
 } satisfies Record<string, ZodTypeAny>;
 

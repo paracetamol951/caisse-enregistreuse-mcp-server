@@ -43,7 +43,7 @@
     "order": {
       "create": {
         "title": "Record an order",
-        "description": "Record a new order in the connected shop. Input includes paymentMode, and items[]. Each item can be of type 'catalog' (with productId), 'department' (with deptId) or 'free' (with title and price). Check if the client already exists using data.list.clients and if the client exists, only specify idClient. If provided, paymentMode should correspond to a payment ID from data.list.payments_modes tool. Returns a sale confirmation JSON from the API."
+        "description": "Record a new order in the connected shop. Input includes paymentMode, and items[]. Each item can be of type 'catalog' (with productId), 'department' (with deptId) or 'free' (with title and price). Check if the client already exists using data.list.clients and if the client exists, only specify idClient. If provided, paymentMode should correspond to a payment ID from data.list.payments_modes tool. Returns a sale confirmation JSON including: a link to the PDF invoice, and a link to a private order page showing full order details which can also be used by the client to pay online."
       },
       "edit": {
         "title": "Edit an order",

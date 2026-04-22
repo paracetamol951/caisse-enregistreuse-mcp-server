@@ -12,6 +12,7 @@ import { registerDataTools } from './tools/data.js';
 import { setSessionAuth, getSessionAuth } from './context.js';
 import { registerVatTools } from './tools/vats.js';
 import { registerCatalogTools } from './tools/catalog.js';
+import { registerResources } from './resources/index.js';
 import { registerClientTools } from './tools/clients.js';
 
 // ==== Session globale (STDIO: une seule connexion) ====
@@ -97,6 +98,8 @@ async function main() {
         registerClientTools(server);
 
         registerPrompts(server);    // in stdio.ts
+
+        registerResources(server);
 
         process.stderr.write(`[caisse][info] Tools enregistrés : ${JSON.stringify(registeredToolNames)}\n`);
     } catch (e: any) {

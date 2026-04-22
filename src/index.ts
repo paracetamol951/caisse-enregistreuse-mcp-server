@@ -12,6 +12,7 @@ import { setSessionAuth } from './context.js';
 import { registerPrompts } from './prompts/index.js';
 import oauthRouter, { bearerValidator } from './support/oauth.js';
 import { registerClientTools } from './tools/clients.js';
+import { registerResources } from './resources/index.js';
 
 const app = express();
 
@@ -70,6 +71,8 @@ registerCatalogTools(mcpServer);
 registerClientTools(mcpServer);
 
 registerPrompts(mcpServer); // in index.ts
+
+registerResources(mcpServer);
 
 // Map sessionId -> transport
 const transports = new Map<string, StreamableHTTPServerTransport>();
