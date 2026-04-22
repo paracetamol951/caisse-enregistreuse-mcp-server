@@ -4,7 +4,7 @@ import { t } from './i18n/index.js';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z, ZodTypeAny } from 'zod';
-
+import { registerPrompts } from './prompts/index.js';
 // ⬇️ IMPORTANT : garde bien les suffixes ".js" car le build ESM référencera build/*.js
 import { registerAuthTools } from './tools/auth.js';
 import { registerSalesTools } from './tools/sales.js';
@@ -95,6 +95,8 @@ async function main() {
         registerCatalogTools(server);
         //registerAccountTools(server);
         registerClientTools(server);
+
+        registerPrompts(server);    // in stdio.ts
 
         process.stderr.write(`[caisse][info] Tools enregistrés : ${JSON.stringify(registeredToolNames)}\n`);
     } catch (e: any) {
