@@ -86,8 +86,8 @@ export function registerAuthTools(server: McpServer | any) {
     server.registerTool(
         'account_list',
         {
-            title: t('tools.account_list.title'),
-            description: t('tools.account_list.description'),
+            title: t('tools.account.list.title'),
+            description: t('tools.account.list.description'),
             inputSchema: ListAccountsShape,
             annotations: { readOnlyHint: true },
         },
@@ -106,8 +106,8 @@ export function registerAuthTools(server: McpServer | any) {
     server.registerTool(
         'account_create',
         {
-            title: t('tools.account_create.title'),
-            description: t('tools.account_create.description'),
+            title: t('tools.account.create.title'),
+            description: t('tools.account.create.description'),
             inputSchema: CreateAccountShape,
             annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true },
         },
