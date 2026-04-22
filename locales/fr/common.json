@@ -1,210 +1,232 @@
 {
   "app": {
     "name": "Serveur MCP Caisse Enregistreuse",
-    "description": "Expose l’API caisse.enregistreuse.fr sous forme d’outils MCP, permettant un accès programmatique à l’authentification, à la création de ventes et à la consultation des données du commerce."
+    "description": "Expose l'API caisse.enregistreuse.fr sous forme d'outils MCP, permettant un accès programmatique à l'authentification, à la création de ventes et à la consultation des données du commerce."
   },
   "tools": {
-    "order.detail": {
-      "title": "Obtenir le détail d'une commande",
-      "description": "Récupère toutes les informations d’une commande à partir de son identifiant unique, y compris les articles vendus, le client, le mode de paiement et le montant total."
-    },
-    "context.set": {
-      "title": "Définir le contexte (API Key & Boutique)",
-      "description": "Enregistre vos identifiants APIKEY et SHOPID dans la session afin de pouvoir utiliser les autres outils sans avoir à répéter ces informations à chaque appel."
-    },
     "ping": {
       "title": "Ping",
-      "description": "Vérifie l’état du serveur MCP. Retourne { result: 'OK' } si le serveur est opérationnel."
-    },
-    "auth_get_token": {
-      "title": "Déconseillé. Obtenir APIKEY + SHOPID [deprecated]",
-      "description": "Les variables d'environnement SHOPID et APIKEY doivent être utilisées en stdio ou oAuth en http. Permet de récupérer les identifiants d’accès (APIKEY et SHOPID) à partir d’un couple login/mot de passe. Utilisé pour authentifier les appels aux autres outils du serveur."
-    },
-    "order.create": {
-      "title": "Créer une vente",
-      "description": "Crée une nouvelle vente pour l'établissement. Prend en entrée le mode de paiement (optionnel) et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec deptId) ou « libre » (avec titre et prix). Vérifier si le client n'existe déjà en utilisant data.list.clients et si le client existe, uniquement préciser idClient.  Retourne un objet JSON de confirmation de la vente tel que fourni par l’API distante."
-    },
-    "data.list.tables": {
-      "title": "Lister les tables",
-      "description": "Retourne la liste des tables configurées dans l’application, utilisée notamment pour le mode restauration ou la gestion des tables en salle."
-    },
-    "data.list.products": {
-      "title": "Lister les articles",
-      "description": "Récupère la liste complète des articles (produits) enregistrés dans la boutique. Retourne un tableau d’articles contenant les champs id, titre, prix, rayon, TVA, etc. Le paramètre optionnel 'format' permet de choisir la sortie (json, csv ou html)."
-    },
-    "data.list.departments": {
-      "title": "Lister les rayons",
-      "description": "Retourne la liste des rayons (catégories de produits) définis dans la boutique, avec leurs noms et taux de TVA associés. Compatible avec les formats json, csv ou html."
-    },
-    "data.list.department_groups": {
-      "title": "Lister les groupes de rayons",
-      "description": "Récupère la liste des groupes de rayons, utilisés pour organiser les catégories de produits. Chaque groupe peut regrouper plusieurs rayons."
-    },
-    "data.list.clients": {
-      "title": "Lister les clients",
-      "description": "Retourne la liste des clients enregistrés dans la boutique, incluant leurs informations de contact, points de fidélité..."
-    },
-    "data.list.variations": {
-      "title": "Lister les déclinaisons",
-      "description": "Liste toutes les déclinaisons d’articles (par exemple : taille, couleur, grammage). Retourne un tableau d’objets indiquant les valeurs et écarts de prix éventuels."
-    },
-    "data.list.delivery_men": {
-      "title": "Lister les méthodes de livraison",
-      "description": "Récupère la liste des modes de livraison disponibles dans la boutique : retrait en magasin, livraison à domicile, transporteur, etc.."
+      "description": "Vérifie l'état du serveur MCP. Retourne { result: 'OK' } si le serveur est opérationnel."
     },
     "data_list_payments": {
       "title": "Lister les modes de paiement",
       "description": "Retourne la liste des moyens de paiement configurés dans la boutique (espèces, carte bancaire, paiement mobile, etc.)."
     },
-    "data.list.cashboxes": {
-      "title": "Lister les caisses",
-      "description": "Récupère la liste des caisses enregistrées (physiques ou virtuelles) associées à la boutique, avec leurs identifiants et leur état actuel."
+    "account": {
+      "list": {
+        "title": "Lister les comptes Kash",
+        "description": "Liste tous les comptes Kash / caisse.enregistreuse.fr associés à une adresse email. À utiliser avant account.create pour vérifier si l'utilisateur possède déjà un compte. Retourne un tableau de comptes, chacun contenant accountTitle, accountID, et une URL getOTPForAccount permettant de demander un mot de passe à usage unique (OTP) pour récupérer l'APIKEY. Cet endpoint est public et ne nécessite aucune authentification."
+      },
+      "create": {
+        "title": "Créer un compte Kash",
+        "description": "Crée un nouveau compte Kash / caisse.enregistreuse.fr. Requiert une adresse email et un nom de boutique (accountTitle). Optionnel : configType pour pré-charger un jeu de données adapté à votre activité (ex. 'Restaurant', 'Bakery', 'Bar', 'Shops'...), ainsi que les informations d'adresse et légales. En cas de succès, retourne l'APIKEY et le SHOPID et initialise automatiquement la session pour que tous les autres outils soient utilisables immédiatement. IMPORTANT : l'utilisateur doit valider son email via le lien envoyé automatiquement, sinon le compte peut être supprimé après une période d'inactivité."
+      }
     },
-    "data.list.delivery_zones": {
-      "title": "Lister les zones de livraison",
-      "description": "Retourne toutes les zones de livraison configurées, incluant les noms de zone, codes postaux et éventuels frais de livraison associés."
+    "auth": {
+      "request": {
+        "otp": {
+          "title": "Demander un OTP de connexion",
+          "description": "Étape 1/2 de l'authentification dans la conversation. Envoie un mot de passe à usage unique (OTP) à l'adresse email de l'utilisateur. Si l'utilisateur a plusieurs comptes, fournir accountID (obtenu via account.list) pour cibler le bon compte. En cas de succès, un code OTP est envoyé par email — appeler ensuite auth.login.with_otp avec ce code."
+        }
+      },
+      "login": {
+        "with_otp": {
+          "title": "Se connecter avec l'OTP",
+          "description": "Étape 2/2 de l'authentification dans la conversation. Échange le code OTP reçu par email contre un APIKEY et un SHOPID, et initialise automatiquement la session pour que tous les autres outils fonctionnent immédiatement. Appeler auth.request.otp d'abord pour recevoir l'OTP par email."
+        }
+      },
+      "logout": {
+        "title": "Déconnexion / vider la session",
+        "description": "Efface la session d'authentification courante (APIKEY et SHOPID). Après cela, tous les outils nécessitant une authentification échoueront jusqu'à une nouvelle connexion."
+      }
     },
-    "data.list.relay_points": {
-      "title": "Lister les points relais",
-      "description": "Liste les points relais disponibles pour la livraison des commandes, avec leur nom, adresse, ville et code postal."
+    "order": {
+      "create": {
+        "title": "Créer une vente",
+        "description": "Crée une nouvelle vente pour l'établissement. Prend en entrée le mode de paiement (optionnel) et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec deptId) ou « libre » (avec titre et prix). Vérifier si le client n'existe déjà en utilisant data.list.clients et si le client existe, uniquement préciser idClient. Retourne un objet JSON de confirmation de la vente tel que fourni par l'API distante."
+      },
+      "edit": {
+        "title": "Modifier une commande",
+        "description": "Modifie une commande existante à partir de son identifiant. Utilisez le champ payment pour contrôler l'état de la commande : -2 = garder comme devis non validé (non payé) ; -1 = valider en facture sans paiement ; un ID de mode de paiement (depuis data.list.payments_modes) = enregistrer un paiement réel et valider. Utilisez paymentAmount pour préciser un montant partiel (omis = paiement total). Les articles ne peuvent être modifiés que sur les commandes non validées. Une fois validée, seuls des paiements peuvent être enregistrés. Retourne l'orderID, un lien de paiement, et une URL de facture ou devis PDF."
+      },
+      "detail": {
+        "title": "Obtenir le détail d'une commande",
+        "description": "Récupère toutes les informations d'une commande à partir de son identifiant unique, y compris les articles vendus, le client, le mode de paiement et le montant total."
+      }
     },
-    "data.list.discounts": {
-      "title": "Lister les réductions",
-      "description": "Retourne l’ensemble des réductions ou suppléments disponibles dans la boutique, incluant leur nom, type (pourcentage ou fixe), valeur et conditions d’application."
+    "report": {
+      "get": {
+        "title": "Obtenir un rapport de ventes",
+        "description": "Télécharge un rapport HTML synthétique des ventes sur une période donnée. Logique de période : omettre toutes les dates pour le rapport d'hier ; fournir y seul pour un rapport annuel complet ; y + m pour un rapport mensuel ; y + m + d pour un jour précis. Retourne un résumé HTML incluant le chiffre d'affaires total, le nombre de commandes, la ventilation par rayon, le récapitulatif TVA et les modes de paiement."
+      }
     },
-    "data.list.users": {
-      "title": "Lister les utilisateurs",
-      "description": "Récupère la liste des utilisateurs (vendeurs, gérants, etc.) rattachés à la boutique, avec leurs rôles et identifiants."
+    "data": {
+      "list": {
+        "products": {
+          "title": "Lister les articles",
+          "description": "Récupère la liste complète des articles (produits) enregistrés dans la boutique. Retourne un tableau d'articles contenant les champs id, titre, prix, rayon, TVA, etc. Le paramètre optionnel 'format' permet de choisir la sortie (json, csv ou html)."
+        },
+        "departments": {
+          "title": "Lister les rayons",
+          "description": "Retourne la liste des rayons (catégories de produits) définis dans la boutique, avec leurs noms et taux de TVA associés. Compatible avec les formats json, csv ou html."
+        },
+        "department_groups": {
+          "title": "Lister les groupes de rayons",
+          "description": "Récupère la liste des groupes de rayons, utilisés pour organiser les catégories de produits. Chaque groupe peut regrouper plusieurs rayons."
+        },
+        "clients": {
+          "title": "Lister les clients",
+          "description": "Retourne la liste des clients enregistrés dans la boutique, incluant leurs informations de contact, points de fidélité..."
+        },
+        "variations": {
+          "title": "Lister les déclinaisons",
+          "description": "Liste toutes les déclinaisons d'articles (par exemple : taille, couleur, grammage). Retourne un tableau d'objets indiquant les valeurs et écarts de prix éventuels."
+        },
+        "delivery_men": {
+          "title": "Lister les méthodes de livraison",
+          "description": "Récupère la liste des modes de livraison disponibles dans la boutique : retrait en magasin, livraison à domicile, transporteur, etc."
+        },
+        "cashboxes": {
+          "title": "Lister les caisses",
+          "description": "Récupère la liste des caisses enregistrées (physiques ou virtuelles) associées à la boutique, avec leurs identifiants et leur état actuel."
+        },
+        "delivery_zones": {
+          "title": "Lister les zones de livraison",
+          "description": "Retourne toutes les zones de livraison configurées, incluant les noms de zone, codes postaux et éventuels frais de livraison associés."
+        },
+        "relay_points": {
+          "title": "Lister les points relais",
+          "description": "Liste les points relais disponibles pour la livraison des commandes, avec leur nom, adresse, ville et code postal."
+        },
+        "discounts": {
+          "title": "Lister les réductions",
+          "description": "Retourne l'ensemble des réductions ou suppléments disponibles dans la boutique, incluant leur nom, type (pourcentage ou fixe), valeur et conditions d'application."
+        },
+        "users": {
+          "title": "Lister les utilisateurs",
+          "description": "Récupère la liste des utilisateurs (vendeurs, gérants, etc.) rattachés à la boutique, avec leurs rôles et identifiants."
+        },
+        "tables": {
+          "title": "Lister les tables",
+          "description": "Retourne la liste des tables configurées dans l'application, utilisée notamment pour le mode restauration ou la gestion des tables en salle."
+        },
+        "vats": {
+          "title": "Lister les taux de TVA",
+          "description": "Récupère la liste des taux de TVA configurés dans la boutique, avec leur titre, pourcentage et éventuellement le chapitre comptable associé."
+        },
+        "pending_orders": {
+          "title": "Lister les commandes en cours (non validées)",
+          "description": "Récupérer la liste des commandes en cours (non validées)"
+        },
+        "orders": {
+          "title": "Lister les commandes",
+          "description": "Listez soit les commandes non validées (les devis) dont la date de création est comprise entre from_date_ISO8601 et to_date_ISO8601, soit les commandes validées (dénommées commandes ou factures) dont la date de valeur est comprise entre from_date_ISO8601 et to_date_ISO8601. Vous pouvez également filtrer les modes de livraison (avec filterDeliveryMethod)."
+        }
+      }
     },
-    "data.list.orders": {
-      "title": "Lister les commandes",
-      "description": "Listez soit les commandes non validées (les devis) dont la date de création est comprise entre from_date_ISO8601 et to_date_ISO8601, soit les commandes validées (dénommées commandes ou factures) dont la date de valeur est comprise entre from_date_ISO8601 et to_date_ISO8601. Vous pouvez également filtrer les modes de livraison (avec filterDeliveryMethod)."
+    "vat": {
+      "add": {
+        "title": "Ajouter un taux de TVA",
+        "description": "Ajoute un nouveau taux de TVA à la configuration de la boutique. Requiert un titre et un taux (ex. 20 pour 20%). Champs optionnels : chapitre comptable, mention légale."
+      },
+      "edit": {
+        "title": "Modifier un taux de TVA",
+        "description": "Modifie un taux de TVA existant à partir de son identifiant. Tous les champs sont optionnels sauf l'ID."
+      },
+      "delete": {
+        "title": "Supprimer un taux de TVA",
+        "description": "Supprime définitivement un taux de TVA de la configuration de la boutique à partir de son identifiant."
+      }
     },
-    "data.list.pending_orders": {
-      "title": "Lister les commandes en cours (non validées)",
-      "description": "Récupérer la liste des commandes en cours (non validées)"
+    "plu": {
+      "add": {
+        "title": "Ajouter un article",
+        "description": "Ajoute un nouvel article au catalogue de la boutique. Requiert un titre. Les champs optionnels incluent le prix, le rayon (deptID), le taux de TVA (vatID), le code-barre, le stock, les déclinaisons, et bien d'autres."
+      },
+      "edit": {
+        "title": "Modifier un article",
+        "description": "Modifie un article existant du catalogue à partir de son identifiant. Tous les champs sont optionnels sauf l'ID. Utiliser data.list.products pour retrouver l'ID de l'article."
+      },
+      "delete": {
+        "title": "Supprimer un article",
+        "description": "Supprime définitivement un article du catalogue à partir de son identifiant."
+      }
     },
-    "data.list.vats": {
-      "title": "Lister les taux de TVA",
-      "description": "Récupère la liste des taux de TVA configurés dans la boutique, avec leur titre, pourcentage et éventuellement le chapitre comptable associé."
+    "dept": {
+      "add": {
+        "title": "Ajouter un rayon",
+        "description": "Ajoute un nouveau rayon (catégorie de produits) au catalogue. Requiert un titre. Les champs optionnels incluent le taux de TVA (vatID), le prix, la réduction, la position, le groupe de rayons et les déclinaisons."
+      },
+      "edit": {
+        "title": "Modifier un rayon",
+        "description": "Modifie un rayon existant à partir de son identifiant. Tous les champs sont optionnels sauf l'ID. Utiliser data.list.departments pour retrouver l'ID du rayon."
+      },
+      "delete": {
+        "title": "Supprimer un rayon",
+        "description": "Supprime définitivement un rayon du catalogue à partir de son identifiant."
+      }
     },
-    "vat.add": {
-      "title": "Ajouter un taux de TVA",
-      "description": "Ajoute un nouveau taux de TVA à la configuration de la boutique. Requiert un titre et un taux (ex. 20 pour 20%). Champs optionnels : chapitre comptable, mention légale."
+    "dept_group": {
+      "add": {
+        "title": "Ajouter un groupe de rayons",
+        "description": "Ajoute un nouveau groupe de rayons pour organiser les catégories. Requiert un titre. Optionnel : position, chapitre comptable."
+      },
+      "edit": {
+        "title": "Modifier un groupe de rayons",
+        "description": "Modifie un groupe de rayons existant par son ID. Utiliser data.list.department_groups pour trouver l'ID."
+      },
+      "delete": {
+        "title": "Supprimer un groupe de rayons",
+        "description": "Supprime définitivement un groupe de rayons par son ID."
+      }
     },
-    "vat.edit": {
-      "title": "Modifier un taux de TVA",
-      "description": "Modifie un taux de TVA existant à partir de son identifiant. Tous les champs sont optionnels sauf l'ID."
+    "variation": {
+      "add": {
+        "title": "Ajouter une déclinaison",
+        "description": "Ajoute un nouveau type de déclinaison au catalogue (ex. \"Taille\", \"Couleur\"). Requiert un titre. Utiliser variation_choice.add pour ajouter des choix ensuite."
+      },
+      "edit": {
+        "title": "Modifier une déclinaison",
+        "description": "Renomme un type de déclinaison existant par son ID. Utiliser data.list.variations pour trouver l'ID."
+      },
+      "delete": {
+        "title": "Supprimer une déclinaison",
+        "description": "Supprime définitivement un type de déclinaison et tous ses choix par son ID."
+      }
     },
-    "vat.delete": {
-      "title": "Supprimer un taux de TVA",
-      "description": "Supprime définitivement un taux de TVA de la configuration de la boutique à partir de son identifiant."
+    "variation_choice": {
+      "add": {
+        "title": "Ajouter un choix de déclinaison",
+        "description": "Ajoute un nouveau choix à une déclinaison (ex. \"Grande\" à la déclinaison \"Taille\"). Requiert un titre et idVariation. Optionnel : deltaPrice pour ajuster le prix, position, description, ending (dernier choix), unavailable."
+      },
+      "edit": {
+        "title": "Modifier un choix de déclinaison",
+        "description": "Modifie un choix de déclinaison existant par son ID. Tous les champs sont optionnels sauf l'ID."
+      },
+      "delete": {
+        "title": "Supprimer un choix de déclinaison",
+        "description": "Supprime définitivement un choix de déclinaison par son ID."
+      }
     },
-    "plu.add": {
-      "title": "Ajouter un article",
-      "description": "Ajoute un nouvel article au catalogue de la boutique. Requiert un titre. Les champs optionnels incluent le prix, le rayon (deptID), le taux de TVA (vatID), le code-barre, le stock, les déclinaisons, et bien d'autres."
-    },
-    "plu.edit": {
-      "title": "Modifier un article",
-      "description": "Modifie un article existant du catalogue à partir de son identifiant. Tous les champs sont optionnels sauf l'ID. Utiliser data.list.products pour retrouver l'ID de l'article."
-    },
-    "plu.delete": {
-      "title": "Supprimer un article",
-      "description": "Supprime définitivement un article du catalogue à partir de son identifiant."
-    },
-    "dept.add": {
-      "title": "Ajouter un rayon",
-      "description": "Ajoute un nouveau rayon (catégorie de produits) au catalogue. Requiert un titre. Les champs optionnels incluent le taux de TVA (vatID), le prix, la réduction, la position, le groupe de rayons et les déclinaisons."
-    },
-    "dept.edit": {
-      "title": "Modifier un rayon",
-      "description": "Modifie un rayon existant à partir de son identifiant. Tous les champs sont optionnels sauf l'ID. Utiliser data.list.departments pour retrouver l'ID du rayon."
-    },
-    "dept.delete": {
-      "title": "Supprimer un rayon",
-      "description": "Supprime définitivement un rayon du catalogue à partir de son identifiant."
-    },
-    "account.create": {
-      "title": "Créer un compte Kash",
-      "description": "Crée un nouveau compte Kash / caisse.enregistreuse.fr. Requiert une adresse email et un nom de boutique (accountTitle). Optionnel : configType pour pré-charger un jeu de données adapté à votre activité (ex. 'Restaurant', 'Bakery', 'Bar', 'Shops'...), ainsi que les informations d'adresse et légales. En cas de succès, retourne l'APIKEY et le SHOPID et initialise automatiquement la session pour que tous les autres outils soient utilisables immédiatement. IMPORTANT : l'utilisateur doit valider son email via le lien envoyé automatiquement, sinon le compte peut être supprimé après une période d'inactivité."
-    },
-    "account.list": {
-      "title": "Lister les comptes Kash",
-      "description": "Liste tous les comptes Kash / caisse.enregistreuse.fr associés à une adresse email. À utiliser avant account.create pour vérifier si l'utilisateur possède déjà un compte. Retourne un tableau de comptes, chacun contenant accountTitle, accountID, et une URL getOTPForAccount permettant de demander un mot de passe à usage unique (OTP) pour récupérer l'APIKEY. Cet endpoint est public et ne nécessite aucune authentification."
-    },
-    "auth.request.otp": {
-      "title": "Demander un OTP de connexion",
-      "description": "Étape 1/2 de l'authentification dans la conversation. Envoie un mot de passe à usage unique (OTP) à l'adresse email de l'utilisateur. Si l'utilisateur a plusieurs comptes, fournir accountID (obtenu via account.list) pour cibler le bon compte. En cas de succès, un code OTP est envoyé par email — appeler ensuite auth.login.with_otp avec ce code."
-    },
-    "auth.login.with_otp": {
-      "title": "Se connecter avec l'OTP",
-      "description": "Étape 2/2 de l'authentification dans la conversation. Échange le code OTP reçu par email contre un APIKEY et un SHOPID, et initialise automatiquement la session pour que tous les autres outils fonctionnent immédiatement. Appeler auth.request.otp d'abord pour recevoir l'OTP par email."
-    },
-    "auth.logout": {
-      "title": "Déconnexion / vider la session",
-      "description": "Efface la session d'authentification courante (APIKEY et SHOPID). Après cela, tous les outils nécessitant une authentification échoueront jusqu'à une nouvelle connexion."
-    },
-    "client.add": {
-      "title": "Ajouter un client",
-      "description": "Ajoute un nouveau client au fichier clients de la boutique. Tous les champs sont optionnels : nom, prénom, email, téléphone, adresse, numéro SIRET, numéro TVA, code-barre, commentaire privé/public, statut blacklist, date de naissance, etc. Utiliser data.list.clients pour vérifier si le client existe déjà."
-    },
-    "client.edit": {
-      "title": "Modifier un client",
-      "description": "Modifie un client existant à partir de son identifiant. Tous les champs sont optionnels sauf l'ID. Utiliser data.list.clients pour retrouver l'ID du client."
-    },
-    "client.delete": {
-      "title": "Supprimer un client",
-      "description": "Supprime définitivement un client du fichier clients de la boutique à partir de son identifiant."
-    },
-    "order.edit": {
-      "title": "Modifier une commande",
-      "description": "Modifie une commande existante à partir de son identifiant. Utilisez le champ payment pour contrôler l'état de la commande : -2 = garder comme devis non validé (non payé) ; -1 = valider en facture sans paiement ; un ID de mode de paiement (depuis data_list_payments) = enregistrer un paiement réel et valider. Utilisez paymentAmount pour préciser un montant partiel (omis = paiement total). Les articles ne peuvent être modifiés que sur les commandes non validées. Une fois validée, seuls des paiements peuvent être enregistrés. Retourne l'orderID, un lien de paiement, et une URL de facture ou devis PDF."
-    },
-    "report.get": {
-      "title": "Obtenir un rapport de ventes",
-      "description": "Télécharge un rapport HTML synthétique des ventes sur une période donnée. Logique de période : omettre toutes les dates pour le rapport d'hier ; fournir y seul pour un rapport annuel complet ; y + m pour un rapport mensuel ; y + m + d pour un jour précis. Retourne un résumé HTML incluant le chiffre d'affaires total, le nombre de commandes, la ventilation par rayon, le récapitulatif TVA et les modes de paiement."
-    },
-    "dept_group.add": {
-      "title": "Ajouter un groupe de rayons",
-      "description": "Ajoute un nouveau groupe de rayons pour organiser les catégories. Requiert un titre. Optionnel : position, chapitre comptable."
-    },
-    "dept_group.edit": {
-      "title": "Modifier un groupe de rayons",
-      "description": "Modifie un groupe de rayons existant par son ID. Utiliser data.list.department_groups pour trouver l'ID."
-    },
-    "dept_group.delete": {
-      "title": "Supprimer un groupe de rayons",
-      "description": "Supprime définitivement un groupe de rayons par son ID."
-    },
-    "variation.add": {
-      "title": "Ajouter une déclinaison",
-      "description": "Ajoute un nouveau type de déclinaison au catalogue (ex. \"Taille\", \"Couleur\"). Requiert un titre. Utiliser variation_choice.add pour ajouter des choix ensuite."
-    },
-    "variation.edit": {
-      "title": "Modifier une déclinaison",
-      "description": "Renomme un type de déclinaison existant par son ID. Utiliser data.list.variations pour trouver l'ID."
-    },
-    "variation.delete": {
-      "title": "Supprimer une déclinaison",
-      "description": "Supprime définitivement un type de déclinaison et tous ses choix par son ID."
-    },
-    "variation_choice.add": {
-      "title": "Ajouter un choix de déclinaison",
-      "description": "Ajoute un nouveau choix à une déclinaison (ex. \"Grande\" à la déclinaison \"Taille\"). Requiert un titre et idVariation. Optionnel : deltaPrice pour ajuster le prix, position, description, ending (dernier choix), unavailable."
-    },
-    "variation_choice.edit": {
-      "title": "Modifier un choix de déclinaison",
-      "description": "Modifie un choix de déclinaison existant par son ID. Tous les champs sont optionnels sauf l'ID."
-    },
-    "variation_choice.delete": {
-      "title": "Supprimer un choix de déclinaison",
-      "description": "Supprime définitivement un choix de déclinaison par son ID."
+    "client": {
+      "add": {
+        "title": "Ajouter un client",
+        "description": "Ajoute un nouveau client au fichier clients de la boutique. Tous les champs sont optionnels : nom, prénom, email, téléphone, adresse, numéro SIRET, numéro TVA, code-barre, commentaire privé/public, statut blacklist, date de naissance, etc. Utiliser data.list.clients pour vérifier si le client existe déjà."
+      },
+      "edit": {
+        "title": "Modifier un client",
+        "description": "Modifie un client existant à partir de son identifiant. Tous les champs sont optionnels sauf l'ID. Utiliser data.list.clients pour retrouver l'ID du client."
+      },
+      "delete": {
+        "title": "Supprimer un client",
+        "description": "Supprime définitivement un client du fichier clients de la boutique à partir de son identifiant."
+      }
     }
   },
   "messages": {
     "server_started": "Serveur démarré et connecté avec succès",
     "auth_ok": "Authentification réussie",
-    "auth_failed": "Échec de l’authentification",
+    "auth_failed": "Échec de l'authentification",
     "ctx_set": "Contexte enregistré",
     "missing_params": "Paramètres manquants"
   }
