@@ -32,7 +32,7 @@ type DelVatArgs = InferFromShape<typeof DelVatShape>;
 export function registerVatTools(server: McpServer | any) {
 
     server.registerTool(
-        'vat.add',
+        'vat_add',
         {
             title: t('tools.vat.add.title'),
             description: t('tools.vat.add.description'),
@@ -54,7 +54,7 @@ export function registerVatTools(server: McpServer | any) {
     );
 
     server.registerTool(
-        'vat.edit',
+        'vat_edit',
         {
             title: t('tools.vat.edit.title'),
             description: t('tools.vat.edit.description'),
@@ -74,7 +74,7 @@ export function registerVatTools(server: McpServer | any) {
     );
 
     server.registerTool(
-        'vat.delete',
+        'vat_delete',
         {
             title: t('tools.vat.delete.title'),
             description: t('tools.vat.delete.description'),

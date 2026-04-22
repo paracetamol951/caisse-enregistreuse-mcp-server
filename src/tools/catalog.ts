@@ -105,10 +105,10 @@ export function registerCatalogTools(server: McpServer | any) {
     // ---- ARTICLES ----
 
     server.registerTool(
-        'plu.add',
+        'plu_add',
         {
-            title: t('tools.plu.add.title'),
-            description: t('tools.plu.add.description'),
+            title: t('tools.plu_add.title'),
+            description: t('tools.plu_add.description'),
             inputSchema: PluDataShape, 
             annotations: { destructiveHint: false, idempotentHint: false },
         },
@@ -123,7 +123,7 @@ export function registerCatalogTools(server: McpServer | any) {
     );
 
     server.registerTool(
-        'plu.edit',
+        'plu_edit',
         {
             title: t('tools.plu.edit.title'),
             description: t('tools.plu.edit.description'),
@@ -141,7 +141,7 @@ export function registerCatalogTools(server: McpServer | any) {
     );
 
     server.registerTool(
-        'plu.delete',
+        'plu_delete',
         {
             title: t('tools.plu.delete.title'),
             description: t('tools.plu.delete.description'),
@@ -158,7 +158,7 @@ export function registerCatalogTools(server: McpServer | any) {
     // ---- DEPARTMENTS ----
 
     server.registerTool(
-        'dept.add',
+        'dept_add',
         {
             title: t('tools.dept.add.title'),
             description: t('tools.dept.add.description'),
@@ -176,7 +176,7 @@ export function registerCatalogTools(server: McpServer | any) {
     );
 
     server.registerTool(
-        'dept.edit',
+        'dept_edit',
         {
             title: t('tools.dept.edit.title'),
             description: t('tools.dept.edit.description'),
@@ -194,7 +194,7 @@ export function registerCatalogTools(server: McpServer | any) {
     );
 
     server.registerTool(
-        'dept.delete',
+        'dept_delete',
         {
             title: t('tools.dept.delete.title'),
             description: t('tools.dept.delete.description'),

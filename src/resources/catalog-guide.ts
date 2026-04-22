@@ -1,9 +1,9 @@
 export const KASH_CATALOG_GUIDE = `
-# KASH — Catalog Guide
+# KASH â€” Catalog Guide
 
 ## Structure Hierarchy
 
-Department Group ? Department ? Product (PLU)
+Department Group â†’ Department â†’ Product (PLU)
 
 - Department groups are optional organizational containers.
 - Departments define default VAT, price, and variations for their products.
@@ -31,13 +31,13 @@ Department Group ? Department ? Product (PLU)
 - vatID: VAT rate ID for standard / takeaway sales
 - eatinvatID: VAT rate ID for eat-in sales (restaurant mode)
 - If neither is set, the department VAT applies; if the department has none, the shop default applies.
-- Never compute VAT manually — always use IDs from data.list.vats.
+- Never compute VAT manually â€” always use IDs from data_list_vats.
 
 ### Variations (up to 5 slots)
-- variationID0 … variationID4: assign variation types to a product
+- variationID0 â€¦ variationID4: assign variation types to a product
 - Each slot references a variation type (e.g. "Size", "Color")
 - When recording a sale, pass the chosen variation choice IDs in the declinaisons array (max 5 choices per order line)
-- Use data.list.variations to retrieve available variation types and their choices
+- Use data_list_variations to retrieve available variation types and their choices
 
 ### Visibility
 - keyboardHide: 1 = hidden from POS touchscreen keyboard (still sellable by barcode or search)
@@ -71,12 +71,12 @@ Departments group products and carry default settings inherited by their product
 - deptGroupID: optional parent group
 - position: display order on keyboard
 - needPrepa: 1 = all products in this department require preparation by default
-- variationID0 … variationID4: default variations inherited by products
+- variationID0 â€¦ variationID4: default variations inherited by products
 - keyboardHide / shopHide: visibility flags (same as products)
 - activityCode: accounting code
 
 ### Agent rules
-1. Always assign a deptID when creating a product — uncategorized products degrade report quality.
+1. Always assign a deptID when creating a product â€” uncategorized products degrade report quality.
 2. Set VAT at the department level when all products share the same rate; override at product level only when needed.
 3. Use deptGroupID to organize departments into logical sections (e.g. "Food", "Drinks").
 
@@ -90,22 +90,22 @@ Departments group products and carry default settings inherited by their product
 - unavailable: 1 = choice is temporarily unavailable (shown greyed out)
 
 ### Setup workflow
-1. variation.add ? create the type (e.g. "Size")
-2. variation_choice.add ? add choices to the type (e.g. "S", "M", "L" with deltaPrices)
-3. plu.add or dept.add ? assign variationID0 … variationID4 with the type ID
+1. variation_add â†’ create the type (e.g. "Size")
+2. variation_choice_add â†’ add choices to the type (e.g. "S", "M", "L" with deltaPrices)
+3. plu_add or dept_add â†’ assign variationID0 â€¦ variationID4 with the type ID
 
 ### At sale time
 - Pass chosen variation choice IDs in the declinaisons array on the order line.
 - Maximum 5 declinaisons per order line.
 - Price delta is applied automatically per choice.
 
-## Agent Rules — Catalog
+## Agent Rules â€” Catalog
 
 MUST:
-1. Always check data.list.products before creating a new product to avoid duplicates.
-2. Always check data.list.departments before creating a new department.
+1. Always check data_list_products before creating a new product to avoid duplicates.
+2. Always check data_list_departments before creating a new department.
 3. Assign a deptID to every product.
-4. Use data.list.vats to resolve VAT IDs — never hardcode VAT values.
+4. Use data_list_vats to resolve VAT IDs â€” never hardcode VAT values.
 
 SHOULD:
 1. Set needPrepa on the department rather than individual products when the whole category requires preparation.

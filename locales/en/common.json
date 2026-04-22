@@ -15,7 +15,7 @@
     "account": {
       "list": {
         "title": "List Kash accounts",
-        "description": "List all Kash / free-cash-register.net accounts linked to an email address. Use this before account.create to check if the user already has an account. Returns an array of accounts, each with accountTitle, accountID, and a getOTPForAccount URL that can be used to request a one-time password (OTP) to retrieve the APIKEY. This endpoint is public and requires no authentication."
+        "description": "List all Kash / free-cash-register.net accounts linked to an email address. Use this before account_create to check if the user already has an account. Returns an array of accounts, each with accountTitle, accountID, and a getOTPForAccount URL that can be used to request a one-time password (OTP) to retrieve the APIKEY. This endpoint is public and requires no authentication."
       },
       "create": {
         "title": "Create a Kash account",
@@ -26,13 +26,13 @@
       "request": {
         "otp": {
           "title": "Request a login OTP",
-          "description": "Step 1 of 2 for in-conversation authentication. Sends a one-time password (OTP) to the user's email address. If the user has multiple accounts, provide accountID (obtained from account.list) to target the right one. On success, an OTP code is sent by email — then call auth.login.with_otp with that code."
+          "description": "Step 1 of 2 for in-conversation authentication. Sends a one-time password (OTP) to the user's email address. If the user has multiple accounts, provide accountID (obtained from account_list) to target the right one. On success, an OTP code is sent by email — then call auth_login_with_otp with that code."
         }
       },
       "login": {
         "with_otp": {
           "title": "Login with OTP",
-          "description": "Step 2 of 2 for in-conversation authentication. Exchange the OTP received by email for an APIKEY and SHOPID, and automatically initialize the session so all other tools work immediately. Call auth.request.otp first to receive the OTP by email."
+          "description": "Step 2 of 2 for in-conversation authentication. Exchange the OTP received by email for an APIKEY and SHOPID, and automatically initialize the session so all other tools work immediately. Call auth_request_otp first to receive the OTP by email."
         }
       },
       "logout": {
@@ -43,11 +43,11 @@
     "order": {
       "create": {
         "title": "Record an order",
-        "description": "Record a new order in the connected shop. Input includes paymentMode, and items[]. Each item can be of type 'catalog' (with productId), 'department' (with deptId) or 'free' (with title and price). Check if the client already exists using data.list.clients and if the client exists, only specify idClient. If provided, paymentMode should correspond to a payment ID from data.list.payments_modes tool. Returns a sale confirmation JSON including: a link to the PDF invoice, and a link to a private order page showing full order details which can also be used by the client to pay online."
+        "description": "Record a new order in the connected shop. Input includes paymentMode, and items[]. Each item can be of type 'catalog' (with productId), 'department' (with deptId) or 'free' (with title and price). Check if the client already exists using data_list_clients and if the client exists, only specify idClient. If provided, paymentMode should correspond to a payment ID from data_list_payments_modes tool. Returns a sale confirmation JSON including: a link to the PDF invoice, and a link to a private order page showing full order details which can also be used by the client to pay online."
       },
       "edit": {
         "title": "Edit an order",
-        "description": "Modify an existing order by its ID. Use the payment field to control the order state: -2 = keep as unvalidated quote (not paid); -1 = validate as invoice without payment; a payment method ID (from data.list.payments_modes) = record an actual payment and validate the order. Use paymentAmount to specify a partial payment amount (omit for full payment). Items can only be added or changed on unvalidated orders. Once validated, only payments can be recorded. Returns the orderID, a payment link, and a PDF invoice or quote URL."
+        "description": "Modify an existing order by its ID. Use the payment field to control the order state: -2 = keep as unvalidated quote (not paid); -1 = validate as invoice without payment; a payment method ID (from data_list_payments_modes) = record an actual payment and validate the order. Use paymentAmount to specify a partial payment amount (omit for full payment). Items can only be added or changed on unvalidated orders. Once validated, only payments can be recorded. Returns the orderID, a payment link, and a PDF invoice or quote URL."
       },
       "detail": {
         "title": "Get order detail",
@@ -145,7 +145,7 @@
       },
       "edit": {
         "title": "Edit an article",
-        "description": "Edit an existing item/article in the catalog by its ID. All fields are optional except the ID. Use data.list.products to find the article ID first."
+        "description": "Edit an existing item/article in the catalog by its ID. All fields are optional except the ID. Use data_list_products to find the article ID first."
       },
       "delete": {
         "title": "Delete an article",
@@ -159,7 +159,7 @@
       },
       "edit": {
         "title": "Edit a department",
-        "description": "Edit an existing department/category by its ID. All fields are optional except the ID. Use data.list.departments to find the department ID first."
+        "description": "Edit an existing department/category by its ID. All fields are optional except the ID. Use data_list_departments to find the department ID first."
       },
       "delete": {
         "title": "Delete a department",
@@ -173,7 +173,7 @@
       },
       "edit": {
         "title": "Edit a department group",
-        "description": "Edit an existing department group by its ID. Use data.list.department_groups to find the ID."
+        "description": "Edit an existing department group by its ID. Use data_list_department_groups to find the ID."
       },
       "delete": {
         "title": "Delete a department group",
@@ -183,11 +183,11 @@
     "variation": {
       "add": {
         "title": "Add a variation",
-        "description": "Add a new variation type to the catalog (e.g. \"Size\", \"Color\"). Requires a title. Use variation_choice.add to add choices to this variation afterwards."
+        "description": "Add a new variation type to the catalog (e.g. \"Size\", \"Color\"). Requires a title. Use variation_choice_add to add choices to this variation afterwards."
       },
       "edit": {
         "title": "Edit a variation",
-        "description": "Rename an existing variation type by its ID. Use data.list.variations to find the ID."
+        "description": "Rename an existing variation type by its ID. Use data_list_variations to find the ID."
       },
       "delete": {
         "title": "Delete a variation",
@@ -201,7 +201,7 @@
       },
       "edit": {
         "title": "Edit a variation choice",
-        "description": "Edit an existing variation choice by its ID. All fields optional except ID. Use data.list.variations to find choice IDs."
+        "description": "Edit an existing variation choice by its ID. All fields optional except ID. Use data_list_variations to find choice IDs."
       },
       "delete": {
         "title": "Delete a variation choice",
@@ -211,11 +211,11 @@
     "client": {
       "add": {
         "title": "Add a client",
-        "description": "Add a new customer to the shop's customer file. All fields are optional: name, surname, email, phone, address, company registration number, VAT number, barcode, private/public comment, blacklist status, birth date, etc. Use data.list.clients to check if the customer already exists first."
+        "description": "Add a new customer to the shop's customer file. All fields are optional: name, surname, email, phone, address, company registration number, VAT number, barcode, private/public comment, blacklist status, birth date, etc. Use data_list_clients to check if the customer already exists first."
       },
       "edit": {
         "title": "Edit a client",
-        "description": "Edit an existing customer by their ID. All fields are optional except the ID. Use data.list.clients to find the customer ID first."
+        "description": "Edit an existing customer by their ID. All fields are optional except the ID. Use data_list_clients to find the customer ID first."
       },
       "delete": {
         "title": "Delete a client",

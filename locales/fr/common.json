@@ -15,7 +15,7 @@
     "account": {
       "list": {
         "title": "Lister les comptes Kash",
-        "description": "Liste tous les comptes Kash / caisse.enregistreuse.fr associés à une adresse email. À utiliser avant account.create pour vérifier si l'utilisateur possède déjà un compte. Retourne un tableau de comptes, chacun contenant accountTitle, accountID, et une URL getOTPForAccount permettant de demander un mot de passe à usage unique (OTP) pour récupérer l'APIKEY. Cet endpoint est public et ne nécessite aucune authentification."
+        "description": "Liste tous les comptes Kash / caisse.enregistreuse.fr associés à une adresse email. À utiliser avant account_create pour vérifier si l'utilisateur possède déjà un compte. Retourne un tableau de comptes, chacun contenant accountTitle, accountID, et une URL getOTPForAccount permettant de demander un mot de passe à usage unique (OTP) pour récupérer l'APIKEY. Cet endpoint est public et ne nécessite aucune authentification."
       },
       "create": {
         "title": "Créer un compte Kash",
@@ -26,13 +26,13 @@
       "request": {
         "otp": {
           "title": "Demander un OTP de connexion",
-          "description": "Étape 1/2 de l'authentification dans la conversation. Envoie un mot de passe à usage unique (OTP) à l'adresse email de l'utilisateur. Si l'utilisateur a plusieurs comptes, fournir accountID (obtenu via account.list) pour cibler le bon compte. En cas de succès, un code OTP est envoyé par email — appeler ensuite auth.login.with_otp avec ce code."
+          "description": "Étape 1/2 de l'authentification dans la conversation. Envoie un mot de passe à usage unique (OTP) à l'adresse email de l'utilisateur. Si l'utilisateur a plusieurs comptes, fournir accountID (obtenu via account_list) pour cibler le bon compte. En cas de succès, un code OTP est envoyé par email — appeler ensuite auth_login_with_otp avec ce code."
         }
       },
       "login": {
         "with_otp": {
           "title": "Se connecter avec l'OTP",
-          "description": "Étape 2/2 de l'authentification dans la conversation. Échange le code OTP reçu par email contre un APIKEY et un SHOPID, et initialise automatiquement la session pour que tous les autres outils fonctionnent immédiatement. Appeler auth.request.otp d'abord pour recevoir l'OTP par email."
+          "description": "Étape 2/2 de l'authentification dans la conversation. Échange le code OTP reçu par email contre un APIKEY et un SHOPID, et initialise automatiquement la session pour que tous les autres outils fonctionnent immédiatement. Appeler auth_request_otp d'abord pour recevoir l'OTP par email."
         }
       },
       "logout": {
@@ -43,11 +43,11 @@
     "order": {
       "create": {
         "title": "Créer une commande",
-        "description": "Crée une nouvelle commande pour l'établissement. Prend en entrée le mode de paiement (optionnel) et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec deptId) ou « libre » (avec titre et prix). Vérifier si le client n'existe déjà en utilisant data.list.clients et si le client existe, uniquement préciser idClient. Retourne un JSON de confirmation contenant : un lien vers la facture PDF, et un lien vers une page privée de la commande affichant le détail de la commande, utilisable également par le client pour payer en ligne."
+        "description": "Crée une nouvelle commande pour l'établissement. Prend en entrée le mode de paiement (optionnel) et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec deptId) ou « libre » (avec titre et prix). Vérifier si le client n'existe déjà en utilisant data_list_clients et si le client existe, uniquement préciser idClient. Retourne un JSON de confirmation contenant : un lien vers la facture PDF, et un lien vers une page privée de la commande affichant le détail de la commande, utilisable également par le client pour payer en ligne."
       },
       "edit": {
         "title": "Modifier une commande",
-        "description": "Modifie une commande existante à partir de son identifiant. Utilisez le champ payment pour contrôler l'état de la commande : -2 = garder comme devis non validé (non payé) ; -1 = valider en facture sans paiement ; un ID de mode de paiement (depuis data.list.payments_modes) = enregistrer un paiement réel et valider. Utilisez paymentAmount pour préciser un montant partiel (omis = paiement total). Les articles ne peuvent être modifiés que sur les commandes non validées. Une fois validée, seuls des paiements peuvent être enregistrés. Retourne l'orderID, un lien de paiement, et une URL de facture ou devis PDF."
+        "description": "Modifie une commande existante à partir de son identifiant. Utilisez le champ payment pour contrôler l'état de la commande : -2 = garder comme devis non validé (non payé) ; -1 = valider en facture sans paiement ; un ID de mode de paiement (depuis data_list_payments_modes) = enregistrer un paiement réel et valider. Utilisez paymentAmount pour préciser un montant partiel (omis = paiement total). Les articles ne peuvent être modifiés que sur les commandes non validées. Une fois validée, seuls des paiements peuvent être enregistrés. Retourne l'orderID, un lien de paiement, et une URL de facture ou devis PDF."
       },
       "detail": {
         "title": "Obtenir le détail d'une commande",
@@ -145,7 +145,7 @@
       },
       "edit": {
         "title": "Modifier un article",
-        "description": "Modifie un article existant du catalogue à partir de son identifiant. Tous les champs sont optionnels sauf l'ID. Utiliser data.list.products pour retrouver l'ID de l'article."
+        "description": "Modifie un article existant du catalogue à partir de son identifiant. Tous les champs sont optionnels sauf l'ID. Utiliser data_list_products pour retrouver l'ID de l'article."
       },
       "delete": {
         "title": "Supprimer un article",
@@ -159,7 +159,7 @@
       },
       "edit": {
         "title": "Modifier un rayon",
-        "description": "Modifie un rayon existant à partir de son identifiant. Tous les champs sont optionnels sauf l'ID. Utiliser data.list.departments pour retrouver l'ID du rayon."
+        "description": "Modifie un rayon existant à partir de son identifiant. Tous les champs sont optionnels sauf l'ID. Utiliser data_list_departments pour retrouver l'ID du rayon."
       },
       "delete": {
         "title": "Supprimer un rayon",
@@ -173,7 +173,7 @@
       },
       "edit": {
         "title": "Modifier un groupe de rayons",
-        "description": "Modifie un groupe de rayons existant par son ID. Utiliser data.list.department_groups pour trouver l'ID."
+        "description": "Modifie un groupe de rayons existant par son ID. Utiliser data_list_department_groups pour trouver l'ID."
       },
       "delete": {
         "title": "Supprimer un groupe de rayons",
@@ -183,11 +183,11 @@
     "variation": {
       "add": {
         "title": "Ajouter une déclinaison",
-        "description": "Ajoute un nouveau type de déclinaison au catalogue (ex. \"Taille\", \"Couleur\"). Requiert un titre. Utiliser variation_choice.add pour ajouter des choix ensuite."
+        "description": "Ajoute un nouveau type de déclinaison au catalogue (ex. \"Taille\", \"Couleur\"). Requiert un titre. Utiliser variation_choice_add pour ajouter des choix ensuite."
       },
       "edit": {
         "title": "Modifier une déclinaison",
-        "description": "Renomme un type de déclinaison existant par son ID. Utiliser data.list.variations pour trouver l'ID."
+        "description": "Renomme un type de déclinaison existant par son ID. Utiliser data_list_variations pour trouver l'ID."
       },
       "delete": {
         "title": "Supprimer une déclinaison",
@@ -211,11 +211,11 @@
     "client": {
       "add": {
         "title": "Ajouter un client",
-        "description": "Ajoute un nouveau client au fichier clients de la boutique. Tous les champs sont optionnels : nom, prénom, email, téléphone, adresse, numéro SIRET, numéro TVA, code-barre, commentaire privé/public, statut blacklist, date de naissance, etc. Utiliser data.list.clients pour vérifier si le client existe déjà."
+        "description": "Ajoute un nouveau client au fichier clients de la boutique. Tous les champs sont optionnels : nom, prénom, email, téléphone, adresse, numéro SIRET, numéro TVA, code-barre, commentaire privé/public, statut blacklist, date de naissance, etc. Utiliser data_list_clients pour vérifier si le client existe déjà."
       },
       "edit": {
         "title": "Modifier un client",
-        "description": "Modifie un client existant à partir de son identifiant. Tous les champs sont optionnels sauf l'ID. Utiliser data.list.clients pour retrouver l'ID du client."
+        "description": "Modifie un client existant à partir de son identifiant. Tous les champs sont optionnels sauf l'ID. Utiliser data_list_clients pour retrouver l'ID du client."
       },
       "delete": {
         "title": "Supprimer un client",

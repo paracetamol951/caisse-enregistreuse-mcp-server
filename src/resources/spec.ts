@@ -1,9 +1,9 @@
-﻿export const KASH_SPEC = `
+export const KASH_SPEC = `
 # KASH.CLICK — Agent Specification
 
 ## Authentication
-- Call account.list to find existing accounts by email
-- Call auth.request.otp then auth.login.with_otp to authenticate
+- Call account_list to find existing accounts by email
+- Call auth_request_otp then auth_login_with_otp to authenticate
 - Session is stored automatically after login
 
 ## Payment Values
@@ -26,7 +26,7 @@ NEVER use payment >= 0 unless explicitly confirmed as paid.
 Default to 2 (on-site) if context is unknown.
 
 ## Item Format in Sales
-- Existing catalog item:        productId (use order.create with type='catalog')
+- Existing catalog item:        productId (use order_create with type='catalog')
 - Department item with price:   type='dept' + departmentId + price
 - Free one-off item:            type='free' + title + price
 
@@ -42,7 +42,7 @@ Free items with department → department VAT applies.
 
 ## Order State Transitions
 Quote (-2) → Invoice (-1) → Paid (payment method ID)
-Use order.edit to transition. Do NOT recreate a sale to change its state.
+Use order_edit to transition. Do NOT recreate a sale to change its state.
 
 ## Agent Rules — MUST follow
 1. Always retrieve existing clients before creating new ones (email = unique identifier)

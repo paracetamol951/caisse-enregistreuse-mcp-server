@@ -118,25 +118,25 @@ function registerSimple(
 
 export function registerDataTools(server: McpServer | any) {
     //  Garde les mêmes endpoints que ton backend PHP
-    // Noms de tools avec UNDERSCORE (comme vus dans tes logs) t('tools.order.create.title')
-    registerSimple(server, 'data.list.products', '/workers/getPlus.php', t('tools.data.list.products.description'), t('tools.data.list.products.title'));
-    registerSimple(server, 'data.list.departments', '/workers/getDepartments.php', t('tools.data.list.departments.description'), t('tools.data.list.departments.title'));
-    registerSimple(server, 'data.list.department_groups', '/workers/getDepartmentGroups.php', t('tools.data.list.department_groups.description'), t('tools.data.list.department_groups.title'));
-    registerSimple(server, 'data.list.clients', '/workers/getClients.php', t('tools.data.list.clients.description'), t('tools.data.list.clients.title'));
-    registerSimple(server, 'data.list.variations', '/workers/getDeclinaisons.php', t('tools.data.list.variations.description'), t('tools.data.list.variations.title'));
-    registerSimple(server, 'data.list.delivery_men', '/workers/getLivreurs.php', t('tools.data.list.delivery_men.description'), t('tools.data.list.delivery_men.title'));
-    registerSimple(server, 'data.list.payments_modes', '/workers/getPaymentModes.php', t('tools.data_list_payments.description'), t('tools.data_list_payments.title'));
-    registerSimple(server, 'data.list.cashboxes', '/workers/getCashbox.php', t('tools.data.list.cashboxes.description'), t('tools.data.list.cashboxes.title'));
-    registerSimple(server, 'data.list.delivery_zones', '/workers/getDeliveryZones.php', t('tools.data.list.delivery_zones.description'), t('tools.data.list.delivery_zones.title'));
-    registerSimple(server, 'data.list.relay_points', '/workers/getRelayDeposit.php', t('tools.data.list.relay_points.description'), t('tools.data.list.relay_points.title'));
-    registerSimple(server, 'data.list.discounts', '/workers/getDiscounts.php', t('tools.data.list.discounts.description'), t('tools.data.list.discounts.title'));
-    registerSimple(server, 'data.list.users', '/workers/getUsers.php', t('tools.data.list.users.description'), t('tools.data.list.users.title'));
-    registerSimple(server, 'data.list.tables', '/workers/getTables.php', t('tools.data.list.tables.description'), t('tools.data.list.tables.title'));
-    registerSimple(server, 'data.list.vats', '/workers/getVATs.php', t('tools.data.list.vats.description'), t('tools.data.list.vats.title'));
-    registerSimple(server, 'data.list.pending_orders', '/workers/getPending.php', t('tools.data.list.pending_orders.description'), t('tools.data.list.pending_orders.title'),);
+    // Noms de tools avec UNDERSCORE (comme vus dans tes logs) t('tools.order_create.title')
+    registerSimple(server, 'data_list_products', '/workers/getPlus.php', t('tools.data.list.products.description'), t('tools.data.list.products.title'));
+    registerSimple(server, 'data_list_departments', '/workers/getDepartments.php', t('tools.data.list.departments.description'), t('tools.data.list.departments.title'));
+    registerSimple(server, 'data_list_department_groups', '/workers/getDepartmentGroups.php', t('tools.data.list.department_groups.description'), t('tools.data.list.department_groups.title'));
+    registerSimple(server, 'data_list_clients', '/workers/getClients.php', t('tools.data.list.clients.description'), t('tools.data.list.clients.title'));
+    registerSimple(server, 'data_list_variations', '/workers/getDeclinaisons.php', t('tools.data.list.variations.description'), t('tools.data.list.variations.title'));
+    registerSimple(server, 'data_list_delivery_men', '/workers/getLivreurs.php', t('tools.data.list.delivery_men.description'), t('tools.data.list.delivery_men.title'));
+    registerSimple(server, 'data_list_payments_modes', '/workers/getPaymentModes.php', t('tools.data_list_payments.description'), t('tools.data_list_payments.title'));
+    registerSimple(server, 'data_list_cashboxes', '/workers/getCashbox.php', t('tools.data.list.cashboxes.description'), t('tools.data.list.cashboxes.title'));
+    registerSimple(server, 'data_list_delivery_zones', '/workers/getDeliveryZones.php', t('tools.data.list.delivery_zones.description'), t('tools.data.list.delivery_zones.title'));
+    registerSimple(server, 'data_list_relay_points', '/workers/getRelayDeposit.php', t('tools.data.list.relay_points.description'), t('tools.data.list.relay_points.title'));
+    registerSimple(server, 'data_list_discounts', '/workers/getDiscounts.php', t('tools.data.list.discounts.description'), t('tools.data.list.discounts.title'));
+    registerSimple(server, 'data_list_users', '/workers/getUsers.php', t('tools.data.list.users.description'), t('tools.data.list.users.title'));
+    registerSimple(server, 'data_list_tables', '/workers/getTables.php', t('tools.data.list.tables.description'), t('tools.data.list.tables.title'));
+    registerSimple(server, 'data_list_vats', '/workers/getVATs.php', t('tools.data.list.vats.description'), t('tools.data.list.vats.title'));
+    registerSimple(server, 'data_list_pending_orders', '/workers/getPending.php', t('tools.data.list.pending_orders.description'), t('tools.data.list.pending_orders.title'),);
 
     server.registerTool(
-        'data.list.orders',
+        'data_list_orders',
         {
             title: t('tools.data.list.orders.title'),
             description: t('tools.data.list.orders.description'),
@@ -153,7 +153,7 @@ export function registerDataTools(server: McpServer | any) {
     );
 
     server.registerTool(
-        'order.detail',
+        'order_detail',
         {
             title: t('tools.order.detail.title'),
             description: t('tools.order.detail.description'),
