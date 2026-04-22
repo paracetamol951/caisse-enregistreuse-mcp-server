@@ -140,8 +140,8 @@ export function registerAuthTools(server: McpServer | any) {
     server.registerTool(
         'auth_request_otp',
         {
-            title: t('tools.auth_request_otp.title'),
-            description: t('tools.auth_request_otp.description'),
+            title: t('tools.auth.request.otp.title'),
+            description: t('tools.auth.request.otp.description'),
             inputSchema: RequestOtpShape,
             annotations: { readOnlyHint: false, idempotentHint: false, openWorldHint: true },
         },
@@ -160,8 +160,8 @@ export function registerAuthTools(server: McpServer | any) {
     server.registerTool(
         'auth_login_with_otp',
         {
-            title: t('tools.auth_login_with_otp.title'),
-            description: t('tools.auth_login_with_otp.description'),
+            title: t('tools.auth.login.with_otp.title'),
+            description: t('tools.auth.login.with_otp.description'),
             inputSchema: LoginWithOtpShape,
             annotations: { destructiveHint: false, idempotentHint: false },
         },
@@ -182,8 +182,8 @@ export function registerAuthTools(server: McpServer | any) {
     server.registerTool(
         'auth_logout',
         {
-            title: t('tools.auth_logout.title'),
-            description: t('tools.auth_logout.description'),
+            title: t('tools.auth.logout.title'),
+            description: t('tools.auth.logout.description'),
             inputSchema: LogoutShape,
             annotations: { destructiveHint: false, idempotentHint: true },
         },

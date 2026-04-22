@@ -107,8 +107,8 @@ export function registerCatalogTools(server: McpServer | any) {
     server.registerTool(
         'plu_add',
         {
-            title: t('tools.plu_add.title'),
-            description: t('tools.plu_add.description'),
+            title: t('tools.plu.add.title'),
+            description: t('tools.plu.add.description'),
             inputSchema: PluDataShape, 
             annotations: { destructiveHint: false, idempotentHint: false },
         },

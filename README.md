@@ -69,18 +69,18 @@ Retrieve any reference data from your shop:
 |---|---|
 | `data.list.products` | Items / articles |
 | `data.list.departments` | Departments / categories |
-| `data.list.department_groups` | Department groups |
-| `data.list.vats` | VAT rates |
-| `data.list.clients` | Customers |
-| `data.list.variations` | Variation types |
+| `data_list_department_groups` | Department groups |
+| `data_list_vats` | VAT rates |
+| `data_list_clients` | Customers |
+| `data_list_variations` | Variation types |
 | `data_list_payments` | Payment methods |
-| `data.list.cashboxes` | Cashboxes |
-| `data.list.delivery_men` | Delivery methods |
-| `data.list.delivery_zones` | Delivery zones |
-| `data.list.relay_points` | Relay / pickup points |
-| `data.list.discounts` | Discounts & supplements |
+| `data_list_cashboxes` | Cashboxes |
+| `data_list_delivery_men` | Delivery methods |
+| `data_list_delivery_zones` | Delivery zones |
+| `data_list_relay_points` | Relay / pickup points |
+| `data_list_discounts` | Discounts & supplements |
 | `data.list.users` | Staff / users |
-| `data.list.tables` | Tables (restaurant mode) |
+| `data_list_tables` | Tables (restaurant mode) |
 | `data.list.orders` | Orders by date range |
 
 ---
@@ -93,14 +93,14 @@ Retrieve any reference data from your shop:
 | **Auth** | `auth.request.otp`, `auth.login.with_otp`, `auth.logout` |
 | **Sales** | `order.create`, `order.edit`, `order.detail`, `data.list.orders`, `data.list.pending_orders` |
 | **Reports** | `report.get` |
-| **Items** | `plu.add`, `plu.edit`, `plu.delete`, `data.list.products` |
-| **Departments** | `dept.add`, `dept.edit`, `dept.delete`, `data.list.departments` |
-| **Dept groups** | `dept_group.add`, `dept_group.edit`, `dept_group.delete`, `data.list.department_groups` |
-| **VAT** | `vat.add`, `vat.edit`, `vat.delete`, `data.list.vats` |
-| **Variations** | `variation.add`, `variation.edit`, `variation.delete`, `data.list.variations` |
-| **Variation choices** | `variation_choice.add`, `variation_choice.edit`, `variation_choice.delete` |
-| **Customers** | `client.add`, `client.edit`, `client.delete`, `data.list.clients` |
-| **Data** | `data_list_payments`, `data.list.cashboxes`, `data.list.delivery_men`, `data.list.delivery_zones`, `data.list.relay_points`, `data.list.discounts`, `data.list.users`, `data.list.tables` |
+| **Items** | `plu_add`, `plu_edit`, `plu_delete`, `data.list.products` |
+| **Departments** | `dept_add`, `dept_edit`, `dept_delete`, `data.list.departments` |
+| **Dept groups** | `dept_group_add`, `dept_group_edit`, `dept_group_delete`, `data_list_department_groups` |
+| **VAT** | `vat_add`, `vat_edit`, `vat_delete`, `data_list_vats` |
+| **Variations** | `variation_add`, `variation_edit`, `variation_delete`, `data_list_variations` |
+| **Variation choices** | `variation_choice_add`, `variation_choice_edit`, `variation_choice_delete` |
+| **Customers** | `client_add`, `client_edit`, `client_delete`, `data_list_clients` |
+| **Data** | `data_list_payments`, `data_list_cashboxes`, `data_list_delivery_men`, `data_list_delivery_zones`, `data_list_relay_points`, `data_list_discounts`, `data.list.users`, `data_list_tables` |
 | **Utility** | `ping` |
 
 ---

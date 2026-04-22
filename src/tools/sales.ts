@@ -122,8 +122,8 @@ export function registerSalesTools(server: McpServer | any) {
     server.registerTool(
         'report_get',
         {
-            title: t('tools.report_get.title'),
-            description: t('tools.report_get.description'),
+            title: t('tools.report.get.title'),
+            description: t('tools.report.get.description'),
             inputSchema: GetReportShape,
             annotations: { readOnlyHint: true },
         },
@@ -151,8 +151,8 @@ export function registerSalesTools(server: McpServer | any) {
     server.registerTool(
         'order_create',
         {
-            title: t('tools.order_create.title'),
-            description: t('tools.order_create.description'),
+            title: t('tools.order.create.title'),
+            description: t('tools.order.create.description'),
             inputSchema: SalesCreateShape,
             annotations: { destructiveHint: false, idempotentHint: false },
         },
@@ -190,8 +190,8 @@ export function registerSalesTools(server: McpServer | any) {
     server.registerTool(
         'order_edit',
         {
-            title: t('tools.order_edit.title'),
-            description: t('tools.order_edit.description'),
+            title: t('tools.order.edit.title'),
+            description: t('tools.order.edit.description'),
             inputSchema: OrderEditShape,
             annotations: { destructiveHint: false, idempotentHint: true },
         },

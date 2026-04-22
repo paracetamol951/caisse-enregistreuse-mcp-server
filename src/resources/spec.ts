@@ -9,7 +9,7 @@ export const KASH_SPEC = `
 ## Payment Values
 -2 = Quote (not validated, not paid, can be modified)
 -1 = Invoice (validated, not paid)
->=0 = Paid (value must be a valid payment method ID from data.list.payments_modes)
+>=0 = Paid (value must be a valid payment method ID from data_list_payments_modes)
 
 SAFETY RULE: Default to -1 (invoice) if payment status is uncertain.
 NEVER use payment >= 0 unless explicitly confirmed as paid.
