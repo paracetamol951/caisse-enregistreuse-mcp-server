@@ -20,11 +20,11 @@ export function registerPrompts(server: McpServer | any) {
                     text: `Please authenticate me with my Kash account using the email "${email}".
 
 Follow these steps:
-1. Call account.list with email="${email}" to list my accounts and get their IDs.
+1. Call account_list with email="${email}" to list my accounts and get their IDs.
 2. If there are multiple accounts, ask me which one to use.
-3. Call auth.request.otp with the chosen email (and accountID if needed) to send the OTP.
+3. Call auth_request_otp with the chosen email (and accountID if needed) to send the OTP.
 4. Ask me to enter the OTP code I received by email.
-5. Call auth.login.with_otp with the email and the OTP code.
+5. Call auth_login_with_otp with the email and the OTP code.
 6. Confirm that the session is now active and I can use all other tools.`,
                 },
             }],
@@ -46,14 +46,14 @@ Follow these steps:
                 role: 'user',
                 content: {
                     type: 'text',
-                    text: `Please record a new sale for: "${items_description}"${payment_method ? ` — payment: ${payment_method}` : ' (unpaid quote)'}.
+                    text: `Please record a new sale for: "${items_description}"${payment_method ? ` ï¿½ payment: ${payment_method}` : ' (unpaid quote)'}.
 
 Steps:
-1. Call data.list.products to find matching products by name.
-2. Call data.list.departments if no exact product match — use a department item instead.
-3. ${payment_method ? `Call data.list.payments_modes to find the ID for "${payment_method}".` : 'Leave payment unset to save as an unpaid quote.'}
+1. Call data_list_products to find matching products by name.
+2. Call data_list_departments if no exact product match ï¿½ use a department item instead.
+3. ${payment_method ? `Call data_list_payments_modes to find the ID for "${payment_method}".` : 'Leave payment unset to save as an unpaid quote.'}
 4. Build the items array with the correct type ('catalog', 'dept', or 'free') and IDs.
-5. Call order.create with the items and payment method.
+5. Call order_create with the items and payment method.
 6. Confirm the sale was recorded and show the returned order ID.`,
                 },
             }],
@@ -83,7 +83,7 @@ Steps:
                         text: `Please fetch the sales report${date ? ` for ${date}` : ' for yesterday'}.
 
 Steps:
-1. Call report.get with ${dateInstruction}
+1. Call report_get with ${dateInstruction}
 2. Parse and summarise the HTML result: total revenue, number of orders, top departments, VAT breakdown, and payment methods.
 3. Present the summary in a clear, readable format.`,
                     },
@@ -110,10 +110,10 @@ Steps:
                     text: `Please add a new product called "${product_name}"${price ? ` priced at ${price}` : ''} to the catalog.
 
 Steps:
-1. Call data.list.departments to list available departments — ask me which one to assign this product to.
-2. Call data.list.vats to list VAT rates — ask me which one applies (or use the department default).
-3. Optionally call data.list.variations if this product has variants (size, colour, etc.).
-4. Call plu.add with title="${product_name}"${price ? `, price=${price}` : ''}, the chosen deptID, vatID, and any variationIDs.
+1. Call data_list_departments to list available departments ï¿½ ask me which one to assign this product to.
+2. Call data_list_vats to list VAT rates ï¿½ ask me which one applies (or use the department default).
+3. Optionally call data_list_variations if this product has variants (size, colour, etc.).
+4. Call plu_add with title="${product_name}"${price ? `, price=${price}` : ''}, the chosen deptID, vatID, and any variationIDs.
 5. Confirm the product was created and show its new ID.`,
                 },
             }],

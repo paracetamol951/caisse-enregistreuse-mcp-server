@@ -69,7 +69,7 @@ export function registerClientTools(server: McpServer | any) {
 
     // -- ADD CLIENT --
     server.registerTool(
-        'client.add',
+        'client_add',
         {
             title: t('tools.client.add.title'),
             description: t('tools.client.add.description'),
@@ -90,7 +90,7 @@ export function registerClientTools(server: McpServer | any) {
 
     // -- EDIT CLIENT --
     server.registerTool(
-        'client.edit',
+        'client_edit',
         {
             title: t('tools.client.edit.title'),
             description: t('tools.client.edit.description'),
@@ -112,7 +112,7 @@ export function registerClientTools(server: McpServer | any) {
 
     // -- DELETE CLIENT --
     server.registerTool(
-        'client.delete',
+        'client_delete',
         {
             title: t('tools.client.delete.title'),
             description: t('tools.client.delete.description'),

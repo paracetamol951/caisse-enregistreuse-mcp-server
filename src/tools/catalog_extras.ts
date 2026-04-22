@@ -68,7 +68,7 @@ export function registerCatalogExtrasTools(server: McpServer | any) {
 
     // ---- DEPARTMENT GROUPS ----
 
-    server.registerTool('dept_group.add', {
+    server.registerTool('dept_group_add', {
         title: t('tools.dept_group.add.title'),
         description: t('tools.dept_group.add.description'),
         inputSchema: AddDeptGroupShape,
@@ -82,7 +82,7 @@ export function registerCatalogExtrasTools(server: McpServer | any) {
         return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }], structuredContent: data };
     });
 
-    server.registerTool('dept_group.edit', {
+    server.registerTool('dept_group_edit', {
         title: t('tools.dept_group.edit.title'),
         description: t('tools.dept_group.edit.description'),
         inputSchema: EditDeptGroupShape,
@@ -96,7 +96,7 @@ export function registerCatalogExtrasTools(server: McpServer | any) {
         return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }], structuredContent: data };
     });
 
-    server.registerTool('dept_group.delete', {
+    server.registerTool('dept_group_delete', {
         title: t('tools.dept_group.delete.title'),
         description: t('tools.dept_group.delete.description'),
         inputSchema: DelDeptGroupShape,
@@ -109,7 +109,7 @@ export function registerCatalogExtrasTools(server: McpServer | any) {
 
     // ---- VARIATIONS ----
 
-    server.registerTool('variation.add', {
+    server.registerTool('variation_add', {
         title: t('tools.variation.add.title'),
         description: t('tools.variation.add.description'),
         inputSchema: AddVariationShape,
@@ -120,7 +120,7 @@ export function registerCatalogExtrasTools(server: McpServer | any) {
         return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }], structuredContent: data };
     });
 
-    server.registerTool('variation.edit', {
+    server.registerTool('variation_edit', {
         title: t('tools.variation.edit.title'),
         description: t('tools.variation.edit.description'),
         inputSchema: EditVariationShape,
@@ -133,7 +133,7 @@ export function registerCatalogExtrasTools(server: McpServer | any) {
         return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }], structuredContent: data };
     });
 
-    server.registerTool('variation.delete', {
+    server.registerTool('variation_delete', {
         title: t('tools.variation.delete.title'),
         description: t('tools.variation.delete.description'),
         inputSchema: DelVariationShape,
@@ -146,7 +146,7 @@ export function registerCatalogExtrasTools(server: McpServer | any) {
 
     // ---- VARIATION CHOICES ----
 
-    server.registerTool('variation_choice.add', {
+    server.registerTool('variation_choice_add', {
         title: t('tools.variation_choice.add.title'),
         description: t('tools.variation_choice.add.description'),
         inputSchema: AddVariationChoiceShape,
@@ -160,7 +160,7 @@ export function registerCatalogExtrasTools(server: McpServer | any) {
         return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }], structuredContent: data };
     });
 
-    server.registerTool('variation_choice.edit', {
+    server.registerTool('variation_choice_edit', {
         title: t('tools.variation_choice.edit.title'),
         description: t('tools.variation_choice.edit.description'),
         inputSchema: EditVariationChoiceShape,
@@ -174,7 +174,7 @@ export function registerCatalogExtrasTools(server: McpServer | any) {
         return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }], structuredContent: data };
     });
 
-    server.registerTool('variation_choice.delete', {
+    server.registerTool('variation_choice_delete', {
         title: t('tools.variation_choice.delete.title'),
         description: t('tools.variation_choice.delete.description'),
         inputSchema: DelVariationChoiceShape,

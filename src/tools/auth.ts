@@ -7,7 +7,7 @@ import { setSessionAuth, clearSessionAuth } from '../context.js';
 type InferFromShape<S extends Record<string, ZodTypeAny>> = z.infer<z.ZodObject<S>>;
 
 // ============================================================
-// CONFIG TYPES (pour account.create)
+// CONFIG TYPES (pour account_create)
 // ============================================================
 
 const CONFIG_TYPES = [
@@ -84,10 +84,10 @@ export function registerAuthTools(server: McpServer | any) {
 
     // -- LIST ACCOUNTS --
     server.registerTool(
-        'account.list',
+        'account_list',
         {
-            title: t('tools.account.list.title'),
-            description: t('tools.account.list.description'),
+            title: t('tools.account_list.title'),
+            description: t('tools.account_list.description'),
             inputSchema: ListAccountsShape,
             annotations: { readOnlyHint: true },
         },
@@ -104,10 +104,10 @@ export function registerAuthTools(server: McpServer | any) {
 
     // -- CREATE ACCOUNT --
     server.registerTool(
-        'account.create',
+        'account_create',
         {
-            title: t('tools.account.create.title'),
-            description: t('tools.account.create.description'),
+            title: t('tools.account_create.title'),
+            description: t('tools.account_create.description'),
             inputSchema: CreateAccountShape,
             annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true },
         },
@@ -128,7 +128,7 @@ export function registerAuthTools(server: McpServer | any) {
             if (input.language) body['data[language]'] = input.language;
 
             const data = await postForm('/workers/addShop.php', body);
-            tryInitSession(data, 'account.create');
+            tryInitSession(data, 'account_create');
             return {
                 content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
                 structuredContent: data,
@@ -138,10 +138,10 @@ export function registerAuthTools(server: McpServer | any) {
 
     // -- REQUEST OTP --
     server.registerTool(
-        'auth.request.otp',
+        'auth_request_otp',
         {
-            title: t('tools.auth.request.otp.title'),
-            description: t('tools.auth.request.otp.description'),
+            title: t('tools.auth_request_otp.title'),
+            description: t('tools.auth_request_otp.description'),
             inputSchema: RequestOtpShape,
             annotations: { readOnlyHint: false, idempotentHint: false, openWorldHint: true },
         },
@@ -158,10 +158,10 @@ export function registerAuthTools(server: McpServer | any) {
 
     // -- LOGIN WITH OTP --
     server.registerTool(
-        'auth.login.with_otp',
+        'auth_login_with_otp',
         {
-            title: t('tools.auth.login.with_otp.title'),
-            description: t('tools.auth.login.with_otp.description'),
+            title: t('tools.auth_login_with_otp.title'),
+            description: t('tools.auth_login_with_otp.description'),
             inputSchema: LoginWithOtpShape,
             annotations: { destructiveHint: false, idempotentHint: false },
         },
@@ -170,7 +170,7 @@ export function registerAuthTools(server: McpServer | any) {
                 email: input.email,
                 otp: input.otp,
             });
-            tryInitSession(data, 'auth.login.with_otp');
+            tryInitSession(data, 'auth_login_with_otp');
             return {
                 content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
                 structuredContent: data,
@@ -180,10 +180,10 @@ export function registerAuthTools(server: McpServer | any) {
 
     // -- LOGOUT --
     server.registerTool(
-        'auth.logout',
+        'auth_logout',
         {
-            title: t('tools.auth.logout.title'),
-            description: t('tools.auth.logout.description'),
+            title: t('tools.auth_logout.title'),
+            description: t('tools.auth_logout.description'),
             inputSchema: LogoutShape,
             annotations: { destructiveHint: false, idempotentHint: true },
         },
