@@ -20,6 +20,14 @@
       "create": {
         "title": "Créer un compte Kash",
         "description": "Crée un nouveau compte Kash / caisse.enregistreuse.fr. Requiert une adresse email et un nom de boutique (accountTitle). Optionnel : configType pour pré-charger un jeu de données adapté à votre activité (ex. 'Restaurant', 'Bakery', 'Bar', 'Shops'...), ainsi que les informations d'adresse et légales. En cas de succès, retourne l'APIKEY et le SHOPID et initialise automatiquement la session pour que tous les autres outils soient utilisables immédiatement. IMPORTANT : l'utilisateur doit valider son email via le lien envoyé automatiquement, sinon le compte peut être supprimé après une période d'inactivité."
+      },
+      "edit": {
+        "title": "Modifier les paramètres du compte boutique",
+        "description": "Modifie les paramètres du compte boutique authentifié. Tous les champs sont optionnels. Couvre : informations de base (nom, adresse, numéros légaux), options d'affichage des tickets, exigences de commande, options de fonctionnalités (stock, codes-barres, déclinaisons, webshop, coupons...), méthodes de livraison, et intégrations tierces (PayPal, Prestashop, Yavin, Viva.com)."
+      },
+      "show_infos": {
+        "title": "Obtenir les paramètres du compte boutique",
+        "description": "Récupère tous les paramètres actuels du compte boutique authentifié sous forme d'objet JSON. Retourne la configuration complète : nom, adresse, numéros légaux, options de ticket, exigences de commande, fonctionnalités activées, méthodes de livraison, couleurs du webshop et intégrations tierces. À utiliser pour vérifier les prérequis de facturation avant de créer des commandes : shopName, adressline1 et companyRegistrationNum doivent tous être renseignés pour émettre des factures légalement valides. Si l'un d'eux manque, inviter l'utilisateur à les compléter via account_edit."
       }
     },
     "auth": {
@@ -43,7 +51,7 @@
     "order": {
       "create": {
         "title": "Créer une commande",
-        "description": "Crée une nouvelle commande pour l'établissement. Prend en entrée le mode de paiement (optionnel) et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec deptId) ou « libre » (avec titre et prix). Vérifier si le client n'existe déjà en utilisant data_list_clients et si le client existe, uniquement préciser idClient. Retourne un JSON de confirmation contenant : un lien vers la facture PDF, et un lien vers une page privée de la commande affichant le détail de la commande, utilisable également par le client pour payer en ligne."
+        "description": "Crée une nouvelle commande pour l'établissement. Prend en entrée le mode de paiement (optionnel) et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec prix et deptId) ou « libre » (avec titre et prix). Vérifier si le client n'existe déjà en utilisant data_list_clients et si le client existe, uniquement préciser idClient. Retourne un JSON de confirmation contenant : un lien vers la facture PDF, et un lien vers une page privée de la commande affichant le détail de la commande, utilisable également par le client pour payer en ligne. IMPORTANT : avant de créer une facture validée (payment ≠ -2), appeler account_show_infos pour vérifier que shopName, adressline1 et companyRegistrationNum sont bien renseignés. Si l'un de ces champs est vide, avertir l'utilisateur et lui suggérer de les compléter via account_edit avant d'émettre des factures."
       },
       "edit": {
         "title": "Modifier une commande",

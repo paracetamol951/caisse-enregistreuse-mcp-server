@@ -68,6 +68,28 @@ Invoices are auto-generated when payment = -1 or >= 0.
 Quotes (payment = -2) do NOT generate invoices.
 PDF and Factur-X compliant invoices are generated automatically.
 
+### Invoice prerequisites — check before issuing any invoice
+Before creating or transitioning an order to invoice status (payment = -1 or >= 0),
+call account_show_infos and verify these three fields are non-empty:
+- shopName              → the legal name of the establishment
+- adressline1           → the street address
+- companyRegistrationNum → the company registration number (SIRET / RCS)
+
+If any of these fields is missing or empty:
+1. Warn the user that the invoice may not be legally valid
+2. Specify which field(s) are missing
+3. Offer to set them immediately via account_edit
+Do NOT silently emit an invoice with missing legal information.
+
+## Shop Account Management
+- account_show_infos : retrieve all current shop settings (no parameters needed)
+- account_edit       : update any subset of shop settings (all fields optional)
+
+Use account_show_infos proactively to inspect the shop configuration when:
+- The user asks about their shop settings
+- Before emitting invoices (check shopName, adressline1, companyRegistrationNum)
+- Before enabling a feature the user may not have configured yet
+
 ## Reporting
 Sales are aggregated by department, item, and payment method.
 Always assign departments for accurate reporting.

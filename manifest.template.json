@@ -1,7 +1,7 @@
 {
   "name": "Kash.click MCP Server",
   "version": "1.3.1",
-  "description": "Exposes Kash.click API as MCP tools, enabling programmatic access to authentication, sales creation, and data listing features for shops.",
+  "description": "Exposes Kash.click API as MCP tools, enabling programmatic access to authentication, shop account creation and settings, sales creation, invoicing, and data listing features for shops.",
   "endpoints": [
     {
       "type": "http",
@@ -42,6 +42,14 @@
     {
       "name": "account_create",
       "description": "Create a new Kash / free-cash-register.net account. First call account.list to check if the user already has an account. Requires an email address and a shop name (accountTitle). Optional: configType to pre-load a dataset matching the business type (e.g. 'Restaurant', 'Bakery', 'Bar', 'Shops'...), plus address and legal info. On success, returns APIKEY and SHOPID and automatically initializes the session so all other tools can be used immediately. IMPORTANT: the user must validate their email via the link sent automatically, otherwise the account may be deleted after a period of inactivity."
+    },
+    {
+      "name": "account_show_infos",
+      "description": "Retrieve all current settings of the authenticated shop account as a JSON object. Returns the full shop configuration: name, address, legal numbers, receipt options, order requirements, enabled features, delivery methods, webshop colours, and third-party integration settings. Useful before calling account_edit to inspect current values."
+    },
+    {
+      "name": "account_edit",
+      "description": "Modify the settings of the authenticated shop account. All fields are optional. Covers: basic info (name, address, legal numbers), receipt display options, order requirements, feature flags (stock, barcodes, variations, webshop, coupons...), delivery method toggles, and third-party integrations (PayPal, Prestashop, Yavin, Viva.com)."
     },
     {
       "name": "auth_request_otp",

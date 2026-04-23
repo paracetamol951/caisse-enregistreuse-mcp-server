@@ -20,6 +20,14 @@
       "create": {
         "title": "Create a Kash account",
         "description": "Create a new Kash / free-cash-register.net account. Requires an email address and a shop name (accountTitle). Optional: configType to pre-load a dataset matching your business type (e.g. 'Restaurant', 'Bakery', 'Bar', 'Retail'...), plus address and legal info. On success, returns APIKEY and SHOPID and automatically initializes the session so all other tools can be used immediately. IMPORTANT: the user must validate their email via the link sent automatically, otherwise the account may be deleted after a period of inactivity."
+      },
+      "edit": {
+        "title": "Edit shop account settings",
+        "description": "Modify the settings of the authenticated shop account. All fields are optional. Covers: basic info (name, address, legal numbers), receipt display options, order requirements, feature flags (stock, barcodes, variations, webshop, coupons...), delivery method toggles, and third-party integrations (PayPal, Prestashop, Yavin, Viva.com)."
+      },
+      "show_infos": {
+        "title": "Get shop account settings",
+        "description": "Retrieve all current settings of the authenticated shop account as a JSON object. Returns the full shop configuration: name, address, legal numbers, receipt options, order requirements, enabled features, delivery methods, webshop colours, and third-party integration settings. Use this to verify invoice prerequisites before creating orders: shopName, adressline1, and companyRegistrationNum must all be set for legally valid invoices. If any are missing, prompt the user to fill them in via account_edit."
       }
     },
     "auth": {
@@ -43,7 +51,7 @@
     "order": {
       "create": {
         "title": "Record an order",
-        "description": "Record a new order in the connected shop. Input includes paymentMode, and items[]. Each item can be of type 'catalog' (with productId), 'department' (with deptId) or 'free' (with title and price). Check if the client already exists using data_list_clients and if the client exists, only specify idClient. If provided, paymentMode should correspond to a payment ID from data_list_payments_modes tool. Returns a sale confirmation JSON including: a link to the PDF invoice, and a link to a private order page showing full order details which can also be used by the client to pay online."
+        "description": "Record a new order in the connected shop. Input includes paymentMode, and items[]. Each item can be of type 'catalog' (with productId), 'department' (with price and deptId) or 'free' (with title and price). Check if the client already exists using data_list_clients and if the client exists, only specify idClient. If provided, paymentMode should correspond to a payment ID from data_list_payments_modes tool. Returns a sale confirmation JSON including: a link to the PDF invoice, and a link to a private order page showing full order details which can also be used by the client to pay online. IMPORTANT: before creating a validated invoice (payment ≠ -2), call account_show_infos to verify that shopName, adressline1, and companyRegistrationNum are all set. If any of these fields are empty, warn the user and suggest using account_edit to fill them in before issuing invoices."
       },
       "edit": {
         "title": "Edit an order",
