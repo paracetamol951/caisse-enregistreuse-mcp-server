@@ -31,7 +31,7 @@ app.use(express.json());
 
 app.post('/mcp', async (req, res, next) => {
     try {
-        process.stderr.write("MCP POST" + req.body.'\n');
+        process.stderr.write("MCP POST" + req.body+'\n');
         // 0) initialize passe sans auth
         if (req.body?.method === 'initialize') return next();
 
@@ -54,7 +54,7 @@ app.post('/mcp', async (req, res, next) => {
         const apiKey = req.get('x-api-key') ?? req.get('x-apikey') ?? '';
         const shopId = req.get('x-shop-id') ?? req.get('x-shopid') ?? '';
         if (apiKey && shopId) {
-            process.stderr.write("setSessionAuth headers" + apiKey);
+            process.stderr.write("setSessionAuth headers" + apiKey + '\n');
             setSessionAuth({ ok: true, SHOPID: shopId, APIKEY: apiKey, scopes: ['*'] });
             return next();
         }
@@ -138,13 +138,13 @@ app.post(
     asyncHandler(async (req: express.Request, res: express.Response) => {
         const sessionId = getSessionId(req);
 
-        process.stderr.write("MCP reACTED" + sessionId);
+        process.stderr.write("MCP reACTED" + sessionId + '\n');
         let transport: StreamableHTTPServerTransport | undefined;
 
         if (sessionId) {
             transport = transports.get(sessionId);
             if (!transport) {
-                process.stderr.write("No valid session ID provided");
+                process.stderr.write("No valid session ID provided" + '\n');
                 return res.status(400).json({
                     jsonrpc: '2.0',
                     error: { code: -32000, message: 'Bad Request: No valid session ID provided' },
@@ -155,7 +155,7 @@ app.post(
             // Première requête d'initialisation attendue
             const method = (req.body as any)?.method;
             if (method !== 'initialize') {
-                process.stderr.write("Server not initialized");
+                process.stderr.write("Server not initialized" + '\n');
                 return res.status(400).json({
                     jsonrpc: '2.0',
                     error: { code: -32000, message: 'Bad Request: Server not initialized' },
