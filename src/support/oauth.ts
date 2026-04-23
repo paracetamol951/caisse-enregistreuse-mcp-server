@@ -232,6 +232,7 @@ export default async function oauthRouter() {
 
     // d) Enregistrement dynamique (optionnel – ici no-op minimal)
     router.post('/oauth/register', async (req, res) => {
+        logErr('/oauth/register');
         const { redirect_uris = [], client_id } = req.body || {};
         const id = client_id || `pub-${crypto.randomUUID()}`;
         //clients.set(id, { redirect_uris, public: true });
@@ -262,6 +263,7 @@ export default async function oauthRouter() {
 
     // e) Formulaire de login (GET -> HTML)
     router.get('/oauth/authorize', async (req, res) => {
+        logErr('/oauth/authorize');
         const { client_id, redirect_uri, state = '', code_challenge = '', scope = 'mcp:invoke' } = req.query as any;
 
         const c = await getClient(client_id || '');
@@ -461,6 +463,7 @@ export default async function oauthRouter() {
     // f) Traitement du login (POST) → appelle getAuthToken.php puis redirige avec code
     router.post('/oauth/authorize', async (req, res) => {
         try {
+            logErr('/oauth/authorize POST');
             const { login, password, client_id, redirect_uri, state = '', code_challenge = '', scope = 'mcp:invoke' } = req.body;
             const c = await getClient(client_id || '');
             if (!c || !c.redirect_uris.includes(redirect_uri)) {
@@ -499,6 +502,7 @@ export default async function oauthRouter() {
     router.post('/oauth/token', async (req, res) => {
         const started = Date.now();
         try {
+            logErr('/oauth/token');
             const { grant_type, code, code_verifier, client_id, redirect_uri } = req.body || {};
             logInfo(`token: grant=${grant_type} client=${client_id} redirect=${redirect_uri} code=${mask(code)} verifierLen=${(code_verifier || '').length}`);
 
@@ -566,6 +570,7 @@ export default async function oauthRouter() {
 
 // ---------- Validation côté Resource Server (helper) ----------
 export async function bearerValidator(authorization?: string) {
+    logErr('/bearerValidator');
     if (!authorization) throw new Error('Missing token');
     const m = /^Bearer\s+(.+)$/i.exec(authorization);
     const token = m?.[1] ?? authorization;
