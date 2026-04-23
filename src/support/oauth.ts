@@ -229,6 +229,18 @@ export default async function oauthRouter() {
     // c) JWKS (clé publique uniquement)
     router.get('/oauth/jwks.json', (_req, res) => { res.json(jwks); });
 
+
+    // d) Enregistrement dynamique (optionnel – ici no-op minimal)
+    router.post('/oauth/register', async (req, res) => {
+        const { redirect_uris = [], client_id } = req.body || {};
+        const id = client_id || `pub-${crypto.randomUUID()}`;
+        //clients.set(id, { redirect_uris, public: true });
+        const rec: OAuthClient = { redirect_uris, public: true };
+        await saveClient(id, rec);
+
+        res.json({ client_id: id, token_endpoint_auth_method: 'none', redirect_uris });
+    });
+    /*
     // d) Enregistrement dynamique (optionnel – ici no-op minimal)
     router.post('/oauth/register', async (req, res) => {
         const { redirect_uris = [], client_id, client_name, scope } = req.body || {};
@@ -246,7 +258,7 @@ export default async function oauthRouter() {
             response_types: ['code'],
             scope: scope || 'mcp:invoke',
         });
-    });
+    });*/
 
     // e) Formulaire de login (GET -> HTML)
     router.get('/oauth/authorize', async (req, res) => {

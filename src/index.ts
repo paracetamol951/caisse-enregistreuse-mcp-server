@@ -18,8 +18,43 @@ const app = express();
 
 app.use(await oauthRouter()); // <-- monte /.well-known, /oauth/*
 
-// Middleware qui protège l’endpoint MCP par Bearer et initialise le "context" par requête
+
 app.post('/mcp', async (req, res, next) => {
+    try {
+        // 0) initialize passe sans auth
+        if (req.body?.method === 'initialize') return next();
+
+        // 1) Bearer OAuth prioritaire
+        const auth = req.get('authorization') ?? req.get('Authorization');
+        if (auth?.startsWith('Bearer ')) {
+            const { apiKey, shopId } = await bearerValidator(auth); // RS256 + iss/aud/exp
+            setSessionAuth({
+                ok: true,
+                APIKEY: apiKey,
+                scopes: ['mcp:invoke'],
+            });
+            return next();
+        }
+
+        // 2) Fallback optionnel x-api-key
+
+        const apiKey = req.get('x-api-key') ?? req.get('x-apikey') ?? '';
+        const shopId = req.get('x-shop-id') ?? req.get('x-shopid') ?? '';
+        if (apiKey && shopId) {
+            setSessionAuth({ ok: true, SHOPID: shopId, APIKEY: apiKey, scopes: ['*'] });
+            return next();
+        }
+
+        return next();
+
+        //return res.status(401).json({ error: 'unauthorized', detail: 'Missing Bearer or x-api-key' });
+    } catch (e: any) {
+        return next(); //return res.status(401).json({ error: 'invalid_token', detail: e?.message || 'bad bearer' });
+    }
+});
+
+// Middleware qui protège l’endpoint MCP par Bearer et initialise le "context" par requête
+/*app.post('/mcp', async (req, res, next) => {
     try {
         const auth = req.get('authorization');
         const { apiKey, shopId } = await bearerValidator(auth);
@@ -29,11 +64,11 @@ app.post('/mcp', async (req, res, next) => {
     } catch (e: any) {
         next(); //return res.status(401).json({ error: 'unauthorized', detail: e?.message || 'invalid token' });
     }
-});
+});*/
 
 app.use(express.json());
 
-app.use((req, _res, next) => {
+/*app.use((req, _res, next) => {
     const auth = req.get('authorization') || '';
     const m = /^Bearer\s+(.+)$/i.exec(auth);
     const apiKey = m?.[1] ?? req.get('x-api-key') ?? req.get('x-apikey') ?? '';
@@ -43,7 +78,7 @@ app.use((req, _res, next) => {
         process.stderr.write('[mcp][auth] Session mise à jour depuis headers HTTP.\n');
     }
     next();
-});
+});*/
 
 // CORS basique + exposition de l'en-tête de session pour les clients web (Inspector, etc.)
 app.use((req, res, next) => {
