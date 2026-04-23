@@ -31,7 +31,7 @@ app.use(express.json());
 
 app.post('/mcp', async (req, res, next) => {
     try {
-        process.stderr.write("MCP POST");
+        process.stderr.write("MCP POST" + req.body.'\n');
         // 0) initialize passe sans auth
         if (req.body?.method === 'initialize') return next();
 
@@ -39,8 +39,10 @@ app.post('/mcp', async (req, res, next) => {
         const auth = req.get('authorization') ?? req.get('Authorization');
         if (auth?.startsWith('Bearer ')) {
             const { apiKey, shopId } = await bearerValidator(auth); // RS256 + iss/aud/exp
+            process.stderr.write("setSessionAuth bearer" + apiKey);
             setSessionAuth({
                 ok: true,
+                SHOPID: shopId,
                 APIKEY: apiKey,
                 scopes: ['mcp:invoke'],
             });
@@ -52,6 +54,7 @@ app.post('/mcp', async (req, res, next) => {
         const apiKey = req.get('x-api-key') ?? req.get('x-apikey') ?? '';
         const shopId = req.get('x-shop-id') ?? req.get('x-shopid') ?? '';
         if (apiKey && shopId) {
+            process.stderr.write("setSessionAuth headers" + apiKey);
             setSessionAuth({ ok: true, SHOPID: shopId, APIKEY: apiKey, scopes: ['*'] });
             return next();
         }
