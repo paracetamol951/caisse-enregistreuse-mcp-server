@@ -18,9 +18,20 @@ const app = express();
 
 app.use(await oauthRouter()); // <-- monte /.well-known, /oauth/*
 
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*'); // ajuste en prod
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, mcp-session-id, Mcp-Session-Id, x-api-key, x-apikey, x-shop-id, x-shopid');
+    // Crucial pour que les clients puissent LIRE l'ID de session renvoyé par initialize
+    res.setHeader('Access-Control-Expose-Headers', 'Mcp-Session-Id');
+    if (req.method === 'OPTIONS') return res.sendStatus(204);
+    next();
+});
+app.use(express.json());
 
 app.post('/mcp', async (req, res, next) => {
     try {
+        process.stderr.write("MCP POST");
         // 0) initialize passe sans auth
         if (req.body?.method === 'initialize') return next();
 
@@ -66,7 +77,6 @@ app.post('/mcp', async (req, res, next) => {
     }
 });*/
 
-app.use(express.json());
 
 /*app.use((req, _res, next) => {
     const auth = req.get('authorization') || '';
@@ -81,15 +91,6 @@ app.use(express.json());
 });*/
 
 // CORS basique + exposition de l'en-tête de session pour les clients web (Inspector, etc.)
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*'); // ajuste en prod
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, mcp-session-id, Mcp-Session-Id, x-api-key, x-apikey, x-shop-id, x-shopid');
-    // Crucial pour que les clients puissent LIRE l'ID de session renvoyé par initialize
-    res.setHeader('Access-Control-Expose-Headers', 'Mcp-Session-Id');
-    if (req.method === 'OPTIONS') return res.sendStatus(204);
-    next();
-});
 
 // Ton serveur MCP — ajoute ici tes tools/resources/prompts
 const mcpServer = new McpServer({
@@ -134,6 +135,7 @@ app.post(
     asyncHandler(async (req: express.Request, res: express.Response) => {
         const sessionId = getSessionId(req);
 
+        process.stderr.write("MCP reACTED");
         let transport: StreamableHTTPServerTransport | undefined;
 
         if (sessionId) {
@@ -147,7 +149,8 @@ app.post(
             }
         } else {
             // Première requête d'initialisation attendue
-            if (req.body?.method !== 'initialize') {
+            const method = (req.body as any)?.method;
+            if (method !== 'initialize') {
                 return res.status(400).json({
                     jsonrpc: '2.0',
                     error: { code: -32000, message: 'Bad Request: Server not initialized' },
