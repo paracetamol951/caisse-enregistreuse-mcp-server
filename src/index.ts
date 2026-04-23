@@ -135,12 +135,13 @@ app.post(
     asyncHandler(async (req: express.Request, res: express.Response) => {
         const sessionId = getSessionId(req);
 
-        process.stderr.write("MCP reACTED");
+        process.stderr.write("MCP reACTED" + sessionId);
         let transport: StreamableHTTPServerTransport | undefined;
 
         if (sessionId) {
             transport = transports.get(sessionId);
             if (!transport) {
+                process.stderr.write("No valid session ID provided");
                 return res.status(400).json({
                     jsonrpc: '2.0',
                     error: { code: -32000, message: 'Bad Request: No valid session ID provided' },
@@ -151,6 +152,7 @@ app.post(
             // Première requête d'initialisation attendue
             const method = (req.body as any)?.method;
             if (method !== 'initialize') {
+                process.stderr.write("Server not initialized");
                 return res.status(400).json({
                     jsonrpc: '2.0',
                     error: { code: -32000, message: 'Bad Request: Server not initialized' },
