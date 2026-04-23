@@ -1,4 +1,4 @@
-import { redis } from './redis.js';
+import { store } from './store.js';
 
 const NS = (process.env.REDIS_NAMESPACE || 'mcp:oauth') + ':codes';
 const key = (code: string) => `${NS}:${code}`;

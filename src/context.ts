@@ -55,6 +55,7 @@ export function resolveAuth(
     // Priorité session: d'abord le ctx reçu par le handler (si ton serveur l'alimente),
     // puis le store global en mémoire.
     const sessionAuth = ctx?.auth ?? getSessionAuth();
+    process.stderr.write('resolveAuth' + sessionAuth?.SHOPID);
 
     const shopId =
         sessionAuth?.SHOPID ??
