@@ -58,6 +58,7 @@ export function resolveAuth(
 
     const shopId =
         sessionAuth?.SHOPID ??
+
         process.env.SHOPID ??
         process.env.MCP_SHOPID ??
         '';

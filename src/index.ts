@@ -49,7 +49,7 @@ app.use((req, _res, next) => {
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*'); // ajuste en prod
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, mcp-session-id, Mcp-Session-Id');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, mcp-session-id, Mcp-Session-Id, x-api-key, x-apikey, x-shop-id, x-shopid');
     // Crucial pour que les clients puissent LIRE l'ID de session renvoyé par initialize
     res.setHeader('Access-Control-Expose-Headers', 'Mcp-Session-Id');
     if (req.method === 'OPTIONS') return res.sendStatus(204);
@@ -59,7 +59,7 @@ app.use((req, res, next) => {
 // Ton serveur MCP — ajoute ici tes tools/resources/prompts
 const mcpServer = new McpServer({
     name: 'caisse-enregistreuse-api',
-    version: '1.4.0',
+    version: '1.4.1',
 });
 
 registerAuthTools(mcpServer);
