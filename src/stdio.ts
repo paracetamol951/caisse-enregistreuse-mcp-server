@@ -14,6 +14,7 @@ import { registerVatTools } from './tools/vats.js';
 import { registerCatalogTools } from './tools/catalog.js';
 import { registerResources } from './resources/index.js';
 import { registerClientTools } from './tools/clients.js';
+import { registerPaymentModeTools } from './tools/payment_modes.js';
 
 // ==== Session globale (STDIO: une seule connexion) ====
 type AuthState = { ok: boolean; SHOPID?: string; APIKEY?: string; scopes?: string[] };
@@ -96,6 +97,7 @@ async function main() {
         registerCatalogTools(server);
         //registerAccountTools(server);
         registerClientTools(server);
+        registerPaymentModeTools(server);
 
         registerPrompts(server);    // in stdio.ts
 

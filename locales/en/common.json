@@ -229,6 +229,16 @@
         "title": "Delete a client",
         "description": "Permanently remove a customer from the shop's customer file by their ID."
       }
+    },
+    "payment_mode": {
+      "add": {
+        "title": "Add a payment method",
+        "description": "Add a new payment method to the shop. Requires a title. Optional fields: type (Cash, Credit_Card, Check, Bank_Transfer, Meal_Voucher, Holiday_Voucher, and their refund equivalents), accountingChapter, fixedAmount, minimumAmount, maximumAmount, cashboxLock (0 = all cashboxes). Use data_list_payments_modes to list existing methods."
+      },
+      "delete": {
+        "title": "Delete a payment method",
+        "description": "Permanently remove a payment method from the shop by its ID. Use data_list_payments_modes to find the ID."
+      }
     }
   },
   "messages": {

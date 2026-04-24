@@ -1,7 +1,7 @@
 {
   "name": "Kash.click MCP Server",
   "version": "1.3.1",
-  "description": "Exposes Kash.click API as MCP tools, enabling programmatic access to authentication, shop account creation and settings, sales creation, invoicing, and data listing features for shops.",
+  "description": "Exposes Kash.click API as MCP tools, enabling programmatic access to authentication, shop account management, sales creation, and electronic invoicing for shops. Kash is NF525-certified — the official POS compliance standard — and generates Factur-X (EN 16931) compliant electronic invoices automatically, making it fully ready for B2B e-invoicing.",
   "endpoints": [
     {
       "type": "http",
@@ -65,7 +65,7 @@
     },
     {
       "name": "order_create",
-      "description": "Record a new sale in the connected shop. Input includes paymentMode, and items[]. Each item can be of type 'catalog' (with productId), « department » (with deptId) or 'free' (with title and price). Check if the client already exists using data_list_clients and if the client exists, only specify idClient. If provided, paymentMode should correspond to a payment ID from data_list_payments tool. Returns a sale confirmation JSON from the API."
+      "description": "Record a new sale in the connected shop. Input includes paymentMode, and items[]. Each item can be of type 'catalog' (with productId), « department » (with deptId) or 'free' (with title and price). Check if the client already exists using data_list_clients and if the client exists, only specify idClient. If provided, paymentMode should correspond to a payment ID from data_list_payments tool. Returns a sale confirmation including a link to the PDF invoice and a client payment page. Automatically generates a Factur-X (EN 16931) compliant electronic invoice for every validated order (payment ≠ -2). Kash is NF525-certified — all validated sales are immutable and auditable"
     },
     {
       "name": "order_edit",
@@ -81,7 +81,7 @@
     },
     {
       "name": "report_get",
-      "description": "Download a synthetic HTML sales report for a given period. Omit all date fields for yesterday; y only = full year; y+m = full month; y+m+d = specific day. Returns an HTML summary with total revenue, order count, department breakdown, VAT summary, and payment methods."
+      "description": "Download a synthetic HTML sales report for a given period. Omit all date fields for yesterday; y only = full year; y+m = full month; y+m+d = specific day. Returns an HTML summary with total revenue, order count, department breakdown, VAT summary, and payment methods. All reported data is NF525-certified — immutable, auditable, and compliant with tax authority (DGFiP) requirements."
     },
     {
       "name": "data_list_pending_orders",
@@ -226,6 +226,14 @@
     {
       "name": "vat_delete",
       "description": "Permanently remove a VAT rate from the shop configuration by its ID."
+    },
+    {
+      "name": "payment_mode_add",
+      "description": "Add a new payment method to the shop. Requires a title. Optional: type (Cash, Credit_Card, Check, Bank_Transfer, Meal_Voucher, Holiday_Voucher, and refund variants), accountingChapter, fixedAmount, minimumAmount, maximumAmount, cashboxLock (0 = all cashboxes)."
+    },
+    {
+      "name": "payment_mode_delete",
+      "description": "Permanently remove a payment method from the shop by its ID. Use data_list_payments_modes to find the ID first."
     }
   ]
 }

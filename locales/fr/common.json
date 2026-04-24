@@ -229,6 +229,16 @@
         "title": "Supprimer un client",
         "description": "Supprime définitivement un client du fichier clients de la boutique à partir de son identifiant."
       }
+    },
+    "payment_mode": {
+      "add": {
+        "title": "Ajouter un mode de paiement",
+        "description": "Ajoute un nouveau mode de paiement à la boutique. Requiert un titre. Champs optionnels : type (Cash, Credit_Card, Check, Bank_Transfer, Meal_Voucher, Holiday_Voucher, et leurs équivalents remboursement), chapitre comptable, montant fixe, montant minimum, montant maximum, caisse autorisée (0 = toutes). Utiliser data_list_payments_modes pour consulter les modes existants."
+      },
+      "delete": {
+        "title": "Supprimer un mode de paiement",
+        "description": "Supprime définitivement un mode de paiement de la boutique à partir de son identifiant. Utiliser data_list_payments_modes pour retrouver l'ID."
+      }
     }
   },
   "messages": {

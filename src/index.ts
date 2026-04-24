@@ -13,6 +13,7 @@ import { registerPrompts } from './prompts/index.js';
 import oauthRouter, { bearerValidator } from './support/oauth.js';
 import { registerClientTools } from './tools/clients.js';
 import { registerResources } from './resources/index.js';
+import { registerPaymentModeTools } from './tools/payment_modes.js';
 
 const app = express();
 
@@ -108,6 +109,7 @@ registerVatTools(mcpServer);
 registerCatalogTools(mcpServer);
 //registerAccountTools(mcpServer);
 registerClientTools(mcpServer);
+registerPaymentModeTools(mcpServer);
 
 registerPrompts(mcpServer); // in index.ts
 
