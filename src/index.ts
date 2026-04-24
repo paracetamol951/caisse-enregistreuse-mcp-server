@@ -1,5 +1,4 @@
-﻿
-import express from 'express';
+﻿import express from 'express';
 import { randomUUID } from 'node:crypto';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
@@ -8,95 +7,67 @@ import { registerSalesTools } from './tools/sales.js';
 import { registerDataTools } from './tools/data.js';
 import { registerVatTools } from './tools/vats.js';
 import { registerCatalogTools } from './tools/catalog.js';
-import { setSessionAuth } from './context.js';
+import { setSessionAuth, runWithSession, updateSessionId } from './context.js';
+import { loadSessionAuth } from './support/session-store.js';
+import { initStore } from './support/store.js';
 import { registerPrompts } from './prompts/index.js';
 import oauthRouter, { bearerValidator } from './support/oauth.js';
 import { registerClientTools } from './tools/clients.js';
 import { registerResources } from './resources/index.js';
 import { registerPaymentModeTools } from './tools/payment_modes.js';
 
+// Initialise le store (Redis si disponible, sinon mémoire)
+await initStore();
+
 const app = express();
 
-app.use(await oauthRouter()); // <-- monte /.well-known, /oauth/*
+app.use(await oauthRouter());
 
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*'); // ajuste en prod
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,DELETE,OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, mcp-session-id, Mcp-Session-Id, x-api-key, x-apikey, x-shop-id, x-shopid');
-    // Crucial pour que les clients puissent LIRE l'ID de session renvoyé par initialize
     res.setHeader('Access-Control-Expose-Headers', 'Mcp-Session-Id');
     if (req.method === 'OPTIONS') return res.sendStatus(204);
     next();
 });
 app.use(express.json());
 
+function getSessionId(req: express.Request): string | undefined {
+    return req.get('Mcp-Session-Id') || req.get('mcp-session-id') || undefined;
+}
+
+// Isole chaque requête /mcp dans son propre contexte de session
+app.use('/mcp', (req, res, next) => {
+    const sessionId = getSessionId(req) ?? randomUUID();
+    runWithSession(sessionId, () => next());
+});
+
+// Middleware d'authentification
 app.post('/mcp', async (req, res, next) => {
     try {
-        process.stderr.write("MCP POST" + req.body+'\n');
-        // 0) initialize passe sans auth
         if (req.body?.method === 'initialize') return next();
 
-        // 1) Bearer OAuth prioritaire
         const auth = req.get('authorization') ?? req.get('Authorization');
         if (auth?.startsWith('Bearer ')) {
-            const { apiKey, shopId } = await bearerValidator(auth); // RS256 + iss/aud/exp
-            process.stderr.write("setSessionAuth bearer" + apiKey);
-            setSessionAuth({
-                ok: true,
-                SHOPID: shopId,
-                APIKEY: apiKey,
-                scopes: ['mcp:invoke'],
-            });
+            const { apiKey, shopId } = await bearerValidator(auth);
+            setSessionAuth({ ok: true, SHOPID: shopId, APIKEY: apiKey, scopes: ['mcp:invoke'] });
             return next();
         }
-
-        // 2) Fallback optionnel x-api-key
 
         const apiKey = req.get('x-api-key') ?? req.get('x-apikey') ?? '';
         const shopId = req.get('x-shop-id') ?? req.get('x-shopid') ?? '';
         if (apiKey && shopId) {
-            process.stderr.write("setSessionAuth headers" + apiKey + '\n');
             setSessionAuth({ ok: true, SHOPID: shopId, APIKEY: apiKey, scopes: ['*'] });
             return next();
         }
 
         return next();
-
-        //return res.status(401).json({ error: 'unauthorized', detail: 'Missing Bearer or x-api-key' });
-    } catch (e: any) {
-        return next(); //return res.status(401).json({ error: 'invalid_token', detail: e?.message || 'bad bearer' });
+    } catch {
+        return next();
     }
 });
 
-// Middleware qui protège l’endpoint MCP par Bearer et initialise le "context" par requête
-/*app.post('/mcp', async (req, res, next) => {
-    try {
-        const auth = req.get('authorization');
-        const { apiKey, shopId } = await bearerValidator(auth);
-        // Rendez ces infos dispos aux tools via le "session context" existant
-        setSessionAuth({ ok: true, APIKEY: apiKey, SHOPID: shopId, scopes: ['mcp:invoke', 'shop:read'] });
-        next();
-    } catch (e: any) {
-        next(); //return res.status(401).json({ error: 'unauthorized', detail: e?.message || 'invalid token' });
-    }
-});*/
-
-
-/*app.use((req, _res, next) => {
-    const auth = req.get('authorization') || '';
-    const m = /^Bearer\s+(.+)$/i.exec(auth);
-    const apiKey = m?.[1] ?? req.get('x-api-key') ?? req.get('x-apikey') ?? '';
-    const shopId = req.get('x-shop-id') ?? req.get('x-shopid') ?? '';
-    if (apiKey && shopId) {
-        setSessionAuth({ ok: true, SHOPID: shopId, APIKEY: apiKey, scopes: ['*'] });
-        process.stderr.write('[mcp][auth] Session mise à jour depuis headers HTTP.\n');
-    }
-    next();
-});*/
-
-// CORS basique + exposition de l'en-tête de session pour les clients web (Inspector, etc.)
-
-// Ton serveur MCP — ajoute ici tes tools/resources/prompts
 const mcpServer = new McpServer({
     name: 'caisse-enregistreuse-api',
     version: '1.4.1',
@@ -107,103 +78,92 @@ registerSalesTools(mcpServer);
 registerDataTools(mcpServer);
 registerVatTools(mcpServer);
 registerCatalogTools(mcpServer);
-//registerAccountTools(mcpServer);
 registerClientTools(mcpServer);
 registerPaymentModeTools(mcpServer);
-
-registerPrompts(mcpServer); // in index.ts
-
+registerPrompts(mcpServer);
 registerResources(mcpServer);
 
-// Map sessionId -> transport
 const transports = new Map<string, StreamableHTTPServerTransport>();
 
-/**
- * Récupère l'ID de session depuis les en-têtes, en gérant les variantes de casse.
- */
-function getSessionId(req: express.Request): string | undefined {
-    return req.get('Mcp-Session-Id') || req.get('mcp-session-id') || undefined;
-}
-
-/**
- * Express ne tape pas bien les handlers async dans certains environnements.
- * Petit helper pour capturer les erreurs async et les passer à `next()`.
- */
 const asyncHandler =
     (fn: (req: express.Request, res: express.Response, next: express.NextFunction) => Promise<any>) =>
         (req: express.Request, res: express.Response, next: express.NextFunction) =>
             Promise.resolve(fn(req, res, next)).catch(next);
 
-// POST /mcp : requêtes client -> serveur (initialize, tools/*, resources/*, …)
 app.post(
     '/mcp',
     asyncHandler(async (req: express.Request, res: express.Response) => {
         const sessionId = getSessionId(req);
 
-        process.stderr.write("MCP reACTED" + sessionId + '\n');
-        let transport: StreamableHTTPServerTransport | undefined;
-
         if (sessionId) {
-            transport = transports.get(sessionId);
+            let transport = transports.get(sessionId);
+
             if (!transport) {
-                process.stderr.write("No valid session ID provided" + '\n');
-                return res.status(400).json({
-                    jsonrpc: '2.0',
-                    error: { code: -32000, message: 'Bad Request: No valid session ID provided' },
-                    id: null,
+                const method = (req.body as any)?.method;
+                if (method !== 'initialize') {
+                    return res.status(400).json({
+                        jsonrpc: '2.0',
+                        error: { code: -32000, message: 'Bad Request: Session expirée, veuillez réinitialiser' },
+                        id: null,
+                    });
+                }
+
+                // Reprise de session après redémarrage
+                process.stderr.write('[mcp] Reprise de session ' + sessionId + '\n');
+                const storedAuth = await loadSessionAuth(sessionId);
+
+                transport = new StreamableHTTPServerTransport({
+                    sessionIdGenerator: () => sessionId,
+                    onsessioninitialized: (sid: string) => {
+                        transports.set(sid, transport!);
+                        if (storedAuth) {
+                            setSessionAuth(storedAuth);
+                            process.stderr.write('[mcp] Auth restaurée pour ' + sid + '\n');
+                        }
+                    },
                 });
-            }
-        } else {
-            // Première requête d'initialisation attendue
-            const method = (req.body as any)?.method;
-            if (method !== 'initialize') {
-                process.stderr.write("Server not initialized" + '\n');
-                return res.status(400).json({
-                    jsonrpc: '2.0',
-                    error: { code: -32000, message: 'Bad Request: Server not initialized' },
-                    id: null,
-                });
+
+                transport.onclose = () => { transports.delete(sessionId); };
+                await mcpServer.connect(transport);
             }
 
-            // Crée un transport; le SDK génère et renvoie l’ID de session via l’en-tête "Mcp-Session-Id"
-            transport = new StreamableHTTPServerTransport({
-                sessionIdGenerator: () => randomUUID(),
-                onsessioninitialized: (newSessionId: string) => {
-                    transports.set(newSessionId, transport!);
-                },
-                // Optionnel :
-                // enableDnsRebindingProtection: true,
-                // allowedHosts: ['127.0.0.1', 'localhost'],
-            });
-
-            // Nettoyage à la fermeture
-            transport.onclose = () => {
-                const id = transport?.sessionId;
-                if (id) transports.delete(id);
-            };
-
-            await mcpServer.connect(transport);
+            await transport.handleRequest(req, res, req.body);
+            return;
         }
 
-        // Délègue la requête JSON-RPC/Stream au transport
+        // Nouvelle session
+        const method = (req.body as any)?.method;
+        if (method !== 'initialize') {
+            return res.status(400).json({
+                jsonrpc: '2.0',
+                error: { code: -32000, message: 'Bad Request: Server not initialized' },
+                id: null,
+            });
+        }
+
+        const transport = new StreamableHTTPServerTransport({
+            sessionIdGenerator: () => randomUUID(),
+            onsessioninitialized: (newSessionId: string) => {
+                transports.set(newSessionId, transport!);
+                updateSessionId(newSessionId);
+            },
+        });
+
+        transport.onclose = () => {
+            const id = transport?.sessionId;
+            if (id) transports.delete(id);
+        };
+
+        await mcpServer.connect(transport);
         await transport.handleRequest(req, res, req.body);
     })
 );
 
-// GET /mcp : canal SSE pour une session donnée
-// DELETE /mcp : fermeture de session
 const handleSessionRequest = asyncHandler(async (req: express.Request, res: express.Response) => {
     const sessionId = getSessionId(req);
-    if (!sessionId) {
-        res.status(400).send('Invalid or missing session ID');
-        return;
-    }
+    if (!sessionId) { res.status(400).send('Invalid or missing session ID'); return; }
     const transport = transports.get(sessionId);
-    if (!transport) {
-        res.status(404).send('Unknown session');
-        return;
-    }
-    // Le même handleRequest gère SSE (GET) et fermeture (DELETE)
+    if (!transport) { res.status(404).send('Unknown session'); return; }
     await transport.handleRequest(req, res);
 });
 
@@ -214,13 +174,7 @@ app.get("/", (req, res) => {
     res.redirect("https://kash.click/free-pos-software/ChatGPT");
 });
 
-// Lancement HTTP
 const port = Number(process.env.PORT || 8787);
 app
-    .listen(port, () => {
-        console.log(`MCP server running at http://localhost:${port}/mcp`);
-    })
-    .on('error', (error) => {
-        console.error('Server error:', error);
-        process.exit(1);
-    });
+    .listen(port, () => console.log(`MCP server running at http://localhost:${port}/mcp`))
+    .on('error', (error) => { console.error('Server error:', error); process.exit(1); });

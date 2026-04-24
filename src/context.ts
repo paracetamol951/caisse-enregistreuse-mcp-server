@@ -1,8 +1,7 @@
 // src/context.ts
+import { AsyncLocalStorage } from 'node:async_hooks';
+import { saveSessionAuth, deleteSessionAuth } from './support/session-store.js';
 
-/**
- * État d'authentification conservé côté serveur (session en mémoire).
- */
 export type AuthState = {
     ok: boolean;
     SHOPID?: string;
@@ -10,52 +9,67 @@ export type AuthState = {
     scopes?: string[];
 };
 
-/**
- * Stockage de session minimaliste (en mémoire de process).
- * Remplace si besoin par un store persistant selon ton runtime.
- */
-const SESSION: { auth?: AuthState } = {};
-
-/** Définit l'état d'authentification pour la session courante. */
-export function setSessionAuth(a: AuthState) {
-    SESSION.auth = a;
-}
-
-/** Récupère l'état d'authentification de la session courante. */
-export function getSessionAuth(): AuthState | undefined {
-    return SESSION.auth;
-}
-
-/** Efface l'état d'authentification de la session courante. */
-export function clearSessionAuth() {
-    delete SESSION.auth;
-}
-
-/**
- * Contexte passé aux handlers de tools.
- * (Laisse-le aligné avec ce que ton serveur MCP injecte déjà.)
- */
 export type Ctx = {
     auth?: AuthState;
-    // ... ajoute d'autres champs spécifiques à ton serveur si besoin
 };
 
-/**
- * Résolution unifiée des identifiants :
- * 1) session (ctx.auth puis SESSION)
- * 2) variables d'environnement (SHOPID/APIKEY ou MCP_SHOPID/MCP_APIKEY)
- *
- * Les tools n'ont plus besoin de recevoir shopId/apiKey en paramètres.
- * Lève une erreur explicite si les identifiants sont introuvables.
- */
+type RequestSession = {
+    sessionId: string;
+    auth?: AuthState;
+};
+
+const asyncLocalStore = new AsyncLocalStorage<RequestSession>();
+
+const GLOBAL_SESSION: { auth?: AuthState } = {};
+
+export function runWithSession<T>(sessionId: string, fn: () => T): T {
+    return asyncLocalStore.run({ sessionId }, fn);
+}
+
+export function getCurrentSession(): RequestSession | undefined {
+    return asyncLocalStore.getStore();
+}
+
+export function updateSessionId(newSessionId: string): void {
+    const session = asyncLocalStore.getStore();
+    if (session && session.sessionId !== newSessionId) {
+        session.sessionId = newSessionId;
+        if (session.auth) {
+            saveSessionAuth(newSessionId, session.auth).catch(() => { });
+        }
+    }
+}
+
+export function setSessionAuth(a: AuthState): void {
+    const session = asyncLocalStore.getStore();
+    if (session) {
+        session.auth = a;
+        saveSessionAuth(session.sessionId, a).catch(() => { });
+    } else {
+        GLOBAL_SESSION.auth = a;
+    }
+}
+
+export function getSessionAuth(): AuthState | undefined {
+    return asyncLocalStore.getStore()?.auth ?? GLOBAL_SESSION.auth;
+}
+
+export function clearSessionAuth(): void {
+    const session = asyncLocalStore.getStore();
+    if (session) {
+        delete session.auth;
+        deleteSessionAuth(session.sessionId).catch(() => { });
+    } else {
+        delete GLOBAL_SESSION.auth;
+    }
+}
+
 export function resolveAuth(
     _input?: unknown,
     ctx?: Ctx
 ): { shopId: string; apiKey: string } {
-    // Priorité session: d'abord le ctx reçu par le handler (si ton serveur l'alimente),
-    // puis le store global en mémoire.
     const sessionAuth = ctx?.auth ?? getSessionAuth();
-    process.stderr.write('resolveAuth' + sessionAuth+'\n');
+    process.stderr.write('resolveAuth' + sessionAuth + '\n');
 
     const shopId =
         sessionAuth?.SHOPID ??
@@ -72,7 +86,7 @@ export function resolveAuth(
     if (!shopId || !apiKey) {
         throw new Error(
             'Identifiants manquants : SHOPID et/ou APIKEY introuvables (session/env). ' +
-            'Connectez-vous via auth.login, définissez SHOPID/APIKEY en variables d’environnement, ' +
+            'Connectez-vous via auth.login, définissez SHOPID/APIKEY en variables d\'environnement, ' +
             'ou configurez les headers Authorization (Bearer) + X-Shop-Id côté client.'
         );
     }
