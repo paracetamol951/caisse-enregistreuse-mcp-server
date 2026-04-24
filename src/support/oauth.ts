@@ -770,8 +770,8 @@ body{font-family:"Space Grotesk", sans-serif!important;font-size:.85rem!importan
 		<div id="htmlzone">
 			<section
 				class="wrapper image-wrapper bg-image bg-overlay bg-overlay-light-600 text-white !bg-fixed bg-no-repeat bg-[center_center] bg-cover relative z-0 before:content-[''] before:block before:absolute before:z-[1] before:w-full before:h-full before:left-0 before:top-0 before:bg-[rgba(255,255,255,.6)]"
-				data-image-src="./assets/img/photos/bg18.png"
-				style="background-image: url(&quot;./assets/img/photos/bg18.png&quot;);">
+				data-image-src="https://kash.click//assets/img/photos/bg18.png"
+				style="background-image: url(&quot;https://kash.click/assets/img/photos/bg18.png&quot;);">
 				<div
 					class="container pt-28 pb-40 xl:pt-36 lg:pt-36 md:pt-36 xl:pb-[12.5rem] lg:pb-[12.5rem] md:pb-[12.5rem] !text-center">
 					<div class="flex flex-wrap mx-[-15px]">
