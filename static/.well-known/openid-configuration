@@ -1,8 +1,8 @@
 {
-  "issuer": "https://mcp.enregistreuse.fr",
-  "authorization_endpoint": "https://mcp.enregistreuse.fr/oauth/authorize",
-  "token_endpoint": "https://mcp.enregistreuse.fr/oauth/token",
-  "jwks_uri": "https://mcp.enregistreuse.fr/oauth/jwks.json",
-  "registration_endpoint": "https://mcp.enregistreuse.fr/oauth/register",
+  "issuer": "https://mcp.kash.click",
+  "authorization_endpoint": "https://mcp.kash.click/oauth/authorize",
+  "token_endpoint": "https://mcp.kash.click/oauth/token",
+  "jwks_uri": "https://mcp.kash.click/oauth/jwks.json",
+  "registration_endpoint": "https://mcp.kash.click/oauth/register",
   "code_challenge_methods_supported": ["S256"]
 }

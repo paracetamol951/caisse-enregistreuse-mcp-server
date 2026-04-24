@@ -1,7 +1,7 @@
 {
   "name": "caisse-enregistreuse-mcp-server",
   "version": "1.4.1",
-  "description": "MCP server exposing caisse.enregistreuse.fr API as tools",
+  "description": "MCP server exposing kash.click API as tools",
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",

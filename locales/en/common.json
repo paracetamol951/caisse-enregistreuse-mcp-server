@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "Caisse Enregistreuse MCP Server",
-    "description": "Exposes caisse.enregistreuse.fr API as MCP tools, enabling programmatic access to authentication, sales creation, and data listing features for shops."
+    "description": "Exposes kash.click API as MCP tools, enabling programmatic access to authentication, sales creation, and data listing features for shops."
   },
   "tools": {
     "ping": {
