@@ -21,9 +21,9 @@ const LANDING_HTML = `<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, viewport-fit=cover">
-<title>Kash MCP Server — Connect Your Shop to Any AI Tool</title>
-<meta name="description" content="Kash MCP Server lets you manage orders, invoices, inventory and customers from Claude, ChatGPT, n8n, or any MCP-compatible tool — in plain language. Free for all Kash accounts.">
-<meta name="keywords" content="MCP server, Kash POS, AI business management, invoicing AI, inventory management, ChatGPT shop integration, Claude MCP, n8n automation, online cash register, free POS software">
+<title>Kash — AI Invoicing and POS Assistant for ChatGPT, Claude and MCP Tools</title>
+<meta name="description" content="Kash is an AI invoicing and POS assistant. Create invoices first, then manage orders, inventory and customers from ChatGPT, Claude, n8n or any MCP-compatible tool — in plain language. Free for all Kash accounts.">
+<meta name="keywords" content="create invoice with ChatGPT, AI invoicing, MCP server, Kash POS, invoice automation, Claude MCP, n8n automation, AI business management, inventory management, online cash register, free POS software">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://mcp.kash.click">
 <link rel="alternate" hreflang="en" href="https://mcp.kash.click">
@@ -31,8 +31,8 @@ const LANDING_HTML = `<!DOCTYPE html>
 <link rel="alternate" hreflang="x-default" href="https://mcp.kash.click">
 
 <!-- Open Graph -->
-<meta property="og:title" content="Kash MCP Server — Connect Your Shop to Any AI Tool">
-<meta property="og:description" content="Manage orders, invoices, inventory and customers from Claude, ChatGPT, n8n or any MCP-compatible tool — in plain language.">
+<meta property="og:title" content="Kash — AI Invoicing and POS Assistant">
+<meta property="og:description" content="Create invoices first, then manage orders, inventory and customers from ChatGPT, Claude, n8n or any MCP-compatible tool — in plain language.">
 <meta property="og:url" content="https://mcp.kash.click">
 <meta property="og:site_name" content="kash.click">
 <meta property="og:image" content="https://kash.click/PreviewEN.png">
@@ -43,8 +43,8 @@ const LANDING_HTML = `<!DOCTYPE html>
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Kash MCP Server — Connect Your Shop to Any AI Tool">
-<meta name="twitter:description" content="Manage orders, invoices, inventory and customers from Claude, ChatGPT, n8n or any MCP-compatible tool — in plain language.">
+<meta name="twitter:title" content="Kash — AI Invoicing and POS Assistant">
+<meta name="twitter:description" content="Create invoices first, then manage orders, inventory and customers from ChatGPT, Claude, n8n or any MCP-compatible tool — in plain language.">
 <meta name="twitter:image" content="https://kash.click/PreviewEN.png">
 
 <!-- Favicons -->
@@ -66,8 +66,8 @@ const LANDING_HTML = `<!DOCTYPE html>
     {
       "@type": "SoftwareApplication",
       "@id": "https://mcp.kash.click/#software",
-      "name": "Kash MCP Server",
-      "description": "MCP server for Kash POS — connect your shop to Claude, ChatGPT, n8n or any MCP-compatible AI tool to manage orders, invoices, inventory and customers in plain language.",
+      "name": "Kash AI Invoicing and POS Assistant",
+      "description": "AI invoicing and POS assistant for Kash — create invoices first, then manage orders, inventory and customers from Claude, ChatGPT, n8n or any MCP-compatible AI tool in plain language.",
       "url": "https://mcp.kash.click",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
@@ -86,8 +86,8 @@ const LANDING_HTML = `<!DOCTYPE html>
       "@type": "WebPage",
       "@id": "https://mcp.kash.click/#webpage",
       "url": "https://mcp.kash.click",
-      "name": "Kash MCP Server — Connect Your Shop to Any AI Tool",
-      "description": "Manage orders, invoices, inventory and customers from Claude, ChatGPT, n8n or any MCP-compatible tool — in plain language.",
+      "name": "Kash — AI Invoicing and POS Assistant",
+      "description": "Create invoices first, then manage orders, inventory and customers from Claude, ChatGPT, n8n or any MCP-compatible tool — in plain language.",
       "inLanguage": "en",
       "isPartOf": { "@id": "https://kash.click/#website" }
     },
@@ -96,10 +96,18 @@ const LANDING_HTML = `<!DOCTYPE html>
       "mainEntity": [
         {
           "@type": "Question",
+          "name": "Can I create invoices with ChatGPT or Claude using Kash?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The Kash MCP server lets compatible AI tools such as ChatGPT, Claude and n8n create invoices, retrieve customers, add invoice lines, check required business information and access Kash data through a secure OAuth connection."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "What is the Kash MCP server?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "The Kash MCP server is a Model Context Protocol endpoint that lets any compatible AI tool (Claude, ChatGPT, n8n, etc.) read and write data in your Kash account — orders, invoices, customers, products and settings."
+            "text": "The Kash MCP server is a Model Context Protocol endpoint that lets any compatible AI tool read and write data in your Kash account — invoices, orders, customers, products, inventory and settings."
           }
         },
         {
@@ -115,7 +123,7 @@ const LANDING_HTML = `<!DOCTYPE html>
           "name": "Which AI tools are compatible with the Kash MCP server?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Any tool that supports the Model Context Protocol: Claude (Anthropic), ChatGPT with MCP plugins, n8n, and any other MCP-compatible client or automation platform."
+            "text": "Any tool that supports the Model Context Protocol: Claude, ChatGPT, n8n and other MCP-compatible clients or automation platforms."
           }
         }
       ]
@@ -164,7 +172,7 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
 .navbar>.container{display:flex;align-items:center;justify-content:space-between;flex-wrap:inherit;}
 .navbar-brand{margin-right:0;white-space:nowrap;padding:0;font-size:.7rem;color:#3f78e0;}
 .navbar-brand:hover{color:#3f78e0;}
-.navbar-collapse{flex-grow:1;flex-basis:100%;align-items:center;display:flex;}
+.navbar-collapse{flex-grow:1;flex-basis:100%;align-items:center;display:flex;justify-content:flex-end;}
 .navbar-clone{position:fixed!important;left:0;top:0;z-index:1008;transform:translateY(-100%);transition:transform .3s ease-in-out,background .3s,box-shadow .3s;background:rgba(255,255,255,0);padding:0!important;}
 .logoC{width:38px;}
 .kash{width:171px;height:auto;margin-left:20px;}
@@ -181,6 +189,7 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
 /* ── DESIGN TOKENS ────────────────────────────────────── */
 :root{
   --blue:#3f78e0; --blue-dk:#2d5fc7; --blue-lt:#eef3fd; --blue-md:#c5d8f8;
+  --green:#16a34a; --green-lt:#ecfdf5; --amber:#d97706; --amber-lt:#fffbeb;
   --ink:#1e2433; --ink2:#343f52; --mut:#60697b; --sub:#8a94a6;
   --bdr:rgba(8,60,130,0.08); --bg:#f7f9fc; --wh:#ffffff;
   --mono:'DM Mono',monospace;
@@ -199,7 +208,10 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.65);}}
 .hero h1{font-size:2.6rem;font-weight:700;line-height:1.18;color:var(--ink);letter-spacing:-.03em;margin-bottom:16px;}
 .hero h1 em{font-style:normal;color:var(--blue);}
-.hero-lead{font-size:.96rem;line-height:1.65;color:var(--mut);margin-bottom:24px;max-width:460px;}
+.hero-lead{font-size:.96rem;line-height:1.65;color:var(--mut);margin-bottom:19px;max-width:500px;}
+.hero-proof{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:24px;}
+.proof{display:inline-flex;align-items:center;gap:7px;background:var(--wh);border:1px solid var(--bdr);border-radius:12px;padding:8px 12px;font-size:.72rem;font-weight:700;color:var(--ink2);box-shadow:0 1px 3px rgba(30,36,50,0.06);}
+.proof svg{flex-shrink:0;}
 
 /* AI tool badges */
 .ai-badges{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
@@ -234,6 +246,9 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
 .cb .pill{display:inline-flex;align-items:center;gap:5px;background:var(--blue-lt);color:var(--blue);border-radius:6px;padding:3px 8px;font-size:.69rem;font-weight:600;margin-top:5px;border:1px solid var(--blue-md);}
 .cb .warn{background:#fffbeb;border:1px solid #fde68a;border-radius:7px;padding:7px 10px;margin-top:5px;font-size:.74rem;color:#78350f;line-height:1.5;}
 .cb .ok{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;padding:7px 10px;margin-top:5px;font-size:.74rem;color:#14532d;line-height:1.5;}
+.invoice-mini{background:#fff;border:1px solid var(--bdr);border-radius:10px;padding:10px;margin-top:7px;font-family:var(--mono);font-size:.66rem;color:var(--ink2);}
+.invoice-mini div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed rgba(8,60,130,.12);padding:3px 0;}
+.invoice-mini div:last-child{border-bottom:0;font-weight:700;color:var(--blue);}
 
 /* ── SECTIONS ─────────────────────────────────────────── */
 .sec{padding:84px 24px;}
@@ -244,7 +259,17 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
 .sh{text-align:center;margin-bottom:52px;}
 .se{display:inline-block;color:var(--blue);font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:9px;}
 .sh h2{font-size:1.85rem;font-weight:700;color:var(--ink);letter-spacing:-.025em;line-height:1.25;margin-bottom:10px;}
-.sh p{font-size:.92rem;color:var(--mut);max-width:490px;margin:0 auto;}
+.sh p{font-size:.92rem;color:var(--mut);max-width:570px;margin:0 auto;}
+
+/* ── INVOICE FOCUS STRIP ──────────────────────────────── */
+.invstrip{background:var(--wh);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);padding:24px;}
+.invstrip-in{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:1.2fr repeat(3,1fr);gap:14px;align-items:stretch;}
+.inv-main{background:var(--ink);color:#fff;border-radius:16px;padding:22px 24px;box-shadow:var(--sh);}
+.inv-main strong{display:block;font-size:.96rem;margin-bottom:5px;color:#fff;}
+.inv-main span{display:block;font-size:.78rem;color:rgba(255,255,255,.62);line-height:1.6;}
+.inv-card{background:var(--bg);border:1px solid var(--bdr);border-radius:16px;padding:18px;}
+.inv-card b{display:block;color:var(--ink);font-size:.86rem;margin-bottom:5px;}
+.inv-card p{margin:0;font-size:.76rem;line-height:1.55;color:var(--mut);}
 
 /* ── COMPATIBLE TOOLS BANNER ──────────────────────────── */
 .compat{background:var(--wh);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);padding:28px 24px;}
@@ -268,6 +293,8 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
 .uc.rv{direction:rtl;}
 .uc.rv>*{direction:ltr;}
 .utag{display:inline-block;background:var(--blue-lt);color:var(--blue);font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 11px;border-radius:20px;margin-bottom:13px;border:1px solid var(--blue-md);}
+.utag.green{background:var(--green-lt);color:var(--green);border-color:#bbf7d0;}
+.utag.amber{background:var(--amber-lt);color:var(--amber);border-color:#fde68a;}
 .uct h3{font-size:1.3rem;font-weight:700;color:var(--ink);letter-spacing:-.025em;line-height:1.3;margin-bottom:11px;}
 .uct p{font-size:.86rem;line-height:1.7;margin-bottom:14px;}
 .ubl{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px;}
@@ -285,6 +312,13 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
 .fi{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
 .fc h4{font-size:.85rem;font-weight:700;color:var(--ink);margin-bottom:5px;}
 .fc p{font-size:.78rem;line-height:1.6;margin:0;}
+
+/* ── PROMPTS ──────────────────────────────────────────── */
+.promptgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.promptcard{background:var(--wh);border:1px solid var(--bdr);border-radius:16px;padding:20px;box-shadow:0 1px 3px rgba(30,36,50,0.04);}
+.promptcard h3{font-size:.88rem;color:var(--ink);margin-bottom:10px;}
+.promptcard ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;}
+.promptcard li{font-size:.76rem;line-height:1.5;background:var(--bg);border:1px solid var(--bdr);border-radius:10px;padding:9px 10px;color:var(--ink2);}
 
 /* ── HOW IT WORKS ─────────────────────────────────────── */
 .hwrap{max-width:800px;margin:0 auto;}
@@ -307,10 +341,10 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
 .faqq svg{flex-shrink:0;transition:transform .25s;}
 .faqitem.open .faqq svg{transform:rotate(45deg);}
 .faqa{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;padding:0 22px;font-size:.82rem;line-height:1.7;color:var(--mut);}
-.faqitem.open .faqa{max-height:200px;padding:0 22px 18px;}
+.faqitem.open .faqa{max-height:240px;padding:0 22px 18px;}
 
 /* ── CTA ──────────────────────────────────────────────── */
-.ctain{max-width:620px;margin:0 auto;text-align:center;}
+.ctain{max-width:680px;margin:0 auto;text-align:center;}
 .ctain h2{font-size:2rem;font-weight:700;color:#fff;letter-spacing:-.03em;margin-bottom:12px;}
 .ctain p{font-size:.92rem;color:rgba(255,255,255,.5);margin-bottom:28px;}
 .ctabtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
@@ -334,17 +368,19 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
   .hero-in{grid-template-columns:1fr;gap:32px;}
   .hero{padding:100px 20px 52px;}
   .hero h1{font-size:1.9rem;}
+  .invstrip-in{grid-template-columns:1fr;}
   .uc{grid-template-columns:1fr;gap:26px;}
   .uc.rv{direction:ltr;}
-  .fg{grid-template-columns:repeat(2,1fr);}
+  .fg,.promptgrid{grid-template-columns:repeat(2,1fr);}
   .steps{grid-template-columns:1fr;gap:32px;}
   .steps::before{display:none;}
   .ftin{flex-direction:column;text-align:center;}
 }
 @media(max-width:600px){
   .sec{padding:52px 16px;}
-  .pgrid,.fg{grid-template-columns:1fr;}
+  .pgrid,.fg,.promptgrid{grid-template-columns:1fr;}
   .ctain h2{font-size:1.55rem;}
+  .hero-proof{display:grid;grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -360,7 +396,7 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
       </a>
     </div>
     <div class="navbar-collapse">
-      <a href="https://kash.click" class="bp" style="white-space:nowrap;flex-shrink:0;font-size:.78rem;padding:9px 20px;">Get started free</a>
+      <a href="https://kash.click" class="bp" style="white-space:nowrap;flex-shrink:0;font-size:.78rem;padding:9px 20px;">Start invoicing →</a>
     </div>
   </div>
 </nav>
@@ -378,7 +414,7 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
           </a>
         </div>
         <div class="navbar-collapse">
-          <a href="https://kash.click" class="bp" style="white-space:nowrap;flex-shrink:0;font-size:.78rem;padding:9px 20px;">Get started free</a>
+          <a href="https://kash.click" class="bp" style="white-space:nowrap;flex-shrink:0;font-size:.78rem;padding:9px 20px;">Start invoicing →</a>
         </div>
       </div>
     </nav>
@@ -389,9 +425,14 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
   <section class="hero" aria-labelledby="hero-heading">
     <div class="hero-in">
       <div>
-        <div class="eyebrow">Model Context Protocol · Open Standard</div>
-        <h1 id="hero-heading">Your shop, controlled<br>by <em>any AI tool</em></h1>
-        <p class="hero-lead">Kash MCP Server connects your POS to the AI tools you already use. Create invoices, manage stock, follow up with customers — in plain language, from any compatible platform.</p>
+        <div class="eyebrow">AI invoicing and POS assistant · MCP compatible</div>
+        <h1 id="hero-heading">Your <em>AI invoicing and POS assistant</em></h1>
+        <p class="hero-lead">Kash lets you create invoices in seconds, then manage sales, orders, inventory, customers, and reports from ChatGPT, Claude, n8n, or any MCP-compatible AI tool — all in plain language.</p>
+        <div class="hero-proof" aria-label="Main benefits">
+          <span class="proof"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 2h6l3 3v8H3V2z" stroke="#3f78e0" stroke-width="1.3"/><path d="M9 2v3h3M5 8h5M5 10.5h4" stroke="#3f78e0" stroke-width="1.3" stroke-linecap="round"/></svg> Professional invoice in seconds</span>
+          <span class="proof"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1.8a5.7 5.7 0 1 0 0 11.4 5.7 5.7 0 0 0 0-11.4z" stroke="#16a34a" stroke-width="1.3"/><path d="M5 7.8l1.6 1.6L10.3 5.5" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg> Built for services, retail, and hospitality</span>
+          <span class="proof"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2.5 7.5h10M7.5 2.5v10" stroke="#d97706" stroke-width="1.4" stroke-linecap="round"/></svg> No setup, no code required</span>
+        </div>
         <div class="ai-badges">
           <span>Works with</span>
           <span class="ai-badge">
@@ -410,30 +451,45 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
         </div>
         <div class="ha">
           <a href="https://kash.click" class="bp">
-            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1a6.5 6.5 0 1 1 0 13A6.5 6.5 0 0 1 7.5 1zm0 5.5h-1v4h3V8.5H8.5V6.5zm0-3a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" fill="currentColor"/></svg>
-            Start for free
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 2h6l3 3v8H3V2z" stroke="currentColor" stroke-width="1.3"/><path d="M9 2v3h3M5 8h5M5 10.5h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            Start invoicing →
           </a>
-          <a href="https://kash.click/cash-register-software/" class="bs">
+          <a href="#howto-heading" class="bs">
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M3 2h7l3 3v8H3V2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M10 2v3h3" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M5 7h6M5 9.5h4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-            Read the docs
+            Connect MCP server
           </a>
         </div>
       </div>
-      <!-- Hero demo: stock check + update via n8n workflow -->
+
+      <!-- Hero demo: invoice first -->
       <div>
-        <div class="hdemo" role="img" aria-label="Example conversation with an AI tool managing Kash inventory">
+        <div class="hdemo" role="img" aria-label="Example conversation with an AI tool creating an invoice in Kash">
           <div class="dtb">
             <div class="dots"><span></span><span></span><span></span></div>
-            <span class="dtitle">n8n workflow · Kash MCP</span>
+            <span class="dtitle">ChatGPT · Kash MCP</span>
           </div>
           <div class="dbody">
-            <div class="cm u"><div class="cav">n8</div><div class="cb">List all products with stock below their alert threshold</div></div>
-            <div class="cm ai"><div class="cav">AI</div><div class="cb">Found <strong>3 low-stock products</strong>:<br><br>· Espresso Blend 500g — <strong>4 left</strong> (threshold: 10)<br>· Reusable Cup 35cl — <strong>2 left</strong> (threshold: 5)<br>· Filter Paper ×100 — <strong>0 left</strong> (threshold: 8)</div></div>
-            <div class="cm u"><div class="cav">n8</div><div class="cb">Create a draft purchase order for these 3 items and notify the supplier by email</div></div>
-            <div class="cm ai"><div class="cav">AI</div><div class="cb"><div class="ok"><strong>✓ Purchase order PO-2025-047 created</strong><br>Supplier notified at orders@supplier.com<br>Expected restock: within 48 h</div></div></div>
+            <div class="cm u"><div class="cav">You</div><div class="cb">Create an invoice for ACME Ltd: website maintenance, 450 dollars excluding tax</div></div>
+            <div class="cm ai"><div class="cav">AI</div><div class="cb">I found ACME Ltd in your customers. I’ll create a new invoice with one service line and apply your default tax settings.</div></div>
+            <div class="cm ai"><div class="cav">AI</div><div class="cb"><div class="ok"><strong>✓ Invoice created</strong><br>Invoice INV-2026-001 — <strong>$450.00 excl. tax</strong></div><div class="invoice-mini"><div><span>Customer</span><span>ACME Ltd</span></div><div><span>Item</span><span>Website maintenance</span></div><div><span>Total</span><span>$450.00</span></div></div><span class="pill"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 1h5l2 2v7H2V1z" stroke="#3f78e0" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 1v2h2" stroke="#3f78e0" stroke-width="1.2" stroke-linejoin="round"/></svg>Invoice_INV-2026-001.pdf</span></div></div>
+            <div class="cm u"><div class="cav">You</div><div class="cb">Now show me unpaid invoices older than 30 days</div></div>
+            <div class="cm ai"><div class="cav">AI</div><div class="cb">Found <strong>3 unpaid invoices</strong>. I can draft polite payment reminders for each customer.</div></div>
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ── INVOICE FOCUS STRIP ──────────────────────────── -->
+  <section class="invstrip" aria-label="Invoice features">
+    <div class="invstrip-in">
+      <div class="inv-main">
+        <strong>Not just a POS: an AI invoice assistant</strong>
+        <span>Use Kash for classic shop orders, but also for freelancers, artisans, rentals, B2B services and anyone who needs fast, clean invoicing.</span>
+      </div>
+      <div class="inv-card"><b>Create invoices</b><p>Turn a simple sentence into a complete customer invoice with products, services, taxes, and totals — automatically.</p></div>
+      <div class="inv-card"><b>Find unpaid bills</b><p>Ask for overdue invoices and prepare customer reminders without manual searching.</p></div>
+      <div class="inv-card"><b>Reuse business data</b><p>Customers, catalog, payments, and orders stay connected within your Kash account.</p></div>
     </div>
   </section>
 
@@ -444,7 +500,7 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
       <div class="compat-tools">
         <span class="ctool">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#3f78e0" stroke-width="1.2"/><path d="M5 8h6M8 5v6" stroke="#3f78e0" stroke-width="1.3" stroke-linecap="round"/></svg>
-          Claude (Anthropic)
+          Claude
         </span>
         <span class="ctool">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="3" stroke="#16a34a" stroke-width="1.2"/><path d="M5 8h6" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round"/></svg>
@@ -456,7 +512,7 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
         </span>
         <span class="ctool">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1.5" stroke="#7c3aed" stroke-width="1.2"/><rect x="9" y="2" width="5" height="5" rx="1.5" stroke="#7c3aed" stroke-width="1.2"/><rect x="2" y="9" width="5" height="5" rx="1.5" stroke="#7c3aed" stroke-width="1.2"/><rect x="9" y="9" width="5" height="5" rx="1.5" stroke="#7c3aed" stroke-width="1.2"/></svg>
-          Make / Zapier
+          Automation tools
         </span>
         <span class="ctool">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 5h10M3 8h10M3 11h6" stroke="#60697b" stroke-width="1.3" stroke-linecap="round"/></svg>
@@ -472,39 +528,24 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
     <div class="sin">
       <div class="sh fi0">
         <span class="se">Who is it for?</span>
-        <h2 id="personas-heading">One MCP server, dozens of business types</h2>
-        <p>Whether you sell products, services, or experiences — Kash MCP adapts to your workflow and the AI tools you prefer.</p>
+        <h2 id="personas-heading">Built for freelance, artisan and restaurant/shop workflows</h2>
+        <p>Kash is useful far beyond a classic cash register. Start with invoice creation, then manage payments, orders, products and customer history from an AI assistant.</p>
       </div>
       <div class="pgrid">
         <div class="pc fi0">
           <div class="pi" style="background:#eef3fd"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="5" width="16" height="12" rx="2" stroke="#3f78e0" stroke-width="1.5"/><path d="M3 9h16" stroke="#3f78e0" stroke-width="1.5"/><path d="M7 13h4" stroke="#3f78e0" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-          <h3>Freelancers & consultants</h3>
-          <p>Generate invoices in one sentence, track unpaid bills and automate reminders from your AI assistant.</p>
+          <h3>Freelance</h3>
+          <p>Create invoices for missions, consulting, maintenance or recurring services. Track unpaid invoices and prepare reminders instantly.</p>
         </div>
         <div class="pc fi0">
-          <div class="pi" style="background:#ecfdf5"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 4h3l1.5 7h9l1.5-4.5H8" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="16.5" r="1.5" stroke="#16a34a" stroke-width="1.5"/><circle cx="16" cy="16.5" r="1.5" stroke="#16a34a" stroke-width="1.5"/></svg></div>
-          <h3>Retailers & shops</h3>
-          <p>Inventory synced across every channel in real time — POS terminal, website, or any AI workflow.</p>
+          <div class="pi" style="background:#f5f3ff"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M4 17h14M6 17V7l5-3 5 3v10" stroke="#7c3aed" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 17v-5h4v5" stroke="#7c3aed" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+          <h3>Artisan</h3>
+          <p>Invoice repairs, custom work, deliveries or appointments. Add products, labor and customer details by simply describing the job.</p>
         </div>
         <div class="pc fi0">
-          <div class="pi" style="background:#fffbeb"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="3" width="16" height="16" rx="2" stroke="#d97706" stroke-width="1.5"/><path d="M7 8h8M7 12h5" stroke="#d97706" stroke-width="1.5" stroke-linecap="round"/><path d="M7 16h8" stroke="#d97706" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-          <h3>E-commerce sites</h3>
-          <p>Record orders from any website via the MCP API. Inventory, invoices and customers stay in sync automatically.</p>
-        </div>
-        <div class="pc fi0">
-          <div class="pi" style="background:#f5f3ff"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3C7.686 3 5 5.686 5 9c0 4 6 10 6 10s6-6 6-10c0-3.314-2.686-6-6-6z" stroke="#7c3aed" stroke-width="1.5"/><circle cx="11" cy="9" r="2" stroke="#7c3aed" stroke-width="1.5"/></svg></div>
-          <h3>Airbnb & short-term rentals</h3>
-          <p>PDF invoice in 10 seconds per stay. Manage recurring guests and their full booking history.</p>
-        </div>
-        <div class="pc fi0">
-          <div class="pi" style="background:#eef3fd"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 7h16M3 11h16M3 15h10" stroke="#3f78e0" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-          <h3>Restaurants & cafés</h3>
-          <p>Table orders, takeaway, delivery and drive-through — managed from any AI tool or your POS terminal.</p>
-        </div>
-        <div class="pc fi0">
-          <div class="pi" style="background:#ecfdf5"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><rect x="3" y="6" width="16" height="12" rx="2" stroke="#16a34a" stroke-width="1.5"/><path d="M8 6V5a3 3 0 0 1 6 0v1" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round"/><circle cx="11" cy="12" r="1" fill="#16a34a"/></svg></div>
-          <h3>Accountants & bookkeepers</h3>
-          <p>Automated accounting exports, VAT breakdown and platform sync — zero manual re-entry.</p>
+          <div class="pi" style="background:#ecfdf5"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M3 7h16M3 11h16M3 15h10" stroke="#16a34a" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+          <h3>Restaurant / shop</h3>
+          <p>Record sales, table orders, takeaway, delivery and payments. Keep products, inventory and customer history connected.</p>
         </div>
       </div>
     </div>
@@ -515,46 +556,69 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
     <div class="sin">
       <div class="sh fi0">
         <span class="se">In action</span>
-        <h2 id="usecases-heading">Real-world use cases</h2>
-        <p>See what you can do with Kash MCP — in plain language, across any compatible AI tool.</p>
+        <h2 id="usecases-heading">Start with invoices, then automate the rest</h2>
+        <p>These are the everyday requests users actually type into ChatGPT, Claude, n8n or another MCP client.</p>
       </div>
       <div class="ucl">
 
-        <!-- UC 1: First invoice guided -->
+        <!-- UC 1: Create invoice -->
         <article class="uc fi0">
           <div class="uct">
-            <span class="utag">Invoicing</span>
-            <h3>Your first invoice — guided step by step</h3>
-            <p>Before issuing any invoice, the MCP checks that your profile is complete: company ID, address, tax number. It asks for whatever is missing, then generates a legally compliant PDF right away.</p>
+            <span class="utag">Invoice creation</span>
+            <h3>Create a professional invoice from one sentence</h3>
+            <p>Ask your AI assistant to instantly create an invoice for a customer, a service, a product order, or a custom job. Kash uses your customer data, catalog and tax settings to prepare the document.</p>
             <ul class="ubl">
-              <li>Automatic check of all legally required fields</li>
-              <li>Sequential invoice numbering handled automatically</li>
-              <li>Downloadable PDF + online payment link included</li>
-              <li>Immediately archived in your Kash account</li>
+              <li>Create invoices for services, products, orders or custom lines</li>
+              <li>Use existing customers or create a new one during the conversation</li>
+              <li>Apply tax, payment and business settings from your Kash account</li>
+              <li>Retrieve the invoice later by customer, date or order number</li>
             </ul>
           </div>
           <div class="ucd">
             <div class="dh"><div class="dhd"></div><span class="dhl">Claude · Kash MCP</span></div>
             <div class="dc">
-              <div class="cm u"><div class="cav">M</div><div class="cb">Invoice for Pixel Studio — 5 dev days at $600/day</div></div>
-              <div class="cm ai"><div class="cav">AI</div><div class="cb">Checking your profile before issuing…<div class="warn"><strong>⚠ Missing information</strong><br>Your EIN and business address are not set. Both are required on invoices.</div></div></div>
-              <div class="cm u"><div class="cav">M</div><div class="cb">EIN 98-7654321 — 8 Market St, San Francisco, CA 94105</div></div>
-              <div class="cm ai"><div class="cav">AI</div><div class="cb"><div class="ok"><strong>✓ Profile updated</strong><br>Invoice INV-2025-001 issued — <strong>$3,000.00</strong></div><span class="pill"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 1h5l2 2v7H2V1z" stroke="#3f78e0" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 1v2h2" stroke="#3f78e0" stroke-width="1.2" stroke-linejoin="round"/></svg>Invoice_INV-2025-001.pdf</span></div></div>
+              <div class="cm u"><div class="cav">M</div><div class="cb">Create an invoice for Pixel Studio — 5 consulting days at $600 per day</div></div>
+              <div class="cm ai"><div class="cav">AI</div><div class="cb">I found Pixel Studio. I’ll create one invoice line for 5 consulting days and calculate the total.</div></div>
+              <div class="cm ai"><div class="cav">AI</div><div class="cb"><div class="ok"><strong>✓ Invoice INV-2026-002 created</strong><br>Total: <strong>$3,000.00</strong></div><span class="pill"><svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 1h5l2 2v7H2V1z" stroke="#3f78e0" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 1v2h2" stroke="#3f78e0" stroke-width="1.2" stroke-linejoin="round"/></svg>Invoice_INV-2026-002.pdf</span></div></div>
             </div>
           </div>
         </article>
 
-        <!-- UC 2: Customer follow-ups -->
+        <!-- UC 2: Missing info / guided invoice -->
         <article class="uc rv fi0">
           <div class="uct">
-            <span class="utag">Customer management</span>
-            <h3>Automated follow-ups for unpaid invoices</h3>
-            <p>Ask your AI tool to list all outstanding invoices past a certain number of days. It identifies the customers, drafts personalised reminder emails — and sends them with your approval.</p>
+            <span class="utag amber">Guided setup</span>
+            <h3>The assistant asks for missing information</h3>
+            <p>If a customer name, address, tax number, or billing detail is missing, the assistant automatically asks a simple follow-up question before creating the invoice. The result is smoother than a form.</p>
             <ul class="ubl">
-              <li>Automatic detection of all overdue invoices</li>
-              <li>Personalised reminders tailored per customer</li>
-              <li>Full history of all customer interactions</li>
-              <li>Loyalty points, credits and balances at a glance</li>
+              <li>No need to know every field in advance</li>
+              <li>Missing customer information can be collected during the conversation</li>
+              <li>Perfect for first-time customers and one-off invoices</li>
+              <li>Reduces errors compared with manual data entry</li>
+            </ul>
+          </div>
+          <div class="ucd">
+            <div class="dh"><div class="dhd"></div><span class="dhl">ChatGPT · Kash MCP</span></div>
+            <div class="dc">
+              <div class="cm u"><div class="cav">S</div><div class="cb">Invoice Martin Lopez for emergency plumbing repair, 180 dollars</div></div>
+              <div class="cm ai"><div class="cav">AI</div><div class="cb"><div class="warn"><strong>Missing customer details</strong><br>I need the customer email or billing address before creating this invoice.</div></div></div>
+              <div class="cm u"><div class="cav">S</div><div class="cb">martin@example.com, 14 Green Street, Austin</div></div>
+              <div class="cm ai"><div class="cav">AI</div><div class="cb"><div class="ok">Customer created. Invoice issued for emergency plumbing repair — $180.00.</div></div></div>
+            </div>
+          </div>
+        </article>
+
+        <!-- UC 3: Customer follow-ups -->
+        <article class="uc fi0">
+          <div class="uct">
+            <span class="utag green">Payment follow-up</span>
+            <h3>Find unpaid invoices and prepare reminders</h3>
+            <p>Ask your AI tool to instantly list all outstanding invoices past a certain number of days. It identifies the customers, amounts and dates, then helps prepare personalised follow-up messages.</p>
+            <ul class="ubl">
+              <li>Automatic detection of overdue invoices</li>
+              <li>Customer-specific reminder drafts</li>
+              <li>Full customer history available before sending</li>
+              <li>Useful for freelancers, B2B, services and rentals</li>
             </ul>
           </div>
           <div class="ucd">
@@ -563,101 +627,117 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
               <div class="cm u"><div class="cav">S</div><div class="cb">Which customers haven't paid in over 30 days?</div></div>
               <div class="cm ai"><div class="cav">AI</div><div class="cb">Found <strong>3 overdue invoices</strong>:<br><br>· <strong>Acme Corp</strong> — $1,200 · 48 days<br>· <strong>Fox Studio</strong> — $520 · 37 days<br>· <strong>Jane Smith</strong> — $890 · 31 days<br><br>Shall I draft the follow-up emails?</div></div>
               <div class="cm u"><div class="cav">S</div><div class="cb">Yes — polite for Jane, firmer for the other two</div></div>
-              <div class="cm ai"><div class="cav">AI</div><div class="cb"><div class="ok">3 emails drafted per your instructions. Review before sending?</div></div></div>
+              <div class="cm ai"><div class="cav">AI</div><div class="cb"><div class="ok">3 reminder drafts prepared for review.</div></div></div>
             </div>
           </div>
         </article>
 
-        <!-- UC 3: Multi-channel stock -->
-        <article class="uc fi0">
+        <!-- UC 4: Multi-channel stock -->
+        <article class="uc rv fi0">
           <div class="uct">
             <span class="utag">Inventory</span>
-            <h3>One inventory, all channels in sync</h3>
-            <p>Whether a sale goes through your physical POS, your e-commerce site, a third-party vendor or an AI workflow — your Kash stock updates in real time. No more surprise stockouts.</p>
+            <h3>Keep orders and inventory in sync</h3>
+            <p>Once invoices and orders are created, Kash automatically keeps stock, customers, and payments consistent across your POS, website, and automation workflows.</p>
             <ul class="ubl">
-              <li>Instant sync after every sale on any channel</li>
+              <li>Instant stock updates after every sale</li>
               <li>Low-stock alerts configurable per product</li>
               <li>Catalogue updates via any AI tool in one sentence</li>
-              <li>Compatible with Prestashop and other platforms</li>
+              <li>Compatible with e-commerce and automation workflows</li>
             </ul>
           </div>
           <div class="ucd">
             <div class="dh"><div class="dhd"></div><span class="dhl">n8n workflow · Kash MCP</span></div>
             <div class="dc">
-              <div class="cm u"><div class="cav">n8</div><div class="cb">A sale just went through on Prestashop: 3× Dark Chocolate 72%</div></div>
+              <div class="cm u"><div class="cav">n8</div><div class="cb">A sale just went through online: 3× Dark Chocolate 72%</div></div>
               <div class="cm ai"><div class="cav">AI</div><div class="cb"><div class="ok"><strong>✓ Stock updated</strong><br>Dark Chocolate 72%: 14 → <strong>11 units</strong><br>Synced across POS, web store and API.</div></div></div>
-              <div class="cm u"><div class="cav">n8</div><div class="cb">Stock is now below threshold. Create a restock alert and notify the buyer</div></div>
-              <div class="cm ai"><div class="cav">AI</div><div class="cb"><div class="ok">Alert created. Notification sent to buyer@myshop.com.</div></div></div>
+              <div class="cm u"><div class="cav">n8</div><div class="cb">Stock is below threshold. Create a restock alert.</div></div>
+              <div class="cm ai"><div class="cav">AI</div><div class="cb"><div class="ok">Alert created. Notification sent to the buyer.</div></div></div>
             </div>
           </div>
         </article>
 
-        <!-- UC 4: Configuration -->
-        <article class="uc rv fi0">
-          <div class="uct">
-            <span class="utag">Setup & configuration</span>
-            <h3>Configure your entire account by asking</h3>
-            <p>Enable delivery modes, set receipt preferences, connect your Prestashop store or activate payment terminals — without digging through any settings menu.</p>
-            <ul class="ubl">
-              <li>Business profile setup in plain language</li>
-              <li>Delivery modes: table, takeaway, drive-through, relay</li>
-              <li>Receipt header, footer and display preferences</li>
-              <li>Integrations: PayPal, Yavin, Viva.com, Prestashop</li>
-            </ul>
-          </div>
-          <div class="ucd">
-            <div class="dh"><div class="dhd"></div><span class="dhl">Claude · Kash MCP</span></div>
-            <div class="dc">
-              <div class="cm u"><div class="cav">R</div><div class="cb">Enable takeaway and delivery, and add "Thanks for your order!" to receipts</div></div>
-              <div class="cm ai"><div class="cav">AI</div><div class="cb"><div class="ok"><strong>✓ Settings updated</strong><br>· Takeaway: enabled<br>· Home delivery: enabled<br>· Receipt footer: "Thanks for your order!"</div></div></div>
-              <div class="cm u"><div class="cav">R</div><div class="cb">Connect my Prestashop at myshop.com with API key abc123</div></div>
-              <div class="cm ai"><div class="cav">AI</div><div class="cb"><div class="ok"><strong>✓ Prestashop connected</strong><br>Orders and stock now sync between myshop.com and Kash.</div></div></div>
-            </div>
-          </div>
-        </article>
+      </div>
+    </div>
+  </section>
 
+  <!-- ── PROMPTS ───────────────────────────────────────── -->
+  <section class="sec bg-g" aria-labelledby="prompts-heading">
+    <div class="sin">
+      <div class="sh fi0">
+        <span class="se">Copy and paste</span>
+        <h2 id="prompts-heading">Useful prompts for Kash MCP</h2>
+        <p>Simple requests that deliver immediate value — especially for invoicing.</p>
+      </div>
+      <div class="promptgrid">
+        <div class="promptcard fi0">
+          <h3>Invoices</h3>
+          <ul>
+            <li>“Create an invoice for ACME Ltd for website maintenance, $450 excluding tax.”</li>
+            <li>“Create an invoice for 3 hours of consulting at $80 per hour.”</li>
+            <li>“Show me the invoice for order 1042.”</li>
+            <li>“List unpaid invoices older than 30 days.”</li>
+          </ul>
+        </div>
+        <div class="promptcard fi0">
+          <h3>Orders and POS</h3>
+          <ul>
+            <li>“Create an invoice for table 4 after payment.”</li>
+            <li>“Record a sale of 2 coffees at table 4.”</li>
+            <li>“Add a card payment to order 1042.”</li>
+            <li>“Show pending delivery orders for tonight.”</li>
+          </ul>
+        </div>
+        <div class="promptcard fi0">
+          <h3>Reports and catalog</h3>
+          <ul>
+            <li>“What is my revenue this week?”</li>
+            <li>“Who are my best customers this month?”</li>
+            <li>“Add a product called Summer Tart at $4.50.”</li>
+            <li>“Which products are below their stock alert?”</li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ── FEATURES ──────────────────────────────────────── -->
-  <section class="sec bg-g" aria-labelledby="features-heading">
+  <section class="sec bg-w" aria-labelledby="features-heading">
     <div class="sin">
       <div class="sh fi0">
         <span class="se">Features</span>
         <h2 id="features-heading">Everything Kash MCP covers</h2>
-        <p>A complete MCP server, wired into every function of your Kash account.</p>
+        <p>A complete MCP server, seamlessly integrated with the key functions of your Kash account.</p>
       </div>
       <div class="fg">
-        <div class="fc fi0"><div class="fi" style="background:#eef3fd"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="12" rx="2" stroke="#3f78e0" stroke-width="1.4"/><path d="M2 8h16" stroke="#3f78e0" stroke-width="1.4"/><path d="M5 12h4" stroke="#3f78e0" stroke-width="1.4" stroke-linecap="round"/></svg></div><h4>Orders & POS</h4><p>Create, edit and validate orders. Dine-in, takeaway, delivery, table service, drive-through — all modes.</p></div>
-        <div class="fc fi0"><div class="fi" style="background:#ecfdf5"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4h3l1.5 7h9l1.5-4.5H8" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="15.5" r="1.5" stroke="#16a34a" stroke-width="1.4"/><circle cx="15" cy="15.5" r="1.5" stroke="#16a34a" stroke-width="1.4"/></svg></div><h4>Product catalogue</h4><p>Add, edit and remove products. Manage variations, barcodes, buying price and selling price.</p></div>
-        <div class="fc fi0"><div class="fi" style="background:#fffbeb"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h8" stroke="#d97706" stroke-width="1.4" stroke-linecap="round"/></svg></div><h4>Legal invoicing</h4><p>Compliant PDFs, sequential numbering, VAT breakdown, required fields verified before every issue.</p></div>
-        <div class="fc fi0"><div class="fi" style="background:#f5f3ff"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="3" stroke="#7c3aed" stroke-width="1.4"/><path d="M4 17c0-3.314 2.686-5 6-5s6 1.686 6 5" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round"/></svg></div><h4>Customer management</h4><p>Full customer file, loyalty points, credit balances, purchase history and personalised follow-ups.</p></div>
-        <div class="fc fi0"><div class="fi" style="background:#eef3fd"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2" stroke="#3f78e0" stroke-width="1.4"/><path d="M7 10h6M10 7v6" stroke="#3f78e0" stroke-width="1.4" stroke-linecap="round"/></svg></div><h4>Real-time inventory</h4><p>Low-stock alerts, updates from any channel, configurable thresholds per product.</p></div>
-        <div class="fc fi0"><div class="fi" style="background:#ecfdf5"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v4l3 2" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="10" r="7" stroke="#16a34a" stroke-width="1.4"/></svg></div><h4>Reports & accounting</h4><p>Sales reports, accounting exports, integrations with PayPal, Yavin, Viva.com and Prestashop.</p></div>
+        <div class="fc fi0"><div class="fi" style="background:#fffbeb"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 3h9l4 4v10H3V3z" stroke="#d97706" stroke-width="1.4" stroke-linejoin="round"/><path d="M12 3v4h4M6 10h8M6 13h6" stroke="#d97706" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h4>Invoices</h4><p>Create and retrieve invoices, prepare customer billing and follow up unpaid documents from plain language.</p></div>
+        <div class="fc fi0"><div class="fi" style="background:#eef3fd"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="12" rx="2" stroke="#3f78e0" stroke-width="1.4"/><path d="M2 8h16" stroke="#3f78e0" stroke-width="1.4"/><path d="M5 12h4" stroke="#3f78e0" stroke-width="1.4" stroke-linecap="round"/></svg></div><h4>Orders & POS</h4><p>Create, edit and validate orders. Dine-in, takeaway, delivery, table service and payments.</p></div>
+        <div class="fc fi0"><div class="fi" style="background:#ecfdf5"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4h3l1.5 7h9l1.5-4.5H8" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="15.5" r="1.5" stroke="#16a34a" stroke-width="1.4"/><circle cx="15" cy="15.5" r="1.5" stroke="#16a34a" stroke-width="1.4"/></svg></div><h4>Product catalog</h4><p>Add, edit and remove products. Manage prices, barcodes, categories and stock information.</p></div>
+        <div class="fc fi0"><div class="fi" style="background:#f5f3ff"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="7" r="3" stroke="#7c3aed" stroke-width="1.4"/><path d="M4 17c0-3.314 2.686-5 6-5s6 1.686 6 5" stroke="#7c3aed" stroke-width="1.4" stroke-linecap="round"/></svg></div><h4>Customers</h4><p>Manage customer files, contact details, purchase history, loyalty and balances.</p></div>
+        <div class="fc fi0"><div class="fi" style="background:#eef3fd"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2" stroke="#3f78e0" stroke-width="1.4"/><path d="M7 10h6M10 7v6" stroke="#3f78e0" stroke-width="1.4" stroke-linecap="round"/></svg></div><h4>Inventory</h4><p>Track stock, detect low-stock products and keep sales channels in sync.</p></div>
+        <div class="fc fi0"><div class="fi" style="background:#ecfdf5"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v4l3 2" stroke="#16a34a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="10" r="7" stroke="#16a34a" stroke-width="1.4"/></svg></div><h4>Reports</h4><p>Ask for revenue, best customers, unpaid orders, daily reports and business summaries.</p></div>
       </div>
     </div>
   </section>
 
   <!-- ── HOW IT WORKS ───────────────────────────────────── -->
-  <section class="sec bg-w" aria-labelledby="howto-heading">
+  <section class="sec bg-g" aria-labelledby="howto-heading">
     <div class="sin">
       <div class="sh fi0">
         <span class="se">Getting started</span>
-        <h2 id="howto-heading">Up and running in 3 minutes</h2>
-        <p>No code, no complex configuration. One OAuth connection and you're ready from any MCP client.</p>
+        <h2 id="howto-heading">Connect Kash MCP in 3 minutes</h2>
+        <p>No code, no complex configuration. One OAuth connection and you can start by asking your AI assistant to create an invoice.</p>
       </div>
       <div class="hwrap">
         <div class="steps">
-          <div class="step fi0"><div class="sn">1</div><h4>Create your Kash account</h4><p>Free, no credit card required. Your shop is ready in 2 minutes on kash.click.</p></div>
-          <div class="step fi0"><div class="sn">2</div><h4>Add the MCP server</h4><p>Paste the server URL into your MCP client — Claude, ChatGPT, n8n, or any compatible tool. Authorise via OAuth.</p></div>
-          <div class="step fi0"><div class="sn">3</div><h4>Talk to your shop</h4><p>Create an invoice, check stock, follow up with a customer — your AI tool handles it through Kash.</p></div>
+          <div class="step fi0"><div class="sn">1</div><h4>Add the MCP server</h4><p>Paste the server URL into ChatGPT, Claude, n8n or any compatible MCP client and connect your Kash account via OAuth.</p></div>
+          <div class="step fi0"><div class="sn">2</div><h4>Set up your account with the assistant</h4><p>Your AI assistant retrieves your business data, customers, products, and settings from your Kash account.</p></div>
+          <div class="step fi0"><div class="sn">3</div><h4>Ask for an invoice</h4><p>Type your request in plain language. Kash handles customers, invoice lines, orders, products and reports automatically.</p></div>
         </div>
         <div class="urlbox fi0">
           <label>MCP server URL</label>
           <div class="urlrow">
             <code>https://mcp.kash.click/mcp</code>
-            <a href="https://kash.click" class="bp" style="font-size:.78rem;padding:9px 18px;flex-shrink:0;">Get started →</a>
+            <a href="https://kash.click" class="bp" style="font-size:.78rem;padding:9px 18px;flex-shrink:0;">Start invoicing → →</a>
           </div>
         </div>
       </div>
@@ -665,7 +745,7 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
   </section>
 
   <!-- ── FAQ ───────────────────────────────────────────── -->
-  <section class="sec bg-g" aria-labelledby="faq-heading">
+  <section class="sec bg-w" aria-labelledby="faq-heading">
     <div class="sin">
       <div class="sh fi0">
         <span class="se">FAQ</span>
@@ -673,24 +753,28 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
       </div>
       <div class="faqlist">
         <div class="faqitem fi0">
+          <button class="faqq" aria-expanded="false">Can I create invoices with ChatGPT or Claude?<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+          <div class="faqa">Yes. Connect the Kash MCP server to an MCP-compatible AI tool, then ask it to create an invoice for a customer, a service, an order or a custom line. The assistant can also retrieve invoices and help identify unpaid ones.</div>
+        </div>
+        <div class="faqitem fi0">
           <button class="faqq" aria-expanded="false">What is the Kash MCP server?<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
-          <div class="faqa">The Kash MCP server is a Model Context Protocol endpoint that lets any compatible AI tool read and write data in your Kash account — orders, invoices, customers, products and settings. It uses the open MCP standard, meaning it works with Claude, ChatGPT, n8n, and any other MCP-compatible client.</div>
+          <div class="faqa">The Kash MCP server is a Model Context Protocol endpoint that lets compatible AI tools read and write data in your Kash account — invoices, orders, customers, products, inventory and settings.</div>
         </div>
         <div class="faqitem fi0">
           <button class="faqq" aria-expanded="false">Which AI tools are compatible?<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
-          <div class="faqa">Any tool that supports the Model Context Protocol: Claude (Anthropic), ChatGPT with MCP plugins, n8n, Make, Zapier (with MCP bridge), and any other MCP-compatible client or automation platform. The list keeps growing as MCP adoption expands.</div>
+          <div class="faqa">Any tool that supports the Model Context Protocol, including Claude, ChatGPT, n8n and other MCP-compatible clients or automation platforms.</div>
         </div>
         <div class="faqitem fi0">
           <button class="faqq" aria-expanded="false">Is it free?<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
-          <div class="faqa">Yes. The Kash MCP server is included with all Kash accounts at no extra cost. Kash itself is also free to use as a POS system.</div>
+          <div class="faqa">Yes. The Kash MCP server is included with all Kash accounts at no extra cost.</div>
         </div>
         <div class="faqitem fi0">
           <button class="faqq" aria-expanded="false">Do I need to know how to code?<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
-          <div class="faqa">No. Connecting the MCP server requires pasting a URL and completing a simple OAuth authorisation. No coding, no API keys, no configuration files.</div>
+          <div class="faqa">No. You only need to add the MCP server URL to a compatible client and complete OAuth authorization.</div>
         </div>
         <div class="faqitem fi0">
           <button class="faqq" aria-expanded="false">Is my data secure?<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
-          <div class="faqa">All MCP connections are authenticated via OAuth 2.0. Your data stays in your Kash account and is never shared with third parties. You can revoke access to any MCP client at any time from your Kash settings.</div>
+          <div class="faqa">Connections are authenticated through OAuth. Your business data stays in your Kash account and access can be revoked from your settings.</div>
         </div>
       </div>
     </div>
@@ -699,11 +783,11 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
   <!-- ── CTA ───────────────────────────────────────────── -->
   <section class="sec bg-d" aria-labelledby="cta-heading">
     <div class="ctain">
-      <h2 id="cta-heading">Ready to connect your shop to AI?</h2>
-      <p>Create your free Kash account, add the MCP server to your preferred AI tool, and start managing your business in plain language.</p>
+      <h2 id="cta-heading">Try your AI invoicing and POS assistant</h2>
+      <p>Create your free Kash account, connect the MCP server to your preferred AI tool, and start managing invoices, customers, orders, and reports instantly in plain language.</p>
       <div class="ctabtns">
-        <a href="https://kash.click" class="bw">Create a free account</a>
-        <a href="https://kash.click/cash-register-software/" class="bgo">MCP documentation →</a>
+        <a href="https://kash.click" class="bw">Start invoicing →</a>
+        <a href="#howto-heading" class="bgo">Connect MCP server →</a>
       </div>
     </div>
   </section>
@@ -716,7 +800,7 @@ body{display:flex;flex-direction:column;margin:0;background-color:#fefefe;font-f
         <img src="https://kash.click/assets/img/LogoCaisse.svg" class="inline logoC" alt="Kash">
         <img src="https://kash.click/assets/img/kash-logo4.svg" class="kash inline" alt="Kash online cash register">
       </div>
-      <span class="ftcopy">© 2025 kash.click — Free POS Software · MCP Server · Open Standard</span>
+      <span class="ftcopy">© 2026 kash.click — AI invoicing · Free POS Software · MCP Server · Open Standard</span>
     </div>
   </footer>
 
@@ -763,6 +847,8 @@ document.querySelectorAll('.faqq').forEach(btn => {
 </script>
 </body>
 </html>
+
+
 `;
 
 // Initialise le store (Redis si disponible, sinon mémoire)
