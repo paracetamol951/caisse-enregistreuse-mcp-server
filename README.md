@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/paracetamol951-caisse-enregistreuse-mcp-server-badge.png)](https://mseep.ai/app/paracetamol951-caisse-enregistreuse-mcp-server)
+
 [![smithery badge](https://smithery.ai/badge/paracetamol951/kash)](https://smithery.ai/servers/paracetamol951/kash)
 
 # 🧾 Kash MCP Server
