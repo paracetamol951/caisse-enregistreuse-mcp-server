@@ -11,6 +11,7 @@
     "start:http": "node build/index.js --http",
     "generate:manifest": "node scripts/generate-manifest.mjs",
     "test": "node tests/quick.test.mjs",
+    "test:oauth": "node --import tsx --test tests/oauth-mcp.test.mjs",
     "start:fr": "MCP_LANG=fr node build/index.js",
     "start:en": "MCP_LANG=en node build/index.js",
     "prepublishOnly": "npm run build"

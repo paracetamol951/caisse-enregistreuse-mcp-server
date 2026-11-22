@@ -36,6 +36,8 @@ Just talk. No menus, no clicks.
 
 ## 🚀 Features
 
+The full tool list below describes the local STDIO server. The hosted HTTP pilot exposes one read-only catalog tool and uses the Kash website for sign-in and consent.
+
 ### 🔐 Account & Authentication — no config required
 - **Create** a new Kash account directly from the conversation
 - **List** accounts linked to an email to check if one already exists
@@ -119,7 +121,7 @@ You need a [Kash / free-cash-register.net](https://kash.click) account.
 
 The easiest way: connect directly to the hosted MCP server at `https://mcp.kash.click/mcp`.
 
-No installation needed. Authentication is handled via OAuth 2.0 with PKCE.
+The hosted pilot uses OAuth authorization code with PKCE. Sign in on Kash, select an eligible pilot shop and approve read-only catalog access.
 
 ### Claude.ai
 
@@ -220,27 +222,16 @@ node build/stdio.js
 
 ### Docker (HTTP mode)
 
-HTTP mode requires Redis. Use Docker Compose:
-
-```bash
-docker compose up
-```
-
-Or run manually:
-
-```bash
-docker run -d -p 6379:6379 redis
-npm run dev
-```
+Set `MCP_KASH_OAUTH_ISSUER`, `MCP_KASH_OAUTH_RESOURCE` and `MCP_KASH_OAUTH_SERVICE_TOKEN` in the server environment, then run `npm run start:http` after building. The PHP issuer must be enabled for the pilot and have a pre-registered OAuth client for the integration.
 
 ---
 
 ## 🔐 Authentication flow
 
 ### Hosted server (OAuth)
-Authentication is handled automatically by the OAuth 2.0 + PKCE flow when you connect through Claude.ai, ChatGPT, or Smithery.
+Link the registered OAuth client with the exact callback URL and its client credentials. Kash handles sign-in, consent, token renewal and revocation. The pilot exposes `data_list_products`.
 
-### In-conversation authentication (OTP)
+### Legacy STDIO in-conversation authentication (OTP)
 You can also authenticate directly within the conversation — no password required:
 
 ```
@@ -266,9 +257,8 @@ Pass credentials via CLI args or environment variables — `SHOPID` and `APIKEY`
 | Endpoint | Description |
 |---|---|
 | `POST https://mcp.kash.click/mcp` | MCP JSON-RPC endpoint |
-| `GET https://mcp.kash.click/health` | Health check → `{ "status": "ok" }` |
-| `GET https://mcp.kash.click/.well-known/mcp/manifest.json` | MCP manifest (tool list) |
-| `GET https://mcp.kash.click/.well-known/openid-configuration` | OAuth discovery |
+| `GET https://mcp.kash.click/.well-known/oauth-protected-resource/mcp` | MCP protected resource metadata |
+| `GET https://kash.click/.well-known/oauth-authorization-server` | Kash OAuth discovery |
 
 ---
 

@@ -53,14 +53,14 @@ function loadDotenv(filePath?: string) {
     if (apiKey) process.env.APIKEY = apiKey;
     process.env.MCP_LANG = lang;
 
-    if (!process.env.SHOPID || !process.env.APIKEY) {
+    if (mode === "stdio" && (!process.env.SHOPID || !process.env.APIKEY)) {
         console.error("❌ SHOPID et APIKEY doivent être définis via --shopid/--apikey ou .env");
         process.exit(1);
     }
 
     if (mode === "http") {
         process.env.PORT = String(port);
-        console.log(`[MCP] HTTP → port=${port}, langue=${lang}, shop=${process.env.SHOPID}`);
+        console.log(`[MCP] HTTP → port=${port}`);
         await import("./index.js");
     } else {
         //console.log(`[MCP] STDIO → langue=${lang}, shop=${process.env.SHOPID}`);
