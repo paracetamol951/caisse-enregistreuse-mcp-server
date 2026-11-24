@@ -1,5 +1,5 @@
 # ---------- Build stage ----------
-FROM node:18-alpine AS builder
+FROM node:24-alpine AS builder
 
 # Optimisations réseau / build
 ENV NODE_ENV=development \
@@ -21,7 +21,7 @@ COPY . .
 RUN npm run build
 
 # ---------- Runtime stage ----------
-FROM node:18-alpine AS runtime
+FROM node:24-alpine AS runtime
 
 ENV NODE_ENV=production \
     # Langue par défaut (peut être "fr" ou "en")

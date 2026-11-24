@@ -7,12 +7,12 @@ export const KASH_SPEC = `
 - Session is stored automatically after login
 
 ## Payment Values
--2 = Quote (not validated, not paid, can be modified)
--1 = Invoice (validated, not paid)
->=0 = Paid (value must be a valid payment method ID from data_list_payments_modes)
+order_create: omit payment or use 0 to save an unpaid quote. Use a positive payment method ID to collect a payment.
+In STDIO, order_create also accepts -2 for a pending quote and -1 to validate an unpaid invoice directly.
+order_edit: use -2 for a pending quote, -1 to validate an unpaid invoice, or 0 to edit without collecting. Use a positive payment method ID to collect a payment.
+Find payment method IDs with data_list_payments_modes. Record a payment only when its status is confirmed.
 
-SAFETY RULE: Default to -1 (invoice) if payment status is uncertain.
-NEVER use payment >= 0 unless explicitly confirmed as paid.
+For a partial payment, set paymentAmount to the positive amount actually collected, for example "12.50". With a positive method, omitting paymentAmount uses the worker default. An explicit zero is rejected.
 
 ## Delivery Methods
 0 = Takeaway
@@ -41,8 +41,12 @@ Free items without department → shop default VAT applies.
 Free items with department → department VAT applies.
 
 ## Order State Transitions
-Quote (-2) → Invoice (-1) → Paid (payment method ID)
-Use order_edit to transition. Do NOT recreate a sale to change its state.
+Create the order once with order_create. Use order_edit on its orderID to validate an unpaid invoice or record each subsequent payment. A partial payment can leave a balance due.
+
+## Sale Retries
+Before order_create or order_edit, save a client-generated idempotencyKey such as a UUID, together with the complete arguments. After a timeout or unknown outcome, retry with the same key and arguments in the same shop and transport. For OAuth, keep the same OAuth client and Kash profile. Use a distinct key for each operation, including each partial payment.
+
+A successful replay returns replayed: true. Use orderID when available to check the order and its payments after an unresolved result. If Kash reports a conflict, compare with the original operation before proceeding. If Kash reports idempotency_unavailable, the attempt did not start and you can retry with the same key and arguments.
 
 ## Agent Rules — MUST follow
 1. Always retrieve existing clients before creating new ones (email = unique identifier)
@@ -64,12 +68,11 @@ Use order_edit to transition. Do NOT recreate a sale to change its state.
 Monitor item count before creating new catalog entries.
 
 ## Invoicing
-Invoices are auto-generated when payment = -1 or >= 0.
-Quotes (payment = -2) do NOT generate invoices.
+Validating an unpaid invoice with order_edit uses payment = -1. A positive payment method records a payment and returns an invoice link.
 PDF and Factur-X compliant invoices are generated automatically.
 
 ### Invoice prerequisites — check before issuing any invoice
-Before creating or transitioning an order to invoice status (payment = -1 or >= 0),
+Before validating an unpaid invoice or recording a payment with a positive method,
 call account_show_infos and verify these three fields are non-empty:
 - shopName              → the legal name of the establishment
 - adressline1           → the street address

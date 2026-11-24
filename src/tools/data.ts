@@ -3,6 +3,7 @@ import { z, ZodTypeAny } from 'zod';
 import { get } from '../support/http.js';
 import { t } from '../i18n/index.js';
 import { type Ctx, resolveAuth } from '../context.js';
+import { getKashOAuthWorker } from '../support/kashOAuthWorker.js';
 
 /** Util pour typer un handler depuis un "shape" */
 type InferFromShape<S extends Record<string, ZodTypeAny>> = z.infer<z.ZodObject<S>>;
@@ -92,18 +93,9 @@ function registerSimple(
                 const { shopId, apiKey } = resolveAuth(undefined, ctx);
                 const data = await get(path, { idboutique: shopId, key: apiKey, format });
 
-                process.stderr.write(
-                    `[caisse][tool:${toolName}] ok type=${Array.isArray(data) ? 'array' : typeof data}`
-                    + (Array.isArray(data) ? ` len=${data.length}` : '')
-                    + '\n'
-                );
-                //Array.isArray(data) ? data.slice(0, 50) : data
-                const funcResult = structData( data);
-                process.stderr.write(`[caisse][RES]  ${JSON.stringify(data)} \n`);
-                process.stderr.write(`[caisse][RES] funcResult ${JSON.stringify(funcResult)} \n`);
-                return funcResult;
-                //return { content, structuredContent: isText ? undefined : data };
+                return structData(data);
             } catch (e) {
+                if (getKashOAuthWorker()) throw e;
                 process.stderr.write(`[caisse][tool:${toolName}][error]\n`);
                 process.stderr.write(`[caisse][tool:${toolName}][error] ${(e as Error).message}\n`);
                 // renvoyer un message "propre" plutôt que laisser l’exception devenir un 424
@@ -113,6 +105,16 @@ function registerSimple(
                 };
             }
         }
+    );
+}
+
+export function registerDeliveryMethodsTool(server: McpServer | any) {
+    registerSimple(
+        server,
+        'data_list_delivery_methods',
+        '/workers/getLivraisons.php',
+        t('tools.data.list.delivery_methods.description'),
+        t('tools.data.list.delivery_methods.title'),
     );
 }
 

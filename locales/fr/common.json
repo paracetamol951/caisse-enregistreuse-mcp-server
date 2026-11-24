@@ -91,6 +91,10 @@
           "description": "Liste toutes les déclinaisons d'articles (par exemple : taille, couleur, grammage). Retourne un tableau d'objets indiquant les valeurs et écarts de prix éventuels."
         },
         "delivery_men": {
+          "title": "Lister les livreurs",
+          "description": "Liste les livreurs externes rattachés à l’établissement connecté."
+        },
+        "delivery_methods": {
           "title": "Lister les méthodes de livraison",
           "description": "Récupère la liste des modes de livraison disponibles dans la boutique : retrait en magasin, livraison à domicile, transporteur, etc."
         },

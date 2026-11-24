@@ -1,6 +1,7 @@
 // src/context.ts
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { saveSessionAuth, deleteSessionAuth } from './support/session-store.js';
+import { getKashOAuthWorker } from './support/kashOAuthWorker.js';
 
 export type AuthState = {
     ok: boolean;
@@ -68,8 +69,10 @@ export function resolveAuth(
     _input?: unknown,
     ctx?: Ctx
 ): { shopId: string; apiKey: string } {
+    const oauth = getKashOAuthWorker();
+    if (oauth) return { shopId: oauth.shopId, apiKey: '' };
+
     const sessionAuth = ctx?.auth ?? getSessionAuth();
-    process.stderr.write('resolveAuth' + sessionAuth + '\n');
 
     const shopId =
         sessionAuth?.SHOPID ??

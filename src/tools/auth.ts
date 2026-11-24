@@ -1,7 +1,7 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z, ZodTypeAny } from 'zod';
 import { postForm } from '../support/http.js';
-import { t } from '../i18n/index.js';
+import { getLang, t } from '../i18n/index.js';
 import { setSessionAuth, clearSessionAuth, resolveAuth, type Ctx } from '../context.js';
 
 type InferFromShape<S extends Record<string, ZodTypeAny>> = z.infer<z.ZodObject<S>>;
@@ -57,6 +57,10 @@ const RequestOtpShape = {
 const LoginWithOtpShape = {
     email: z.string().email().describe('Email address used to request the OTP'),
     otp: z.string().describe('One-time password received by email'),
+    challengeId: z.string().regex(/^[a-fA-F0-9]{32}$/).optional()
+        .describe('Challenge ID returned by auth_request_otp. Required by the current Kash email API.'),
+    accountID: z.union([z.number().int().positive().safe(), z.string().regex(/^[1-9][0-9]{0,18}$/)]).optional()
+        .describe('Kash account ID to select when the email is linked to several accounts'),
 } satisfies Record<string, ZodTypeAny>;
 
 const LogoutShape = {} satisfies Record<string, ZodTypeAny>;
@@ -154,18 +158,72 @@ type RequestOtpArgs = InferFromShape<typeof RequestOtpShape>;
 type LoginWithOtpArgs = InferFromShape<typeof LoginWithOtpShape>;
 type EditAccountArgs = InferFromShape<typeof EditAccountShape>;
 
-// ============================================================
-// HELPER : initialise la session si la réponse contient APIKEY+SHOPID
-// ============================================================
+const otpErrors: ReadonlyMap<string, string> = new Map([
+    ['invalid_request', 'Invalid request data.'],
+    ['invalid_email', 'Provide a valid email address.'],
+    ['email_confirmation_required', 'Email confirmation is required. Request a new code.'],
+    ['invalid_credential', 'Email confirmation is invalid or expired. Request a new code.'],
+    ['invalid_otp', 'The confirmation code is invalid or expired. Request a new code.'],
+    ['otp_expired', 'The confirmation code is invalid or expired. Request a new code.'],
+    ['invalid_email_proof', 'Email confirmation is invalid or expired. Request a new code.'],
+    ['account_selection_required', 'Select an account to continue.'],
+    ['too_many_accounts', 'Too many accounts are associated with this email. Use an account identifier.'],
+    ['rate_limited', 'Too many requests. Please try again later.'],
+    ['auth_busy', 'Another authentication request is running. Please try again.'],
+    ['account_unavailable', 'This account is unavailable.'],
+    ['api_admin_required', 'Only an administrator may obtain API credentials. Ask an administrator for a dedicated key.'],
+    ['webservices_disabled', 'Webservices are disabled for this account.'],
+    ['identity_interactive_required', 'Sign in to Kash.click and use a dedicated API key.'],
+    ['mfa_interactive_required', 'Sign in to Kash.click with your second factor and use a dedicated API key.'],
+    ['shop_closed', 'This establishment is closed.'],
+    ['service_unavailable', 'The service is temporarily unavailable. Please try again later.'],
+]);
 
-function tryInitSession(data: unknown, source: string): void {
-    if (data && typeof data === 'object' && (data as any).success === true) {
-        const { APIKEY, SHOPID } = data as any;
-        if (APIKEY && SHOPID) {
-            setSessionAuth({ ok: true, APIKEY, SHOPID, scopes: ['*'] });
-            process.stderr.write(`[caisse][${source}] Session initialisée pour SHOPID=${SHOPID}\n`);
+function sessionToolResult(data: unknown, source: 'account_create' | 'auth_login_with_otp') {
+    const response = data && typeof data === 'object' ? data as Record<string, unknown> : {};
+    const { APIKEY, SHOPID, success, code } = response;
+    const creating = source === 'account_create';
+    // Only publish a shop identifier and messages defined here. Even an upstream
+    // error message or a nested field can contain credentials.
+    const validShopId = typeof SHOPID === 'string'
+        ? /^[1-9]\d*$/.test(SHOPID)
+        : typeof SHOPID === 'number' && Number.isSafeInteger(SHOPID) && SHOPID > 0;
+    if (success === true && validShopId && typeof APIKEY === 'string' && APIKEY.trim()) {
+        setSessionAuth({ ok: true, APIKEY, SHOPID: String(SHOPID), scopes: ['*'] });
+        process.stderr.write(`[caisse][${source}] Session initialisée pour SHOPID=${SHOPID}\n`);
+        const result = {
+            success: true,
+            SHOPID,
+            result: creating ? 'Account created and session initialized.' : 'Signed in successfully.',
+        };
+        return { content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }], structuredContent: result };
+    }
+
+    let errorCode = creating ? 'account_creation_failed' : 'login_failed';
+    let message = creating
+        ? 'Could not confirm account creation. Check whether the account exists before retrying.'
+        : 'Could not complete sign-in. Check the email address and confirmation code.';
+    if (success === true) {
+        errorCode = 'session_unavailable';
+        message = creating
+            ? 'The account was created, but the session could not be initialized. Sign in to recover access.'
+            : 'Kash confirmed sign-in, but the session could not be initialized. Request a new code.';
+    } else if (creating && data === 'This email is already registered, connect with your existing account') {
+        errorCode = 'account_already_exists';
+        message = 'This email is already registered. Sign in with your existing account.';
+    } else if (creating && code === 'service_unavailable') {
+        errorCode = code;
+        message = 'The shop may already exist. Recover access before retrying creation.';
+    } else if (!creating && typeof code === 'string') {
+        const knownError = otpErrors.get(code);
+        if (knownError) {
+            errorCode = code;
+            message = knownError;
         }
     }
+
+    const result = { success: false, code: errorCode, result: message };
+    return { isError: true, content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }], structuredContent: result };
 }
 
 // ============================================================
@@ -199,7 +257,9 @@ export function registerAuthTools(server: McpServer | any) {
         'account_create',
         {
             title: t('tools.account.create.title'),
-            description: t('tools.account.create.description'),
+            description: getLang() === 'fr'
+                ? "Crée un compte Kash avec une adresse email et un nom de boutique. En cas de succès, renvoie l'identifiant de la boutique et ouvre la session. Demandez à l'utilisateur de valider son adresse via le lien reçu par email."
+                : 'Create a Kash account with an email address and a shop name. On success, return the shop ID and open the session. Ask the user to verify their email via the link they receive.',
             inputSchema: CreateAccountShape,
             annotations: { destructiveHint: false, idempotentHint: false, openWorldHint: true },
         },
@@ -220,11 +280,7 @@ export function registerAuthTools(server: McpServer | any) {
             if (input.language) body['data[language]'] = input.language;
 
             const data = await postForm('/workers/addShop.php', body);
-            tryInitSession(data, 'account_create');
-            return {
-                content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
-                structuredContent: data,
-            };
+            return sessionToolResult(data, 'account_create');
         }
     );
 
@@ -253,7 +309,9 @@ export function registerAuthTools(server: McpServer | any) {
         'auth_login_with_otp',
         {
             title: t('tools.auth.login.with_otp.title'),
-            description: t('tools.auth.login.with_otp.description'),
+            description: getLang() === 'fr'
+                ? "Appelez d'abord auth_request_otp, puis transmettez le challengeId obtenu et le code reçu par email. En cas de succès, renvoie l'identifiant de la boutique et ouvre la session."
+                : 'Call auth_request_otp first, then pass its challengeId and the code received by email. On success, return the shop ID and open the session.',
             inputSchema: LoginWithOtpShape,
             annotations: { destructiveHint: false, idempotentHint: false },
         },
@@ -261,12 +319,10 @@ export function registerAuthTools(server: McpServer | any) {
             const data = await postForm('/workers/getAuthTokenWithOTP.php', {
                 email: input.email,
                 otp: input.otp,
+                challengeId: input.challengeId,
+                accountID: input.accountID,
             });
-            tryInitSession(data, 'auth_login_with_otp');
-            return {
-                content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
-                structuredContent: data,
-            };
+            return sessionToolResult(data, 'auth_login_with_otp');
         }
     );
 

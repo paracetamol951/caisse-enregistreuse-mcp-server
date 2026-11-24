@@ -91,6 +91,10 @@
           "description": "Retrieve product variations (declinaisons) such as size or color. Returns an array of variant definitions with value and optional price delta."
         },
         "delivery_men": {
+          "title": "List couriers",
+          "description": "List external couriers linked to the connected shop."
+        },
+        "delivery_methods": {
           "title": "List delivery methods",
           "description": "List all delivery methods available for the shop, such as in-store pickup, home delivery, or courier services."
         },

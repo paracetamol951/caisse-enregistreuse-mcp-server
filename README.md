@@ -36,7 +36,7 @@ Just talk. No menus, no clicks.
 
 ## 🚀 Features
 
-The full tool list below describes the local STDIO server. The hosted HTTP pilot exposes one read-only catalog tool and uses the Kash website for sign-in and consent.
+The tool list below describes the local STDIO server. The hosted HTTP connector uses the Kash website for sign-in and permission consent. The async operations guide below lists the new tools available through both transports.
 
 ### 🔐 Account & Authentication — no config required
 - **Create** a new Kash account directly from the conversation
@@ -49,6 +49,22 @@ The full tool list below describes the local STDIO server. The hosted HTTP pilot
 - **Edit orders** — add items, assign a client, record payments, validate as invoice
 - **List orders** by date range, validated or unvalidated, filtered by delivery method
 - **Get order details** — full breakdown of items, client, payments and totals
+
+#### Recording sales and payments safely
+
+`order_create` and `order_edit` require a client-generated `idempotencyKey` in both STDIO and OAuth. This is a change to the STDIO contract. Use a UUID or a 16–128 character key made of letters, digits, `.`, `_`, `~` or `-`. Save the key and arguments before calling the tool. After a timeout, retry with the same key and arguments in the same shop and transport. For OAuth, use the same OAuth client and Kash profile. Use a distinct key for each operation, including each separate payment on an existing order.
+
+`order_create` saves an unpaid quote when `payment` is omitted or `0`. For `order_edit`, use `-2` for a pending quote, `-1` to validate an unpaid invoice, or `0` to edit without collecting. A positive ID from `data_list_payments_modes` records a payment. Set `paymentAmount` to the amount actually collected for a partial payment, such as `"12.50"`. Omission with a positive mode uses the worker's default amount. An explicit zero with a positive mode is rejected by both tools.
+
+The tools return `orderID` when Kash provides it and `replayed: true` when the PHP journal returns a saved result. Failures set `isError` and provide a structured `code` for the recovery cases below.
+
+| Code | Recovery |
+| --- | --- |
+| `idempotency_conflict` | The key is tied to different parameters. Check the original operation before proceeding. |
+| `idempotency_unresolved` | The original operation may still be running or need review. Check the order and its payments. Any retry must use the same key and arguments. |
+| `idempotency_unavailable` | Kash reports that this attempt never started. Retry with the same key and arguments. |
+| `validation_failed` | Check the sale arguments and selected resources. If an earlier attempt timed out, review its status before changing the submission. |
+| `network_outcome_unknown` or `unexpected_response` | The sale outcome is uncertain. Retry only with the same key and arguments, and verify the order and its payments before a new operation. |
 
 ### 📊 Reports
 - **Sales report** — HTML summary for any period: a specific day, month, or full year (defaults to yesterday)
@@ -93,7 +109,7 @@ Retrieve any reference data from your shop:
 |---|---|
 | **Account** | `account.list`, `account.create` |
 | **Auth** | `auth.request.otp`, `auth.login.with_otp`, `auth.logout` |
-| **Sales** | `order.create`, `order.edit`, `order.detail`, `data.list.orders`, `data.list.pending_orders` |
+| **Sales** | `order_create`, `order_edit`, `order_detail`, `data_list_orders`, `data_list_pending_orders` |
 | **Reports** | `report.get` |
 | **Items** | `plu_add`, `plu_edit`, `plu_delete`, `data.list.products` |
 | **Departments** | `dept_add`, `dept_edit`, `dept_delete`, `data.list.departments` |
@@ -121,7 +137,9 @@ You need a [Kash / free-cash-register.net](https://kash.click) account.
 
 The easiest way: connect directly to the hosted MCP server at `https://mcp.kash.click/mcp`.
 
-The hosted pilot uses OAuth authorization code with PKCE. Sign in on Kash, select an eligible pilot shop and approve read-only catalog access.
+The hosted connector uses OAuth authorization code with PKCE. Sign in on Kash, select an eligible shop and choose which requested permissions to grant. Read and write permissions are independent, and write permissions are unchecked by default.
+
+Mailbox permissions are separate. `mailbox.read` covers messages, folders and links to download attachments in a signed-in Kash session. `mailbox.write` covers folders and message states. `mailbox.send` lets the connector prepare a new email or reply. Review the recipient and text, then approve the send in your browser on Kash. To check the outcome, call the same tool again with the original arguments and request key.
 
 ### Claude.ai
 
@@ -222,22 +240,24 @@ node build/stdio.js
 
 ### Docker (HTTP mode)
 
-Set `MCP_KASH_OAUTH_ISSUER`, `MCP_KASH_OAUTH_RESOURCE` and `MCP_KASH_OAUTH_SERVICE_TOKEN` in the server environment, then run `npm run start:http` after building. The PHP issuer must be enabled for the pilot and have a pre-registered OAuth client for the integration.
+Set `MCP_KASH_OAUTH_ISSUER`, `MCP_KASH_OAUTH_RESOURCE` and `MCP_KASH_OAUTH_SERVICE_TOKEN` in the server environment, then run `npm run start:http` after building. Enable OAuth on the PHP issuer, apply its permissions migration, and pre-register the OAuth client for the integration.
 
 ---
 
 ## 🔐 Authentication flow
 
 ### Hosted server (OAuth)
-Link the registered OAuth client with the exact callback URL and its client credentials. Kash handles sign-in, consent, token renewal and revocation. The pilot exposes `data_list_products`.
+Link the registered OAuth client with the exact callback URL and its client credentials. Kash handles sign-in, consent, token renewal and revocation.
+
+The connector exposes tools for products, stock, categories, variants, VAT, customers, sales, orders, reports, and shop settings. OAuth offers separate read and write scopes for the catalog, customers, sales and settings, plus a read scope for reports. Existing catalog connections keep `catalog.read` and can grant additional permissions through a new consent flow. Review or revoke permissions in Kash under **Web Services → Connected apps**.
 
 ### Legacy STDIO in-conversation authentication (OTP)
 You can also authenticate directly within the conversation — no password required:
 
 ```
-1. auth.request.otp(email)         → OTP sent to your inbox
-2. auth.login.with_otp(email, otp) → session initialized ✓
-3. auth.logout()                   → clear session when done
+1. auth_request_otp(email)                       → keep the returned challengeId
+2. auth_login_with_otp(email, otp, challengeId)  → initialise the session
+3. auth_logout()                               → clear the session when done
 ```
 
 If you don't have an account yet:
@@ -249,6 +269,21 @@ If you don't have an account yet:
 
 ### STDIO / self-hosted
 Pass credentials via CLI args or environment variables — `SHOPID` and `APIKEY`.
+
+Use a managed Kash API key as `APIKEY` for the Partner API v1 reads. The same MCP tools keep working with an existing legacy key. The hosted OAuth connector uses the shop and read permissions granted when connecting.
+
+The MCP server uses `/api/partner/v1` for JSON directory lists, pending orders, shop settings, HTML sales reports, and OAuth catalog and mailbox reads. MCP list tools gather all pages to preserve their `data` response. OAuth mailbox attachments still open through the signed-in Kash browser session.
+
+Explicit CSV and HTML list exports, the detailed local product export, legacy order queries and signed order PDF links, couriers, and mutations without an equivalent keep their existing routes. For self-hosted upgrades, update the Kash API before updating the MCP server.
+
+See [cart quotes](doc/cart-quotes.md) for `calculate_cart` in OAuth and STDIO, including the separate managed key used by STDIO.
+
+See [loyalty and gift cards](doc/loyalty-gift-cards.md) for loyalty rules, balances, cart estimates and recorded gift card movements in OAuth and STDIO.
+
+See [promo codes and personal vouchers](doc/discount-vouchers.md) for checks, cart estimates, issuance permissions and retry rules in OAuth and STDIO.
+
+See [sales summaries and invoice documents](doc/partner-reads.md) for `sales_summary` and `list_invoice_documents`, including the read permissions and STDIO setup.
+See [asynchronous sales exports and catalog imports](doc/async-operations.md) for the five operation tools and their permissions in OAuth and STDIO.
 
 ---
 

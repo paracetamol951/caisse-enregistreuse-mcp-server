@@ -1,6 +1,6 @@
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z, ZodTypeAny } from 'zod';
-import { get, postForm, postJsonRaw } from '../support/http.js';
+import { get, postSaleForm, saleWriteError } from '../support/http.js';
 import { t } from '../i18n/index.js';
 import { resolveAuth, type Ctx } from '../context.js';
 
@@ -22,6 +22,33 @@ const SalesItemShape = {
     title: z.string().optional().describe("Item label (required for type 'free')"),
 } satisfies Record<string, ZodTypeAny>;
 
+const saleItemId = z.union([z.string(), z.number().int().safe()]).transform(String).pipe(z.string().regex(/^[1-9][0-9]{0,18}$/));
+const saleItemDecimal = z.union([z.string(), z.number()]).transform((value) => String(value).replace(',', '.'))
+    .pipe(z.string().regex(/^-?[0-9]{1,10}(?:\.[0-9]{1,8})?$/));
+const saleItemLabel = z.string().trim().min(1).max(1000).regex(/^[^_\u0000]+$/);
+
+export const oauthSalesItem = z.union([
+    z.object({
+        type: z.literal('catalog').default('catalog'),
+        productId: saleItemId.describe('Kash product ID'),
+        quantity: saleItemDecimal.optional().describe('Quantity, defaults to one'),
+        titleOverride: saleItemLabel.optional().describe('Custom receipt label, without underscores'),
+        priceOverride: saleItemDecimal.optional().describe('Custom unit price'),
+        declinaisons: z.array(saleItemId).max(5).optional().describe('IDs of the selected variation choices'),
+    }),
+    z.object({
+        type: z.literal('dept'),
+        departmentId: saleItemId.describe('Kash department ID'),
+        price: saleItemDecimal.describe('Unit price'),
+        title: saleItemLabel.describe('Receipt label, without underscores'),
+    }),
+    z.object({
+        type: z.literal('free'),
+        price: saleItemDecimal.describe('Unit price'),
+        title: saleItemLabel.describe('Receipt label, without underscores'),
+    }),
+]);
+
 const ClientShape = {
     firstname: z.string().optional().describe('Customer first name'),
     lastname: z.string().optional().describe('Customer last name'),
@@ -33,8 +60,35 @@ const ClientShape = {
     country: z.string().optional().describe('Customer country'),
 } satisfies Record<string, ZodTypeAny>;
 
+export function saleAddsInlineClient(value: unknown): boolean {
+    if (!value || typeof value !== 'object') return false;
+    const { idClient, client } = value as { idClient?: unknown; client?: Record<string, unknown> };
+    return idClient === undefined && !!client && typeof client === 'object'
+        && Object.keys(ClientShape).some((key) => typeof client[key] === 'string' && client[key] !== '');
+}
+
+export const saleIdempotencyKey = z.string().regex(/^[A-Za-z0-9._~-]{16,128}$/)
+    .describe('Unique ID for this operation, such as a UUID. After a timeout, retry with the same key and arguments. Use a new key for each distinct operation.');
+
+const paymentAmount = z.union([z.number().nonnegative(), z.string()]).transform(String)
+    .pipe(z.string().regex(/^[0-9]{1,10}(?:\.[0-9]{1,8})?$/)).optional()
+    .describe('Amount collected, including for a partial payment (for example 12.50). With a positive payment method, supply an amount greater than zero or omit it to use the worker default.');
+
+const salePaymentMode = z.union([
+    z.number().int().safe().min(-2),
+    z.string().regex(/^(?:-2|-1|0|[1-9][0-9]{0,18})$/),
+]);
+
+export const oauthSaleCreatePayment = z.union([
+    z.number().int().safe().nonnegative(),
+    z.string().regex(/^(?:0|[1-9][0-9]{0,18})$/),
+]).optional().describe('Kash payment method ID. Omit or use 0 to save an unpaid quote.');
+
 const SalesCreateShape = {
-    payment: z.union([z.number(), z.string()]).transform((v) => Number(v)).optional().describe('Payment method ID; omit to leave as unpaid quote'),
+    idempotencyKey: saleIdempotencyKey,
+    payment: salePaymentMode.optional()
+        .describe('Omit or use 0 or -2 for an unpaid quote, -1 for an unpaid invoice, or a positive Kash payment method ID to record payment.'),
+    paymentAmount,
     deliveryMethod: z.union([
         z.number().int().min(0).max(6),
         z.enum(['0', '1', '2', '3', '4', '5', '6'])
@@ -52,16 +106,10 @@ const SalesCreateShape = {
 } satisfies Record<string, ZodTypeAny>;
 
 const OrderEditShape = {
+    idempotencyKey: saleIdempotencyKey,
     orderID: z.number().int().describe('ID of the order to modify'),
-    payment: z.union([
-        z.literal(-2),
-        z.literal(-1),
-        z.number().int(),
-        z.string(),
-    ]).describe(
-        '-2 = not paid, not validated | -1 = not paid, validated (invoice) | payment method ID = record a payment'
-    ),
-    paymentAmount: z.union([z.number(), z.string()]).optional().describe('Amount paid (partial payment support)'),
+    payment: salePaymentMode.describe('-2 for a pending quote, -1 for an unpaid invoice, 0 for no collection, or a positive Kash payment method ID to record payment.'),
+    paymentAmount,
     idUser: z.union([z.number().int(), z.string()]).optional().describe('Staff member ID'),
     idClient: z.union([z.number().int(), z.string()]).optional().describe('Customer ID'),
     client: z.object(ClientShape).partial().optional().describe('Inline customer details'),
@@ -88,6 +136,13 @@ type SalesCreateArgs = InferFromShape<typeof SalesCreateShape>;
 type OrderEditArgs = InferFromShape<typeof OrderEditShape>;
 type GetReportArgs = InferFromShape<typeof GetReportShape>;
 
+function submitSale(path: string, body: Record<string, unknown>, input: SalesCreateArgs | OrderEditArgs) {
+    if (Number(input.payment) > 0 && input.paymentAmount !== undefined && Number(input.paymentAmount) === 0) {
+        return saleWriteError('validation_failed', {}, 'A positive payment method requires an amount greater than zero when paymentAmount is supplied.');
+    }
+    return postSaleForm(path, body, input.idempotencyKey);
+}
+
 // ============================================================
 // HELPER: encode items to legacy itemsList[] format
 // ============================================================
@@ -105,7 +160,7 @@ function encodeItemsList(items: SalesCreateArgs['items']): string[] {
             if (it.declinaisons?.length) parts.push(...it.declinaisons);
             out.push(parts.join('_'));
         } else if (it.type === 'free') {
-            out.push(['Free', it.priceOverride ?? '', it.titleOverride ?? ''].join('_'));
+            out.push(['Free', it.priceOverride ?? it.price ?? '', it.titleOverride ?? it.title ?? ''].join('_'));
         } else {
             out.push(`-${it.departmentId ?? ''}_${it.price ?? ''}_${it.title ?? ''}`);
         }
@@ -154,13 +209,14 @@ export function registerSalesTools(server: McpServer | any) {
             title: t('tools.order.create.title'),
             description: t('tools.order.create.description'),
             inputSchema: SalesCreateShape,
-            annotations: { destructiveHint: false, idempotentHint: false },
+            annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true },
         },
         async (input: SalesCreateArgs, ctx: Ctx) => {
             const { shopId, apiKey } = resolveAuth(undefined, ctx);
             const body: Record<string, unknown> = { idboutique: shopId, key: apiKey };
 
             if (input.payment !== undefined) body.payment = input.payment;
+            if (input.paymentAmount !== undefined) body.paymentAmount = input.paymentAmount;
             if (input.deliveryMethod !== undefined) body.deliveryMethod = String(input.deliveryMethod);
             if (input.idUser !== undefined) body.idUser = input.idUser;
             if (input.idtable !== undefined) body.idtable = input.idtable;
@@ -178,11 +234,7 @@ export function registerSalesTools(server: McpServer | any) {
             }
             body['itemsList[]'] = encodeItemsList(input.items);
 
-            const data = await postForm('/workers/webapp.php', body);
-            return {
-                content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
-                structuredContent: data,
-            };
+            return submitSale('/workers/webapp.php', body, input);
         }
     );
 
@@ -193,7 +245,7 @@ export function registerSalesTools(server: McpServer | any) {
             title: t('tools.order.edit.title'),
             description: t('tools.order.edit.description'),
             inputSchema: OrderEditShape,
-            annotations: { destructiveHint: false, idempotentHint: true },
+            annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true },
         },
         async (input: OrderEditArgs, ctx: Ctx) => {
             const { shopId, apiKey } = resolveAuth(undefined, ctx);
@@ -224,11 +276,7 @@ export function registerSalesTools(server: McpServer | any) {
                 body['itemsList[]'] = encodeItemsList(input.items);
             }
 
-            const data = await postForm('/workers/editOrder.php', body);
-            return {
-                content: [{ type: 'text', text: JSON.stringify(data, null, 2) }],
-                structuredContent: data,
-            };
+            return submitSale('/workers/editOrder.php', body, input);
         }
     );
 }

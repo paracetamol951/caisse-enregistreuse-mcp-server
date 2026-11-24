@@ -15,6 +15,11 @@ import { registerCatalogTools } from './tools/catalog.js';
 import { registerResources } from './resources/index.js';
 import { registerClientTools } from './tools/clients.js';
 import { registerPaymentModeTools } from './tools/payment_modes.js';
+import { registerStdioAsyncOperationTools } from './tools/asyncOperations.js';
+import { cartQuoteToolName, registerStdioCartQuoteTool } from './tools/cartQuote.js';
+import { registerStdioDiscountVoucherTools } from './tools/discountVouchers.js';
+import { registerStdioLoyaltyGiftCardTools } from './tools/loyaltyGiftCards.js';
+import { invoiceDocumentsToolName, registerStdioPartnerReadTools, salesSummaryToolName } from './tools/partnerReads.js';
 
 // ==== Session globale (STDIO: une seule connexion) ====
 type AuthState = { ok: boolean; SHOPID?: string; APIKEY?: string; scopes?: string[] };
@@ -63,6 +68,11 @@ async function main() {
 
     // --- Wrapper registerTool : forcera inputSchema/outputSchema en ZodRawShape ---
     const registeredToolNames: string[] = [];
+    registeredToolNames.push(...registerStdioAsyncOperationTools(server));
+    if (registerStdioCartQuoteTool(server)) registeredToolNames.push(cartQuoteToolName);
+    registeredToolNames.push(...registerStdioDiscountVoucherTools(server));
+    registeredToolNames.push(...registerStdioLoyaltyGiftCardTools(server));
+    if (registerStdioPartnerReadTools(server)) registeredToolNames.push(salesSummaryToolName, invoiceDocumentsToolName);
     const _registerTool = (server as any).registerTool.bind(server);
 
     (server as any).registerTool = function (

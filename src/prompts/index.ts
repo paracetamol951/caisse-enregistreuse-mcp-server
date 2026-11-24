@@ -20,12 +20,10 @@ export function registerPrompts(server: McpServer | any) {
                     text: `Please authenticate me with my Kash account using the email "${email}".
 
 Follow these steps:
-1. Call account_list with email="${email}" to list my accounts and get their IDs.
-2. If there are multiple accounts, ask me which one to use.
-3. Call auth_request_otp with the chosen email (and accountID if needed) to send the OTP.
-4. Ask me to enter the OTP code I received by email.
-5. Call auth_login_with_otp with the email and the OTP code.
-6. Confirm that the session is now active and I can use all other tools.`,
+1. Call auth_request_otp with email="${email}" and keep the returned challengeId. Include the accountID if I provided it.
+2. Ask me to enter the OTP code I received by email.
+3. Call auth_login_with_otp with the email, challengeId and code. Include the accountID if known.
+4. Confirm whether the session opened. If Kash requires an account selection, ask me for the account ID and request a new code for it.`,
                 },
             }],
         })
@@ -53,8 +51,9 @@ Steps:
 2. Call data_list_departments if no exact product match � use a department item instead.
 3. ${payment_method ? `Call data_list_payments_modes to find the ID for "${payment_method}".` : 'Leave payment unset to save as an unpaid quote.'}
 4. Build the items array with the correct type ('catalog', 'dept', or 'free') and IDs.
-5. Call order_create with the items and payment method.
-6. Confirm the sale was recorded and show the returned order ID.`,
+5. Save a client-generated idempotencyKey (for example a UUID) and the full arguments before calling order_create. For a confirmed partial payment, include the positive amount collected as paymentAmount.
+6. After a timeout or unknown result, retry with the same key and arguments. If the result is unresolved, check the order and its payments before starting another operation.
+7. On success, confirm the sale and show the returned order ID. For a later payment, use order_edit on this ID with a distinct key.`,
                 },
             }],
         })

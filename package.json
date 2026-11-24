@@ -25,19 +25,20 @@
     "locales",
     "manifest.template.json",
     "scripts/generate-manifest.mjs",
+    "doc/async-operations.md",
     "README.md"
   ],
   "engines": {
-    "node": ">=18.17"
+    "node": ">=24"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.2.0",
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2",
+    "express": "^4.22.3",
     "ioredis": "^5.3.2",
     "jose": "^6.1.0",
-    "undici": "^6.19.8",
-    "zod": "^3.23.8"
+    "undici": "^6.29.1",
+    "zod": "^3.25.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",

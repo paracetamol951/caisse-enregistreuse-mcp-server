@@ -840,8 +840,8 @@ document.querySelectorAll('.faqq').forEach(btn => {
 
 const app = express();
 app.disable('x-powered-by');
-app.use(express.json({ limit: '64kb' }));
 mountKashOAuthMcp(app);
+app.use(express.json({ limit: '64kb' }));
 
 app.get("/", (req, res) => {
     res.type('html').send(LANDING_HTML);
