@@ -1,4 +1,8 @@
 import express, { type Express, type Request, type Response } from 'express';
+import { toNodeHandler, toWebRequest } from '@modelcontextprotocol/node';
+import { createMcpHandler, isLegacyRequest, isSpecType, Server } from '@modelcontextprotocol/server';
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { z } from 'zod';
@@ -15,6 +19,7 @@ const mcpRequestBodyLimit = 1536 * 1024;
 // OAuth orders allow 150 items with six fields and five variation IDs per item.
 const maxToolInputElements = 2048;
 
+const serverInfo = { name: 'kash-catalog', version: '1.0.0' };
 const discoveryMethods = new Set(['initialize', 'notifications/initialized', 'tools/list', 'ping']);
 const introspectionResponse = z.discriminatedUnion('active', [
     z.object({ active: z.literal(false) }),
@@ -76,6 +81,45 @@ function httpsUrl(value: string): URL {
     return url;
 }
 
+async function serveModernMcp(tools: McpServer, req: Request, res: Response): Promise<void> {
+    // Share the existing tool registry and validators with the legacy HTTP transport.
+    async function callRegistry<T>(run: (client: Client) => Promise<T>): Promise<T> {
+        const client = new Client({ name: 'kash-tool-registry', version: '1.0.0' });
+        const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+        try {
+            await tools.connect(serverTransport);
+            await client.connect(clientTransport);
+            return await run(client);
+        } finally {
+            await client.close();
+            await tools.close();
+        }
+    }
+
+    const handler = createMcpHandler(() => {
+        const server = new Server(serverInfo, { capabilities: { tools: {} } });
+        server.setRequestHandler('tools/list', async ({ params }) => {
+            const result: unknown = await callRegistry(client => client.listTools({ cursor: params?.cursor }));
+            if (!isSpecType.ListToolsResult(result)) throw new Error('Invalid Kash tool list');
+            return result;
+        });
+        server.setRequestHandler('tools/call', async ({ params }) => {
+            const result: unknown = await callRegistry(client => client.callTool({
+                name: params.name,
+                arguments: params.arguments,
+            }));
+            if (!isSpecType.CallToolResult(result) || !result.content) throw new Error('Invalid Kash tool result');
+            return { ...result, content: result.content };
+        });
+        return server;
+    }, { legacy: 'reject', maxRequestBodySize: mcpRequestBodyLimit });
+    try {
+        await toNodeHandler(handler)(req, res, req.body);
+    } finally {
+        await handler.close();
+    }
+}
+
 export function mountKashOAuthMcp(app: Express): void {
     const issuerUrl = httpsUrl(process.env.MCP_KASH_OAUTH_ISSUER || 'https://kash.click');
     const issuer = issuerUrl.origin;
@@ -123,10 +167,13 @@ export function mountKashOAuthMcp(app: Express): void {
             res.status(403).json({ error: 'origin_not_allowed' });
             return;
         }
+        const request = await toWebRequest(req, req.body, { maxRequestBodySize: mcpRequestBodyLimit });
+        const modern = !(await isLegacyRequest(request, req.body));
         const messages: unknown[] = Array.isArray(req.body) ? req.body : [req.body];
         const protectedRequest = messages.some((message) => {
             const method = (message as { method?: unknown } | null)?.method;
-            return typeof method === 'string' && !discoveryMethods.has(method);
+            return typeof method === 'string' && !discoveryMethods.has(method)
+                && !(modern && method === 'server/discover');
         });
         const scopes = requestedScopes(messages);
         const auth = req.get('Authorization');
@@ -155,7 +202,7 @@ export function mountKashOAuthMcp(app: Express): void {
             grant = { scopes: granted, tokenRef: authResult.token_ref, shopId: authResult.shop_id };
         }
 
-        const server = new McpServer({ name: 'kash-catalog', version: '1.0.0' }, { maxToolInputElements });
+        const server = new McpServer(serverInfo, { maxToolInputElements });
         const securitySchemes = [{ type: 'oauth2', scopes: [kashProductScope] }];
         server.registerTool('data_list_products', {
             title: 'List Kash products',
@@ -219,6 +266,10 @@ export function mountKashOAuthMcp(app: Express): void {
         registerOAuthDiscountVoucherTools(server, { grant, issuer, serviceToken, challenge });
         registerOAuthLoyaltyGiftCardTools(server, { grant, issuer, serviceToken, challenge });
         registerOAuthPartnerReadTools(server, { grant, issuer, serviceToken, challenge });
+        if (modern) {
+            await serveModernMcp(server, req, res);
+            return;
+        }
         const transport = new StreamableHTTPServerTransport({
             sessionIdGenerator: undefined,
             enableJsonResponse: true,

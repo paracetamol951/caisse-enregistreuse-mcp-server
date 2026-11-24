@@ -2,9 +2,12 @@ import assert from 'node:assert/strict';
 import { once } from 'node:events';
 import { test } from 'node:test';
 import express from 'express';
+import { Client as ModernClient, StreamableHTTPClientTransport as ModernHttpTransport } from '@modelcontextprotocol/client';
 import { mountKashOAuthMcp } from '../src/support/kashOAuthMcp.ts';
 
-test('PHP OAuth protects the stateless Kash MCP tools', async () => {
+let legacyTools;
+const testProtocol = protocolVersion => test(`PHP OAuth protects Kash MCP tools over ${protocolVersion}`, async () => {
+    const modern = protocolVersion === '2026-07-28';
     const issuer = 'https://issuer.example';
     const resource = 'https://mcp.example/mcp';
     const serviceToken = 's'.repeat(64);
@@ -101,7 +104,8 @@ test('PHP OAuth protects the stateless Kash MCP tools', async () => {
             if (authMode === 'revoked') return Response.json({ active: false });
             if (authMode === 'down') return Response.json({}, { status: 503 });
             return Response.json({
-                active: true, iss: issuer, aud: authMode === 'audience' ? issuer : resource,
+                active: true, iss: authMode === 'issuer' ? 'https://other-issuer.example' : issuer,
+                aud: authMode === 'audience' ? issuer : resource,
                 scope: authMode === 'scope' ? 'sales.read' : 'catalog.read',
                 exp: Math.floor(Date.now() / 1000) + (authMode === 'expired' ? -10 : 60), token_ref: reference,
             });
@@ -164,15 +168,31 @@ test('PHP OAuth protects the stateless Kash MCP tools', async () => {
     };
 
     const app = express();
-    app.use(express.json());
     mountKashOAuthMcp(app);
     const http = app.listen(0, '127.0.0.1');
     await once(http, 'listening');
     const base = 'http://127.0.0.1:' + http.address().port;
+    const clientInfo = { name: 'kash-test', version: '1' };
     const request = (method, params, headers = {}) => originalFetch(base + '/mcp', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', ...headers },
-        body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+        headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/event-stream',
+            'MCP-Protocol-Version': protocolVersion,
+            ...(modern ? {
+                'Mcp-Method': method,
+                ...(method === 'tools/call' ? { 'Mcp-Name': params.name } : {}),
+            } : {}),
+            ...headers,
+        },
+        body: JSON.stringify({
+            jsonrpc: '2.0', id: 1, method,
+            params: modern ? { ...params, _meta: {
+                'io.modelcontextprotocol/protocolVersion': protocolVersion,
+                'io.modelcontextprotocol/clientInfo': clientInfo,
+                'io.modelcontextprotocol/clientCapabilities': {},
+            } } : params,
+        }),
     });
     const call = (headers) => request('tools/call', { name: 'data_list_products', arguments: { limit: 1 } }, headers);
     const bearer = { Authorization: 'Bearer ' + token };
@@ -191,11 +211,28 @@ test('PHP OAuth protects the stateless Kash MCP tools', async () => {
             ],
             bearer_methods_supported: ['header'],
         });
-        const initialized = await request('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'test', version: '1' } });
-        assert.equal((await initialized.json()).result.serverInfo.name, 'kash-catalog');
+        const initialized = modern ? await request('server/discover', {}) :
+            await request('initialize', { protocolVersion, capabilities: {}, clientInfo });
+        assert.equal(initialized.status, 200, await initialized.clone().text());
+        const discovery = (await initialized.json()).result;
+        assert.match(JSON.stringify(discovery), /kash-catalog/);
+        assert.ok(JSON.stringify(discovery).includes(protocolVersion));
         assert.equal(initialized.headers.has('mcp-session-id'), false);
+        if (!modern) {
+            const unsupportedDiscovery = await request('server/discover', {});
+            assert.equal(unsupportedDiscovery.status, 401);
+        }
         const list = await request('tools/list', {});
+        assert.equal(list.status, 200, await list.clone().text());
         const tools = (await list.json()).result.tools;
+        assert.equal(tools.length, 78);
+        if (modern) {
+            for (const [index, tool] of tools.entries()) {
+                const { execution, ...legacyTool } = legacyTools[index];
+                assert.deepEqual(execution, { taskSupport: 'forbidden' });
+                assert.deepEqual(tool, legacyTool, tool.name);
+            }
+        } else legacyTools = tools;
         const toolByName = Object.fromEntries(tools.map(tool => [tool.name, tool]));
         assert.equal(new Set(tools.map(tool => tool.name)).size, tools.length);
         for (const [name, scope] of Object.entries({
@@ -224,13 +261,18 @@ test('PHP OAuth protects the stateless Kash MCP tools', async () => {
         const missing = await call();
         assert.equal(missing.status, 401);
         assert.match(missing.headers.get('www-authenticate'), /resource_metadata="https:\/\/mcp\.example\/\.well-known\/oauth-protected-resource\/mcp"/);
+        const oversized = await request('tools/call', {
+            name: 'data_list_products', arguments: { padding: 'x'.repeat(1536 * 1024) },
+        }, bearer);
+        assert.equal(oversized.status, 413);
+        assert.deepEqual(await oversized.json(), { error: 'request_too_large' });
         assert.equal((await call({ ...bearer, Origin: 'https://unregistered.example' })).status, 403);
         assert.equal(calls, 0);
         assert.equal((await call({ 'x-shop-id': '2', 'x-api-key': 'legacy' })).status, 401);
         const result = await call(bearer);
         assert.equal(result.status, 200);
         assert.deepEqual((await result.json()).result.structuredContent.items, [{ id: '2', title: 'Coffee', price: '2.00' }]);
-        for (const [mode, status] of [['revoked', 401], ['audience', 401], ['expired', 401], ['scope', 403], ['down', 503]]) {
+        for (const [mode, status] of [['revoked', 401], ['issuer', 401], ['audience', 401], ['expired', 401], ['scope', 403], ['down', 503]]) {
             authMode = mode;
             assert.equal((await call(bearer)).status, status);
         }
@@ -498,8 +540,50 @@ test('PHP OAuth protects the stateless Kash MCP tools', async () => {
         const revokedResult = (await revoked.json()).result;
         assert.equal(revokedResult.isError, true);
         assert.match(revokedResult._meta['mcp/www_authenticate'][0], /scope="customers.read".*error="invalid_token"/);
+
+        if (modern) {
+            authMode = 'allowed';
+            const previousCatalogCalls = products;
+            const conflicting = await call({ ...bearer, 'Mcp-Method': 'tools/list' });
+            assert.equal(conflicting.status, 400);
+            assert.equal(products, previousCatalogCalls);
+            const incomplete = await originalFetch(base + '/mcp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json, text/event-stream',
+                    'MCP-Protocol-Version': protocolVersion,
+                    'Mcp-Method': 'tools/list',
+                },
+                body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} }),
+            });
+            assert.equal(incomplete.status, 400);
+            assert.match((await incomplete.json()).error.message, /missing.*_meta/);
+
+            const wireVersions = [];
+            const client = new ModernClient(clientInfo, { versionNegotiation: { mode: 'auto' } });
+            const transport = new ModernHttpTransport(new URL(base + '/mcp'), {
+                requestInit: { headers: bearer },
+                fetch: (url, options) => {
+                    assert.equal(new URL(url).origin, base);
+                    wireVersions.push(new Headers(options?.headers).get('MCP-Protocol-Version'));
+                    return originalFetch(url, options);
+                },
+            });
+            try {
+                await client.connect(transport);
+                const refreshed = await client.listTools();
+                assert.equal(refreshed.tools.length, 78);
+                assert.ok(wireVersions.includes(protocolVersion));
+            } finally {
+                await client.close();
+            }
+        }
     } finally {
         globalThis.fetch = originalFetch;
         await new Promise((resolve, reject) => http.close(error => error ? reject(error) : resolve()));
     }
 });
+
+testProtocol('2025-11-25');
+testProtocol('2026-07-28');
