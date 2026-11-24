@@ -5,6 +5,7 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import { isJSONRPCRequest, isJSONRPCResultResponse, ListToolsResultSchema, type JSONRPCMessage, type RequestId } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
 import { asyncOperationScopes, registerOAuthAsyncOperationTools } from '../tools/asyncOperations.js';
 import { registerOAuthCartQuoteTool } from '../tools/cartQuote.js';
@@ -81,6 +82,34 @@ function httpsUrl(value: string): URL {
     return url;
 }
 
+function withSecuritySchemes<Tool extends { _meta?: Record<string, unknown> }>(tool: Tool): Tool {
+    const schemes = tool._meta?.securitySchemes;
+    return Array.isArray(schemes) ? { ...tool, securitySchemes: schemes } : tool;
+}
+
+class KashMcpLegacyTransport extends StreamableHTTPServerTransport {
+    constructor(private readonly listRequestIds: ReadonlySet<RequestId>) {
+        super({
+            sessionIdGenerator: undefined,
+            enableJsonResponse: true,
+            maxRequestBodySize: mcpRequestBodyLimit,
+        });
+    }
+
+    override send(message: JSONRPCMessage, options?: { relatedRequestId?: RequestId }): Promise<void> {
+        if (this.listRequestIds.size && isJSONRPCResultResponse(message) && this.listRequestIds.has(message.id)) {
+            const list = ListToolsResultSchema.safeParse(message.result);
+            if (list.success) {
+                return super.send({
+                    ...message,
+                    result: { ...message.result, tools: list.data.tools.map(withSecuritySchemes) },
+                }, options);
+            }
+        }
+        return super.send(message, options);
+    }
+}
+
 async function serveModernMcp(tools: McpServer, req: Request, res: Response): Promise<void> {
     // Share the existing tool registry and validators with the legacy HTTP transport.
     async function callRegistry<T>(run: (client: Client) => Promise<T>): Promise<T> {
@@ -101,7 +130,7 @@ async function serveModernMcp(tools: McpServer, req: Request, res: Response): Pr
         server.setRequestHandler('tools/list', async ({ params }) => {
             const result: unknown = await callRegistry(client => client.listTools({ cursor: params?.cursor }));
             if (!isSpecType.ListToolsResult(result)) throw new Error('Invalid Kash tool list');
-            return result;
+            return { ...result, tools: result.tools.map(withSecuritySchemes) };
         });
         server.setRequestHandler('tools/call', async ({ params }) => {
             const result: unknown = await callRegistry(client => client.callTool({
@@ -270,11 +299,11 @@ export function mountKashOAuthMcp(app: Express): void {
             await serveModernMcp(server, req, res);
             return;
         }
-        const transport = new StreamableHTTPServerTransport({
-            sessionIdGenerator: undefined,
-            enableJsonResponse: true,
-            maxRequestBodySize: mcpRequestBodyLimit,
-        });
+        const listRequestIds = new Set<RequestId>();
+        for (const message of messages) {
+            if (isJSONRPCRequest(message) && message.method === 'tools/list') listRequestIds.add(message.id);
+        }
+        const transport = new KashMcpLegacyTransport(listRequestIds);
         await server.connect(transport);
         res.once('close', () => { void server.close().catch(() => {}); });
         await transport.handleRequest(req, res, req.body);

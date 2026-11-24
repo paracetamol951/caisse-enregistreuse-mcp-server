@@ -226,6 +226,10 @@ const testProtocol = protocolVersion => test(`PHP OAuth protects Kash MCP tools 
         assert.equal(list.status, 200, await list.clone().text());
         const tools = (await list.json()).result.tools;
         assert.equal(tools.length, 78);
+        for (const tool of tools) {
+            assert.ok(tool.securitySchemes?.length, tool.name);
+            assert.deepEqual(tool.securitySchemes, tool._meta.securitySchemes, tool.name);
+        }
         if (modern) {
             for (const [index, tool] of tools.entries()) {
                 const { execution, ...legacyTool } = legacyTools[index];
