@@ -152,8 +152,13 @@ test('PHP OAuth protects the stateless Kash MCP tools', async () => {
         products++;
         assert.equal(target.pathname, '/oauth/catalog');
         assert.equal(options.body.has('token'), false);
-        assert.equal(options.body.get('token_ref'), reference);
         assert.equal(options.body.has('shop'), false);
+        const tokenRef = options.body.get('token_ref');
+        if (tokenRef === shopReference) {
+            assert.deepEqual(Object.fromEntries(options.body), { token_ref: shopReference, after: '2', limit: '1' });
+            return Response.json({ items: [{ id: '4', title: 'Coffee', price: '2.00' }], nextCursor: null });
+        }
+        assert.equal(tokenRef, reference);
         if (authMode === 'mid-call') return Response.json({}, { status: 401 });
         return Response.json({ items: [{ id: '2', title: 'Coffee', price: '2.00' }], nextCursor: null });
     };
@@ -271,6 +276,21 @@ test('PHP OAuth protects the stateless Kash MCP tools', async () => {
             { items: [{ id: '4', title: 'Coffee', price: '2.00' }], nextCursor: null });
         assert.deepEqual(workerCalls.splice(0).map(({ path, values }) => ({ path, values })), [
             { path: '/api/partner/v1/products', values: { limit: '1', shop_id: '31' } },
+            { path: '/api/partner/v1/products', values: { limit: '1', after_id: '2', shop_id: '31' } },
+        ]);
+
+        const previousCatalogCalls = products;
+        workerStatus = 503;
+        const fallbackCatalog = await toolsCall('data_list_products', { limit: 1, cursor: '2' });
+        assert.deepEqual((await fallbackCatalog.json()).result.structuredContent,
+            { items: [{ id: '4', title: 'Coffee', price: '2.00' }], nextCursor: null });
+        workerStatus = 403;
+        const deniedCatalog = await toolsCall('data_list_products', { limit: 1, cursor: '2' });
+        assert.equal((await deniedCatalog.json()).result.isError, true);
+        workerStatus = 200;
+        assert.equal(products, previousCatalogCalls + 1, 'An access denial must not use the fallback');
+        assert.deepEqual(workerCalls.splice(0).map(({ path, values }) => ({ path, values })), [
+            { path: '/api/partner/v1/products', values: { limit: '1', after_id: '2', shop_id: '31' } },
             { path: '/api/partner/v1/products', values: { limit: '1', after_id: '2', shop_id: '31' } },
         ]);
 

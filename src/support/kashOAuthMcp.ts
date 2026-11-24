@@ -43,6 +43,14 @@ const partnerCatalogPage = z.object({
     pagination: z.object({ next_cursor: z.string().nullable() }),
 });
 
+function logCatalogFailure(upstream: 'partner' | 'oauth', error: unknown): void {
+    const reason = error instanceof KashReadError ? `status ${error.status}`
+        : error instanceof z.ZodError ? 'invalid response schema'
+        : error instanceof SyntaxError ? 'invalid JSON response'
+        : 'request failed';
+    console.warn(`Kash MCP catalog: ${upstream} read failed (${reason})`);
+}
+
 function parseBearer(auth: string | undefined): string | undefined {
     const token = auth?.match(/^Bearer (\S+)$/i)?.[1];
     if (!token) return;
@@ -173,27 +181,35 @@ export function mountKashOAuthMcp(app: Express): void {
                     _meta: { 'mcp/www_authenticate': [challenge([kashProductScope], 'insufficient_scope')] },
                 };
             }
+            let upstream: 'partner' | 'oauth' = 'partner';
             try {
                 if (grant.shopId) {
-                    const query = new URLSearchParams({ limit: String(limit) });
-                    if (cursor !== '0') query.set('after_id', cursor);
-                    const raw = await callPartnerRead(issuer, grant.shopId, { path: '/products', query }, (url) => fetch(url, {
-                        method: 'GET',
-                        headers: { Authorization: 'Bearer ' + serviceToken, 'X-Kash-Mcp-Token-Ref': grant.tokenRef, Accept: 'application/json' },
-                        signal: AbortSignal.timeout(8000), redirect: 'error',
-                    }));
-                    const page = partnerCatalogPage.parse(raw);
-                    const items = page.data.map((item) => ({ id: String(item.id), title: item.name || item.short_name, price: item.price }));
-                    const data = { items, nextCursor: page.pagination.next_cursor === null ? null : items.at(-1)?.id ?? null };
-                    return { content: [{ type: 'text', text: JSON.stringify(data) }], structuredContent: data };
+                    try {
+                        const query = new URLSearchParams({ limit: String(limit) });
+                        if (cursor !== '0') query.set('after_id', cursor);
+                        const raw = await callPartnerRead(issuer, grant.shopId, { path: '/products', query }, (url) => fetch(url, {
+                            method: 'GET',
+                            headers: { Authorization: 'Bearer ' + serviceToken, 'X-Kash-Mcp-Token-Ref': grant.tokenRef, Accept: 'application/json' },
+                            signal: AbortSignal.timeout(8000), redirect: 'error',
+                        }));
+                        const page = partnerCatalogPage.parse(raw);
+                        const items = page.data.map((item) => ({ id: String(item.id), title: item.name || item.short_name, price: item.price }));
+                        const data = { items, nextCursor: page.pagination.next_cursor === null ? null : items.at(-1)?.id ?? null };
+                        return { content: [{ type: 'text', text: JSON.stringify(data) }], structuredContent: data };
+                    } catch (error) {
+                        if (error instanceof KashReadError && error.status < 500 && error.status !== 404) throw error;
+                        logCatalogFailure(upstream, error);
+                    }
                 }
+                // The issuer rechecks catalog.read and resolves the shop from the same token reference.
+                upstream = 'oauth';
                 const reply = await callKash('/oauth/catalog', { token_ref: grant.tokenRef, after: cursor, limit: String(limit) });
-                if (reply.status === 401) return reconnect();
-                if (!reply.ok) throw new Error('Kash catalog unavailable');
+                if (!reply.ok) throw new KashReadError(reply.status);
                 const data = catalogResponse.parse(await reply.json());
                 return { content: [{ type: 'text', text: JSON.stringify(data) }], structuredContent: data };
             } catch (error) {
                 if (error instanceof KashReadError && error.status === 401) return reconnect();
+                logCatalogFailure(upstream, error);
                 return { isError: true, content: [{ type: 'text', text: 'The Kash catalog is temporarily unavailable.' }] };
             }
         });
