@@ -157,6 +157,12 @@ test('HTTP OAuth enforces coupon and voucher scopes, confirms issuance and forwa
     const legacyCheck = await call('coupon_check', { code: legacyCode });
     assert.deepEqual(legacyCheck.result.structuredContent.data, check);
     assert.deepEqual(upstream.at(-1).body, { code: legacyCode });
+    const callsBeforeInvalidCode = upstream.length;
+    for (const invalidCode of ['PROMO\u0001', 'PROMO\u{1F381}']) {
+        const invalid = await call('coupon_check', { code: invalidCode });
+        assert.equal(invalid.result?.isError, true);
+    }
+    assert.equal(upstream.length, callsBeforeInvalidCode);
     malformedCheck = true;
     const malformed = await call('coupon_check', checkInput);
     assert.equal(malformed.result.isError, true);
@@ -178,9 +184,11 @@ test('HTTP OAuth enforces coupon and voucher scopes, confirms issuance and forwa
     const unconfirmed = await call('coupon_issue', { ...couponInput, confirm: false, idempotency_key: couponKey });
     const missingKey = await call('personal_voucher_issue', { ...voucherInput, customer_id: 12 });
     const unsupportedNewCode = await call('coupon_issue', { ...couponInput, code: legacyCode, idempotency_key: couponKey });
+    const invalidName = await call('coupon_issue', { ...couponInput, name: 'Offre\u{1F381}', idempotency_key: couponKey });
     assert.equal(unconfirmed.result?.isError, true);
     assert.equal(missingKey.result?.isError, true);
     assert.equal(unsupportedNewCode.result?.isError, true);
+    assert.equal(invalidName.result?.isError, true);
     assert.ok(!JSON.stringify(unsupportedNewCode).includes(legacyCode));
     assert.equal(upstream.length, callsBeforeInvalid);
 

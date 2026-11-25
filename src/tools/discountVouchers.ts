@@ -12,8 +12,9 @@ const idString = z.string().regex(/^[1-9][0-9]{0,18}$/)
 const reference = z.union([z.number().int().positive().safe(), idString]);
 const customerId = reference.describe('Kash customer ID.');
 const reductionId = reference.refine((value) => Number(value) <= 2147483647, 'Invalid catalog reduction reference.');
-const visibleBmp = /^[^\p{C}\u{10000}-\u{10FFFF}]+$/u;
-const couponCode = z.string().max(200).regex(visibleBmp)
+// Keep the Unicode flag in runtime validation. JSON Schema's pattern only publishes the regex source.
+const isVisibleBmp = (value: string) => /^[^\p{C}\u{10000}-\u{10FFFF}]+$/u.test(value);
+const couponCode = z.string().max(200).refine(isVisibleBmp, 'Invalid characters for a coupon code.')
     .refine((code) => {
         const length = code.replace(/^ +| +$/g, '').length;
         return length >= 1 && length <= 50 && Buffer.byteLength(code, 'utf8') <= 200;
@@ -89,7 +90,7 @@ const tools = [
         ['catalog.write'], {
             ...confirmation,
             code: newCouponCode,
-            name: z.string().min(1).max(80).regex(visibleBmp),
+            name: z.string().min(1).max(80).refine(isVisibleBmp, 'Invalid characters for a coupon name.'),
             reduction_id: reductionId.describe('Existing Kash catalog reduction ID.'),
             minimum_order_amount: couponMinimum.optional(),
             max_uses: couponCount.optional(),

@@ -5,6 +5,16 @@ import express from 'express';
 import { Client as ModernClient, StreamableHTTPClientTransport as ModernHttpTransport } from '@modelcontextprotocol/client';
 import { mountKashOAuthMcp } from '../src/support/kashOAuthMcp.ts';
 
+function assertPortablePatterns(schema, path) {
+    if (!schema || typeof schema !== 'object') return;
+    if (typeof schema.pattern === 'string') {
+        assert.doesNotThrow(() => new RegExp(schema.pattern), path + '.pattern');
+    }
+    for (const [key, value] of Object.entries(schema)) {
+        assertPortablePatterns(value, path + '.' + key);
+    }
+}
+
 let legacyTools;
 const testProtocol = protocolVersion => test(`PHP OAuth protects Kash MCP tools over ${protocolVersion}`, async () => {
     const modern = protocolVersion === '2026-07-28';
@@ -229,6 +239,8 @@ const testProtocol = protocolVersion => test(`PHP OAuth protects Kash MCP tools 
         for (const tool of tools) {
             assert.ok(tool.securitySchemes?.length, tool.name);
             assert.deepEqual(tool.securitySchemes, tool._meta.securitySchemes, tool.name);
+            assertPortablePatterns(tool.inputSchema, tool.name + '.inputSchema');
+            assertPortablePatterns(tool.outputSchema, tool.name + '.outputSchema');
         }
         if (modern) {
             for (const [index, tool] of tools.entries()) {
