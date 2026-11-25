@@ -85,6 +85,15 @@ async function callPartner(
             if (response.status === 409 && request.idempotencyKey) {
                 return toolError('Kash found a conflicting operation or resource state. Retry the original request with the same key and arguments.');
             }
+            if (response.status === 403 || response.status === 422) {
+                const code = (await response.json().catch(() => null))?.error?.code;
+                if (response.status === 403 && code === 'personal_vouchers_disabled') {
+                    return toolError('Personal vouchers are disabled for this shop.');
+                }
+                if (response.status === 422 && code === 'coupons_disabled') {
+                    return toolError('Coupon management is disabled for this shop.');
+                }
+            }
             return toolError(errorMessages[response.status] ?? unavailable);
         }
 

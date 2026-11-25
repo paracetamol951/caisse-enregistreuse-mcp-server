@@ -63,6 +63,7 @@ test('HTTP OAuth enforces coupon and voucher scopes, confirms issuance and forwa
     const issued = new Map();
     let granted = 'catalog.read customers.read';
     let malformedCheck = false;
+    let promotionError;
     globalThis.fetch = async (input, init) => {
         const url = new URL(input);
         if (url.origin !== issuer) return fetchReal(input, init);
@@ -81,6 +82,10 @@ test('HTTP OAuth enforces coupon and voucher scopes, confirms issuance and forwa
         const key = init.headers['Idempotency-Key'];
         upstream.push({ url, method: init.method, body, key });
 
+        if (promotionError) {
+            const { status, code: errorCode } = promotionError;
+            return Response.json({ error: { code: errorCode, message: 'Redact this value ' + code } }, { status });
+        }
         switch (url.pathname) {
             case '/api/partner/v1/coupons/check':
                 return Response.json({ data: { ...check, code, reason: malformedCheck ? code : check.reason,
@@ -193,6 +198,21 @@ test('HTTP OAuth enforces coupon and voucher scopes, confirms issuance and forwa
     assert.equal(upstream.length, callsBeforeInvalid);
 
     const issueArgs = { ...couponInput, idempotency_key: couponKey, shop_id: 99 };
+    const voucherArgs = { ...voucherInput, customer_id: 12, idempotency_key: voucherKey };
+    for (const [name, args, status, errorCode, message] of [
+        ['coupon_issue', issueArgs, 422, 'coupons_disabled', 'Coupon management is disabled for this shop.'],
+        ['personal_voucher_issue', voucherArgs, 403, 'personal_vouchers_disabled', 'Personal vouchers are disabled for this shop.'],
+        ['personal_voucher_issue', voucherArgs, 403, 'insufficient_scope', 'The Kash connection has insufficient permissions for this tool or shop.'],
+    ]) {
+        promotionError = { status, code: errorCode };
+        const rejected = await call(name, args);
+        assert.equal(rejected.result.isError, true);
+        assert.equal(rejected.result.content[0].text, message);
+        assert.ok(!JSON.stringify(rejected).includes(code));
+    }
+    promotionError = undefined;
+    assert.equal(issued.size, 0);
+
     const replies = await Promise.all([call('coupon_issue', issueArgs), call('coupon_issue', issueArgs)]);
     for (const reply of replies) {
         assert.deepEqual(reply.result.structuredContent.data, { coupon_id: '5' });

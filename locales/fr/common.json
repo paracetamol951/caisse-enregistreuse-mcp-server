@@ -51,11 +51,11 @@
     "order": {
       "create": {
         "title": "Créer une commande",
-        "description": "Crée une nouvelle commande pour l'établissement. Prend en entrée le mode de paiement (optionnel) et la liste des articles. Chaque article peut être du type « catalogue » (avec productId) ou « rayon » (avec prix et deptId) ou « libre » (avec titre et prix). Vérifier si le client n'existe déjà en utilisant data_list_clients et si le client existe, uniquement préciser idClient. Retourne un JSON de confirmation contenant : un lien vers la facture PDF, et un lien vers une page privée de la commande affichant le détail de la commande, utilisable également par le client pour payer en ligne. IMPORTANT : avant de créer une facture validée (payment ≠ -2), appeler account_show_infos pour vérifier que shopName, adressline1 et companyRegistrationNum sont bien renseignés. Si l'un de ces champs est vide, avertir l'utilisateur et lui suggérer de les compléter via account_edit avant d'émettre des factures."
+        "description": "Crée une nouvelle commande pour l'établissement. Omettre payment ou utiliser 0 ou -2 pour enregistrer un devis non payé. Utiliser un identifiant positif de data_list_payments_modes pour enregistrer un paiement. Dans items, utiliser le type catalog avec productId, dept avec departmentId et le prix, ou free avec le titre et le prix. Vérifier si le client existe avec data_list_clients et, le cas échéant, fournir uniquement son idClient. Retourne une confirmation avec un lien vers le document PDF et une page privée de commande que le client peut utiliser pour payer en ligne. Avant de créer une facture validée, appeler account_show_infos pour vérifier que shopName, adressline1 et companyRegistrationNum sont renseignés. Si un champ est vide, avertir l'utilisateur et lui suggérer de le compléter via account_edit avant d'émettre une facture."
       },
       "edit": {
         "title": "Modifier une commande",
-        "description": "Modifie une commande existante à partir de son identifiant. Utilisez le champ payment pour contrôler l'état de la commande : -2 = garder comme devis non validé (non payé) ; -1 = valider en facture sans paiement ; un ID de mode de paiement (depuis data_list_payments_modes) = enregistrer un paiement réel et valider. Utilisez paymentAmount pour préciser un montant partiel (omis = paiement total). Les articles ne peuvent être modifiés que sur les commandes non validées. Une fois validée, seuls des paiements peuvent être enregistrés. Retourne l'orderID, un lien de paiement, et une URL de facture ou devis PDF."
+        "description": "Modifie une commande existante à partir de son identifiant. Utilisez payment à -2 pour garder un devis non payé, à -1 pour valider une facture sans paiement, ou avec un identifiant de data_list_payments_modes pour enregistrer un paiement et valider la commande. Utilisez paymentAmount pour préciser un montant partiel. Sur un devis, les articles fournis dans items sont ajoutés aux lignes existantes. Après validation, seuls les paiements peuvent être enregistrés. Retourne l'orderID, un lien de paiement et une URL de facture ou de devis PDF."
       },
       "detail": {
         "title": "Obtenir le détail d'une commande",
@@ -230,8 +230,8 @@
         "description": "Modifie un client existant à partir de son identifiant. Tous les champs sont optionnels sauf l'ID. Utiliser data_list_clients pour retrouver l'ID du client."
       },
       "delete": {
-        "title": "Supprimer un client",
-        "description": "Supprime définitivement un client du fichier clients de la boutique à partir de son identifiant."
+        "title": "Anonymiser un client",
+        "description": "Anonymise la fiche d'un client à partir de son identifiant. Kash efface les données d'identification et conserve la fiche pour l'historique comptable. L'identifiant anonymisé peut encore apparaître dans data_list_clients."
       }
     },
     "payment_mode": {

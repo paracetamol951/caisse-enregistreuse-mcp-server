@@ -81,8 +81,10 @@ const salePaymentMode = z.union([
 
 export const oauthSaleCreatePayment = z.union([
     z.number().int().safe().nonnegative(),
-    z.string().regex(/^(?:0|[1-9][0-9]{0,18})$/),
-]).optional().describe('Kash payment method ID. Omit or use 0 to save an unpaid quote.');
+    z.literal(-2),
+    z.string().regex(/^(?:-2|0|[1-9][0-9]{0,18})$/),
+]).transform((payment) => payment === -2 || payment === '-2' ? 0 : payment)
+    .optional().describe('Kash payment method ID. Omit or use 0 or -2 to save an unpaid quote.');
 
 const SalesCreateShape = {
     idempotencyKey: saleIdempotencyKey,
@@ -123,7 +125,7 @@ const OrderEditShape = {
         z.number().int().min(0).max(6),
         z.enum(['0', '1', '2', '3', '4', '5', '6'])
     ]).transform((v) => Number(v)).optional().describe('Delivery method: 0=takeaway, 1=delivery, 2=on-site, 3=drive, 4=relay, 5=table service, 6=room service'),
-    items: z.array(z.object(SalesItemShape)).optional().describe('Items to add (only for unvalidated orders or new orders)'),
+    items: z.array(z.object(SalesItemShape)).optional().describe('New lines to append to the unvalidated order. Existing lines are kept.'),
 } satisfies Record<string, ZodTypeAny>;
 
 const GetReportShape = {

@@ -7,9 +7,10 @@ export const KASH_SPEC = `
 - Session is stored automatically after login
 
 ## Payment Values
-order_create: omit payment or use 0 to save an unpaid quote. Use a positive payment method ID to collect a payment.
-In STDIO, order_create also accepts -2 for a pending quote and -1 to validate an unpaid invoice directly.
+order_create: omit payment or use 0 or -2 to save an unpaid quote. Use a positive payment method ID to collect a payment.
+In STDIO, order_create also accepts -1 to validate an unpaid invoice directly.
 order_edit: use -2 for a pending quote, -1 to validate an unpaid invoice, or 0 to edit without collecting. Use a positive payment method ID to collect a payment.
+On an unvalidated order, order_edit appends the supplied items and keeps the existing lines.
 Find payment method IDs with data_list_payments_modes. Record a payment only when its status is confirmed.
 
 For a partial payment, set paymentAmount to the positive amount actually collected, for example "12.50". With a positive method, omitting paymentAmount uses the worker default. An explicit zero is rejected.

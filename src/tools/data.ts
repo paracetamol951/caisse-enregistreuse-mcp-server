@@ -19,8 +19,8 @@ const getOrderShape = {
 
 const getOrdersShape = {
     validatedOrders: z.boolean().describe('true to fetch validated orders, false for pending/quotes'),
-    from_date_ISO8601: z.string().datetime().describe('Start of date range in ISO 8601 format (e.g. 2024-01-01T00:00:00Z)'),
-    to_date_ISO8601: z.string().datetime().describe('End of date range in ISO 8601 format (e.g. 2024-01-31T23:59:59Z)'),
+    from_date_ISO8601: z.string().datetime({ offset: true }).describe('Start of date range in ISO 8601 with Z or a UTC offset (e.g. 2024-01-01T00:00:00+01:00)'),
+    to_date_ISO8601: z.string().datetime({ offset: true }).describe('End of date range in ISO 8601 with Z or a UTC offset (e.g. 2024-01-31T23:59:59+01:00)'),
     filterDeliveryMethod: z.union([
         z.number().int().min(0).max(6),
         z.enum(['0', '1', '2', '3', '4', '5', '6'])

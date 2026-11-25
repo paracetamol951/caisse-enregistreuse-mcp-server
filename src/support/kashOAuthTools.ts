@@ -127,7 +127,7 @@ type ToolConfig = {
     annotations?: ToolAnnotations;
 };
 
-async function workerResponse(response: Response, textOutput: boolean): Promise<unknown> {
+async function workerResponse(response: Response, textOutput: boolean, emptyListOnNull: boolean): Promise<unknown> {
     if (!response.ok) throw new KashReadError(response.status);
     const text = await response.text();
     let data: unknown;
@@ -137,6 +137,8 @@ async function workerResponse(response: Response, textOutput: boolean): Promise<
         const contentType = response.headers.get('Content-Type')?.toLowerCase() ?? '';
         if (textOutput && (contentType.includes('text/html') || contentType.includes('text/csv'))) return text;
     }
+    // The legacy order worker returns JSON null for an empty date range.
+    if (emptyListOnNull && data === null) return [];
     const json = data && typeof data === 'object' ? data as Record<string, unknown> : undefined;
     if (!json || json.success === false || json.error) throw new KashReadError(422);
     return data;
@@ -170,7 +172,8 @@ export function registerKashOAuthWorkerTools(server: McpServer, options: OAuthTo
             if (saleWrite) {
                 delete schema.idUser;
                 const items = z.array(oauthSalesItem).max(150);
-                schema.items = name === 'order_create' ? items.min(1) : items.optional();
+                schema.items = (name === 'order_create' ? items.min(1) : items.optional())
+                    .describe(schema.items.description ?? 'Order lines.');
                 if (name === 'order_create') schema.payment = oauthSaleCreatePayment;
                 schema.client = schema.client.describe('New customer details, used when idClient is omitted. Requires customers.write in addition to sales.write.');
             }
@@ -240,7 +243,7 @@ export function registerKashOAuthWorkerTools(server: McpServer, options: OAuthTo
                                 return saleWorkerResponse(response);
                             }
                             const textOutput = name === 'report_get' || input.format === 'csv' || input.format === 'html';
-                            return workerResponse(response, textOutput);
+                            return workerResponse(response, textOutput, name === 'data_list_orders');
                         },
                     }, () => handler(saleWrite ? args : input, {}));
                 } catch (error) {

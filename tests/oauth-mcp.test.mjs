@@ -43,6 +43,7 @@ const testProtocol = protocolVersion => test(`PHP OAuth protects Kash MCP tools 
     let workerStatus = 200;
     let saleReply;
     let shopCanWriteCustomers = false;
+    let shopCanReadSales = false;
     let mailboxAccess = 'mailbox.read mailbox.write mailbox.send';
     const mailboxRequestId = 'c'.repeat(64);
     const mailboxKey = 'd'.repeat(32);
@@ -104,6 +105,7 @@ const testProtocol = protocolVersion => test(`PHP OAuth protects Kash MCP tools 
                     scope: mine
                         ? 'catalog.read catalog.write customers.read sales.write settings.read settings.write'
                             + (shopCanWriteCustomers ? ' customers.write' : '')
+                            + (shopCanReadSales ? ' sales.read' : '')
                             + ' ' + mailboxAccess
                         : 'customers.read',
                     exp: Math.floor(Date.now() / 1000) + 60,
@@ -155,6 +157,10 @@ const testProtocol = protocolVersion => test(`PHP OAuth protects Kash MCP tools 
             });
             if (target.pathname === '/workers/getLivreurs.php') {
                 return Response.json([{ id: '7', nom: 'Martin', prenom: 'Alex' }]);
+            }
+            if (target.pathname === '/workers/getOrders.php') {
+                const orders = parameters.get('validatedOrders') === 'true' ? [{ id: 7 }] : null;
+                return Response.json(orders, { status: workerStatus });
             }
             if (target.pathname === '/workers/webapp.php' || target.pathname === '/workers/editOrder.php') {
                 return saleReply ? saleReply() : Response.json({ result: 'ok', orderID: 456 }, { status: workerStatus });
@@ -314,6 +320,34 @@ const testProtocol = protocolVersion => test(`PHP OAuth protects Kash MCP tools 
         assert.match((await missingCatalog.json()).result._meta['mcp/www_authenticate'][0], /scope="catalog.read".*error="insufficient_scope"/);
         assert.equal(workerCalls.length, 0);
 
+        shopCanReadSales = true;
+        const offsetRange = {
+            from_date_ISO8601: '2026-11-24T12:00:00+01:00',
+            to_date_ISO8601: '2026-11-24T12:01:00+01:00',
+        };
+        const utcRange = {
+            from_date_ISO8601: '2026-11-24T11:00:00Z',
+            to_date_ISO8601: '2026-11-24T11:01:00Z',
+        };
+        for (const [range, validatedOrders, expected] of [
+            [offsetRange, false, []],
+            [utcRange, true, [{ id: 7 }]],
+        ]) {
+            const response = await toolsCall('data_list_orders', { ...range, validatedOrders });
+            assert.equal(response.status, 200);
+            assert.deepEqual((await response.json()).result.structuredContent, { data: expected });
+            assert.deepEqual(workerCalls.splice(0), [{
+                path: '/workers/getOrders.php', method: 'GET', ref: shopReference, idempotencyKey: undefined,
+                values: { idboutique: '31', shopID: '31', ...range, validatedOrders: String(validatedOrders) },
+            }]);
+        }
+        workerStatus = 503;
+        const failedOrders = await toolsCall('data_list_orders', { ...offsetRange, validatedOrders: false });
+        assert.equal((await failedOrders.json()).result.isError, true);
+        assert.equal(workerCalls.splice(0).length, 1);
+        workerStatus = 200;
+        shopCanReadSales = false;
+
         const [client31, client32] = await Promise.all([
             toolsCall('data_list_clients', { shopID: 32, idboutique: 33, key: 'wrong' }),
             toolsCall('data_list_clients', { shopID: 31 }, otherToken),
@@ -361,6 +395,7 @@ const testProtocol = protocolVersion => test(`PHP OAuth protects Kash MCP tools 
         };
         await assertInvalidArgs(toolsCall('order_create', args));
         await assertInvalidArgs(toolsCall('order_create', { ...args, idempotencyKey: key, payment: -1 }));
+        await assertInvalidArgs(toolsCall('order_create', { ...args, idempotencyKey: key, payment: '-1' }));
         assert.equal(workerCalls.length, 0);
         const created = await toolsCall('order_create', { ...args, idempotencyKey: key });
         const completed = { orderID: 456, replayed: false, result: 'ok' };
@@ -369,6 +404,16 @@ const testProtocol = protocolVersion => test(`PHP OAuth protects Kash MCP tools 
             path: '/workers/webapp.php', method: 'POST', ref: shopReference, idempotencyKey: key,
             values: { idboutique: '31', shopID: '31', 'itemsList[]': '4_1__' },
         }]);
+        const quoteKey = '550e8400-e29b-41d4-a716-446655440008';
+        for (const payment of [0, -2, '-2']) {
+            const quote = await toolsCall('order_create', { ...args, idempotencyKey: quoteKey, payment });
+            assert.equal(quote.status, 200);
+            assert.deepEqual((await quote.json()).result.structuredContent, completed);
+            assert.deepEqual(workerCalls.splice(0), [{
+                path: '/workers/webapp.php', method: 'POST', ref: shopReference, idempotencyKey: quoteKey,
+                values: { idboutique: '31', shopID: '31', payment: '0', 'itemsList[]': '4_1__' },
+            }]);
+        }
         const inlineArgs = {
             items: [{ type: 'free', title: 'Coffee', price: '2,00' }],
             client: { firstname: 'Jane', country: 'France' },

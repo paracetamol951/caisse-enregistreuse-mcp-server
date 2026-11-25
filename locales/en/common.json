@@ -51,11 +51,11 @@
     "order": {
       "create": {
         "title": "Record an order",
-        "description": "Record a new order in the connected shop. Input includes paymentMode, and items[]. Each item can be of type 'catalog' (with productId), 'department' (with price and deptId) or 'free' (with title and price). Check if the client already exists using data_list_clients and if the client exists, only specify idClient. If provided, paymentMode should correspond to a payment ID from data_list_payments_modes tool. Returns a sale confirmation JSON including: a link to the PDF invoice, and a link to a private order page showing full order details which can also be used by the client to pay online. IMPORTANT: before creating a validated invoice (payment ≠ -2), call account_show_infos to verify that shopName, adressline1, and companyRegistrationNum are all set. If any of these fields are empty, warn the user and suggest using account_edit to fill them in before issuing invoices."
+        "description": "Record a new order in the connected shop. Omit payment or use 0 or -2 to save an unpaid quote. Use a positive payment method ID from data_list_payments_modes to record a payment. Each entry in items can be of type 'catalog' (with productId), 'dept' (with price and departmentId) or 'free' (with title and price). Check if the client already exists using data_list_clients and if the client exists, only specify idClient. Returns a confirmation with a PDF document link and a private order page the client can use to pay online. Before creating a validated invoice, call account_show_infos to verify that shopName, adressline1, and companyRegistrationNum are all set. If any of these fields are empty, warn the user and suggest using account_edit to fill them in before issuing invoices."
       },
       "edit": {
         "title": "Edit an order",
-        "description": "Modify an existing order by its ID. Use the payment field to control the order state: -2 = keep as unvalidated quote (not paid); -1 = validate as invoice without payment; a payment method ID (from data_list_payments_modes) = record an actual payment and validate the order. Use paymentAmount to specify a partial payment amount (omit for full payment). Items can only be added or changed on unvalidated orders. Once validated, only payments can be recorded. Returns the orderID, a payment link, and a PDF invoice or quote URL."
+        "description": "Modify an existing order by its ID. Use the payment field to control the order state: -2 = keep as unvalidated quote (not paid); -1 = validate as invoice without payment; a payment method ID (from data_list_payments_modes) = record an actual payment and validate the order. Use paymentAmount to specify a partial payment amount (omit for full payment). On an unvalidated order, items appends new lines and keeps the existing lines. Once validated, only payments can be recorded. Returns the orderID, a payment link, and a PDF invoice or quote URL."
       },
       "detail": {
         "title": "Get order detail",
@@ -230,8 +230,8 @@
         "description": "Edit an existing customer by their ID. All fields are optional except the ID. Use data_list_clients to find the customer ID first."
       },
       "delete": {
-        "title": "Delete a client",
-        "description": "Permanently remove a customer from the shop's customer file by their ID."
+        "title": "Anonymize a client",
+        "description": "Anonymize a client by their ID. Kash removes identifying details and keeps the record for accounting history. The anonymized ID can still appear in data_list_clients."
       }
     },
     "payment_mode": {
